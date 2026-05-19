@@ -3,28 +3,49 @@ import { Globe, Link as LinkIcon, Mail } from "lucide-react";
 
 function AgenticLabLogo({ size = 28 }: { size?: number }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width={size} height={size} viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
       <defs>
-        <linearGradient id="al-grad-f" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="#a78bfa" />
-          <stop offset="100%" stopColor="#38bdf8" />
+        <linearGradient id="fl-go" x1="0" y1="0" x2="72" y2="72" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#f472b6" />
+          <stop offset="50%" stopColor="#a78bfa" />
+          <stop offset="100%" stopColor="#22d3ee" />
         </linearGradient>
+        <filter id="fl-fc"><feDropShadow dx="0" dy="0" stdDeviation="3" floodColor="#22d3ee" floodOpacity="1"/></filter>
+        <filter id="fl-fp"><feDropShadow dx="0" dy="0" stdDeviation="3" floodColor="#f472b6" floodOpacity="1"/></filter>
+        <filter id="fl-fv"><feDropShadow dx="0" dy="0" stdDeviation="3" floodColor="#a78bfa" floodOpacity="1"/></filter>
+        <filter id="fl-fg"><feDropShadow dx="0" dy="0" stdDeviation="3" floodColor="#34d399" floodOpacity="1"/></filter>
+        <filter id="fl-core"><feDropShadow dx="0" dy="0" stdDeviation="6" floodColor="#a78bfa" floodOpacity="0.9"/></filter>
+        <path id="fl-base" d="M34,0 A34,11 0 1,1 33.999,0.001 Z"/>
       </defs>
-      <polygon points="20,2 35,11 35,29 20,38 5,29 5,11" stroke="url(#al-grad-f)" strokeWidth="1.5" fill="none" opacity="0.4"/>
-      <polygon points="20,8 31,14.5 31,25.5 20,32 9,25.5 9,14.5" stroke="url(#al-grad-f)" strokeWidth="1.5" fill="none"/>
-      <circle cx="20" cy="20" r="3" fill="url(#al-grad-f)" />
-      <line x1="20" y1="20" x2="20" y2="8"   stroke="url(#al-grad-f)" strokeWidth="1" opacity="0.8"/>
-      <line x1="20" y1="20" x2="31" y2="14.5" stroke="url(#al-grad-f)" strokeWidth="1" opacity="0.8"/>
-      <line x1="20" y1="20" x2="31" y2="25.5" stroke="url(#al-grad-f)" strokeWidth="1" opacity="0.8"/>
-      <line x1="20" y1="20" x2="20" y2="32"   stroke="url(#al-grad-f)" strokeWidth="1" opacity="0.8"/>
-      <line x1="20" y1="20" x2="9"  y2="25.5" stroke="url(#al-grad-f)" strokeWidth="1" opacity="0.8"/>
-      <line x1="20" y1="20" x2="9"  y2="14.5" stroke="url(#al-grad-f)" strokeWidth="1" opacity="0.8"/>
-      <circle cx="20"  cy="8"    r="1.8" fill="#a78bfa"/>
-      <circle cx="31"  cy="14.5" r="1.8" fill="#818cf8"/>
-      <circle cx="31"  cy="25.5" r="1.8" fill="#38bdf8"/>
-      <circle cx="20"  cy="32"   r="1.8" fill="#38bdf8"/>
-      <circle cx="9"   cy="25.5" r="1.8" fill="#818cf8"/>
-      <circle cx="9"   cy="14.5" r="1.8" fill="#a78bfa"/>
+      <ellipse cx="36" cy="36" rx="34" ry="11" stroke="url(#fl-go)" strokeWidth="1.3" fill="none" opacity="0.45"/>
+      <ellipse cx="36" cy="36" rx="34" ry="11" stroke="url(#fl-go)" strokeWidth="1.3" fill="none" opacity="0.45" transform="rotate(60 36 36)"/>
+      <ellipse cx="36" cy="36" rx="34" ry="11" stroke="url(#fl-go)" strokeWidth="1.3" fill="none" opacity="0.45" transform="rotate(120 36 36)"/>
+      <circle cx="36" cy="36" r="5.5" fill="url(#fl-go)" filter="url(#fl-core)"/>
+      <circle cx="36" cy="36" r="2.5" fill="white" opacity="0.95"/>
+      <g transform="translate(36,36) rotate(0)">
+        <circle r="3.2" fill="#22d3ee" filter="url(#fl-fc)">
+          <animateMotion dur="3.5s" repeatCount="indefinite" calcMode="linear"><mpath href="#fl-base"/></animateMotion>
+        </circle>
+        <circle r="2.2" fill="#38bdf8" filter="url(#fl-fc)" opacity="0.85">
+          <animateMotion dur="3.5s" begin="-1.75s" repeatCount="indefinite" calcMode="linear"><mpath href="#fl-base"/></animateMotion>
+        </circle>
+      </g>
+      <g transform="translate(36,36) rotate(60)">
+        <circle r="3.2" fill="#f472b6" filter="url(#fl-fp)">
+          <animateMotion dur="5s" repeatCount="indefinite" calcMode="linear"><mpath href="#fl-base"/></animateMotion>
+        </circle>
+        <circle r="2.2" fill="#e879f9" filter="url(#fl-fp)" opacity="0.85">
+          <animateMotion dur="5s" begin="-2.5s" repeatCount="indefinite" calcMode="linear"><mpath href="#fl-base"/></animateMotion>
+        </circle>
+      </g>
+      <g transform="translate(36,36) rotate(120)">
+        <circle r="3.2" fill="#a78bfa" filter="url(#fl-fv)">
+          <animateMotion dur="4.2s" repeatCount="indefinite" calcMode="linear"><mpath href="#fl-base"/></animateMotion>
+        </circle>
+        <circle r="2.2" fill="#34d399" filter="url(#fl-fg)" opacity="0.9">
+          <animateMotion dur="4.2s" begin="-2.1s" repeatCount="indefinite" calcMode="linear"><mpath href="#fl-base"/></animateMotion>
+        </circle>
+      </g>
     </svg>
   );
 }

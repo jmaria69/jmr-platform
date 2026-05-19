@@ -8,42 +8,54 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 function AgenticLabLogo({ size = 36 }: { size?: number }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width={size} height={size} viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
       <defs>
-        <linearGradient id="al-grad" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="#a78bfa" />
-          <stop offset="100%" stopColor="#38bdf8" />
+        <linearGradient id="al-go" x1="0" y1="0" x2="72" y2="72" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#f472b6" />
+          <stop offset="50%" stopColor="#a78bfa" />
+          <stop offset="100%" stopColor="#22d3ee" />
         </linearGradient>
-        <filter id="al-glow">
-          <feDropShadow dx="0" dy="0" stdDeviation="2.5" floodColor="#818cf8" floodOpacity="0.7" />
-        </filter>
+        <filter id="al-fc"><feDropShadow dx="0" dy="0" stdDeviation="3" floodColor="#22d3ee" floodOpacity="1"/></filter>
+        <filter id="al-fp"><feDropShadow dx="0" dy="0" stdDeviation="3" floodColor="#f472b6" floodOpacity="1"/></filter>
+        <filter id="al-fv"><feDropShadow dx="0" dy="0" stdDeviation="3" floodColor="#a78bfa" floodOpacity="1"/></filter>
+        <filter id="al-fg"><feDropShadow dx="0" dy="0" stdDeviation="3" floodColor="#34d399" floodOpacity="1"/></filter>
+        <filter id="al-core"><feDropShadow dx="0" dy="0" stdDeviation="6" floodColor="#a78bfa" floodOpacity="0.9"/></filter>
+        <path id="al-base" d="M34,0 A34,11 0 1,1 33.999,0.001 Z"/>
       </defs>
-      {/* Outer hex ring */}
-      <polygon
-        points="20,2 35,11 35,29 20,38 5,29 5,11"
-        stroke="url(#al-grad)" strokeWidth="1.5" fill="none" opacity="0.4"
-      />
-      {/* Inner hex */}
-      <polygon
-        points="20,8 31,14.5 31,25.5 20,32 9,25.5 9,14.5"
-        stroke="url(#al-grad)" strokeWidth="1.5" fill="none" filter="url(#al-glow)"
-      />
-      {/* Center node */}
-      <circle cx="20" cy="20" r="3" fill="url(#al-grad)" filter="url(#al-glow)" />
-      {/* Spokes */}
-      <line x1="20" y1="20" x2="20" y2="8"  stroke="url(#al-grad)" strokeWidth="1" opacity="0.8" />
-      <line x1="20" y1="20" x2="31" y2="14.5" stroke="url(#al-grad)" strokeWidth="1" opacity="0.8" />
-      <line x1="20" y1="20" x2="31" y2="25.5" stroke="url(#al-grad)" strokeWidth="1" opacity="0.8" />
-      <line x1="20" y1="20" x2="20" y2="32"  stroke="url(#al-grad)" strokeWidth="1" opacity="0.8" />
-      <line x1="20" y1="20" x2="9"  y2="25.5" stroke="url(#al-grad)" strokeWidth="1" opacity="0.8" />
-      <line x1="20" y1="20" x2="9"  y2="14.5" stroke="url(#al-grad)" strokeWidth="1" opacity="0.8" />
-      {/* Corner nodes */}
-      <circle cx="20"  cy="8"    r="1.8" fill="#a78bfa" />
-      <circle cx="31"  cy="14.5" r="1.8" fill="#818cf8" />
-      <circle cx="31"  cy="25.5" r="1.8" fill="#38bdf8" />
-      <circle cx="20"  cy="32"   r="1.8" fill="#38bdf8" />
-      <circle cx="9"   cy="25.5" r="1.8" fill="#818cf8" />
-      <circle cx="9"   cy="14.5" r="1.8" fill="#a78bfa" />
+      {/* Orbit rings */}
+      <ellipse cx="36" cy="36" rx="34" ry="11" stroke="url(#al-go)" strokeWidth="1.3" fill="none" opacity="0.45"/>
+      <ellipse cx="36" cy="36" rx="34" ry="11" stroke="url(#al-go)" strokeWidth="1.3" fill="none" opacity="0.45" transform="rotate(60 36 36)"/>
+      <ellipse cx="36" cy="36" rx="34" ry="11" stroke="url(#al-go)" strokeWidth="1.3" fill="none" opacity="0.45" transform="rotate(120 36 36)"/>
+      {/* Nucleus */}
+      <circle cx="36" cy="36" r="5.5" fill="url(#al-go)" filter="url(#al-core)"/>
+      <circle cx="36" cy="36" r="2.5" fill="white" opacity="0.95"/>
+      {/* Orbit 1 — cyan */}
+      <g transform="translate(36,36) rotate(0)">
+        <circle r="3.2" fill="#22d3ee" filter="url(#al-fc)">
+          <animateMotion dur="3.5s" repeatCount="indefinite" calcMode="linear"><mpath href="#al-base"/></animateMotion>
+        </circle>
+        <circle r="2.2" fill="#38bdf8" filter="url(#al-fc)" opacity="0.85">
+          <animateMotion dur="3.5s" begin="-1.75s" repeatCount="indefinite" calcMode="linear"><mpath href="#al-base"/></animateMotion>
+        </circle>
+      </g>
+      {/* Orbit 2 — pink */}
+      <g transform="translate(36,36) rotate(60)">
+        <circle r="3.2" fill="#f472b6" filter="url(#al-fp)">
+          <animateMotion dur="5s" repeatCount="indefinite" calcMode="linear"><mpath href="#al-base"/></animateMotion>
+        </circle>
+        <circle r="2.2" fill="#e879f9" filter="url(#al-fp)" opacity="0.85">
+          <animateMotion dur="5s" begin="-2.5s" repeatCount="indefinite" calcMode="linear"><mpath href="#al-base"/></animateMotion>
+        </circle>
+      </g>
+      {/* Orbit 3 — violet + emerald */}
+      <g transform="translate(36,36) rotate(120)">
+        <circle r="3.2" fill="#a78bfa" filter="url(#al-fv)">
+          <animateMotion dur="4.2s" repeatCount="indefinite" calcMode="linear"><mpath href="#al-base"/></animateMotion>
+        </circle>
+        <circle r="2.2" fill="#34d399" filter="url(#al-fg)" opacity="0.9">
+          <animateMotion dur="4.2s" begin="-2.1s" repeatCount="indefinite" calcMode="linear"><mpath href="#al-base"/></animateMotion>
+        </circle>
+      </g>
     </svg>
   );
 }
