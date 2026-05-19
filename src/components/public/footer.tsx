@@ -1,5 +1,33 @@
 import Link from "next/link";
-import { Code2, Globe, Link as LinkIcon, Mail } from "lucide-react";
+import { Globe, Link as LinkIcon, Mail } from "lucide-react";
+
+function AgenticLabLogo({ size = 28 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="al-grad-f" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#a78bfa" />
+          <stop offset="100%" stopColor="#38bdf8" />
+        </linearGradient>
+      </defs>
+      <polygon points="20,2 35,11 35,29 20,38 5,29 5,11" stroke="url(#al-grad-f)" strokeWidth="1.5" fill="none" opacity="0.4"/>
+      <polygon points="20,8 31,14.5 31,25.5 20,32 9,25.5 9,14.5" stroke="url(#al-grad-f)" strokeWidth="1.5" fill="none"/>
+      <circle cx="20" cy="20" r="3" fill="url(#al-grad-f)" />
+      <line x1="20" y1="20" x2="20" y2="8"   stroke="url(#al-grad-f)" strokeWidth="1" opacity="0.8"/>
+      <line x1="20" y1="20" x2="31" y2="14.5" stroke="url(#al-grad-f)" strokeWidth="1" opacity="0.8"/>
+      <line x1="20" y1="20" x2="31" y2="25.5" stroke="url(#al-grad-f)" strokeWidth="1" opacity="0.8"/>
+      <line x1="20" y1="20" x2="20" y2="32"   stroke="url(#al-grad-f)" strokeWidth="1" opacity="0.8"/>
+      <line x1="20" y1="20" x2="9"  y2="25.5" stroke="url(#al-grad-f)" strokeWidth="1" opacity="0.8"/>
+      <line x1="20" y1="20" x2="9"  y2="14.5" stroke="url(#al-grad-f)" strokeWidth="1" opacity="0.8"/>
+      <circle cx="20"  cy="8"    r="1.8" fill="#a78bfa"/>
+      <circle cx="31"  cy="14.5" r="1.8" fill="#818cf8"/>
+      <circle cx="31"  cy="25.5" r="1.8" fill="#38bdf8"/>
+      <circle cx="20"  cy="32"   r="1.8" fill="#38bdf8"/>
+      <circle cx="9"   cy="25.5" r="1.8" fill="#818cf8"/>
+      <circle cx="9"   cy="14.5" r="1.8" fill="#a78bfa"/>
+    </svg>
+  );
+}
 
 export function Footer() {
   return (
@@ -8,13 +36,16 @@ export function Footer() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
           {/* Brand */}
           <div className="space-y-4">
-            <Link href="/" className="flex items-center gap-2.5 font-bold text-lg group">
-              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-[oklch(0.7_0.18_275)] to-[oklch(0.6_0.15_195)] text-white">
-                <Code2 className="h-4 w-4" />
+            <Link href="/" className="flex items-center gap-2.5 group">
+              <AgenticLabLogo size={28} />
+              <div className="flex flex-col leading-none">
+                <span className="text-sm font-black tracking-tight bg-gradient-to-r from-violet-300 via-white to-sky-300 bg-clip-text text-transparent">
+                  Agentic<span className="text-sky-400">Lab</span>
+                </span>
+                <span className="text-[8px] font-semibold text-white/30 uppercase tracking-[0.2em]">
+                  AI Agents Studio
+                </span>
               </div>
-              <span className="bg-gradient-to-r from-white to-white/60 bg-clip-text text-transparent">
-                AgenticLab
-              </span>
             </Link>
             <p className="text-sm text-muted-foreground leading-relaxed">
               Soluciones tecnológicas inteligentes para empresas que quieren crecer.
