@@ -7,9 +7,9 @@ export function generateVisitors(count: number): Visitor[] {
   const devices: Visitor["device"][] = ["mobile", "tablet", "desktop"];
   const oses: Visitor["os"][] = ["iOS", "Android", "Windows", "macOS", "Linux"];
   const browsers = ["Chrome", "Safari", "Firefox", "Edge", "Samsung Browser"];
-  const pages = ["/", "/proyectos", "/proyectos/admin-app", "/proyectos/crm-it", "/contacto", "/proyectos/gws"];
+  const pages = ["/", "/proyectos", "/proyectos/admin-app", "/proyectos/crm-it", "/contacto", "/proyectos/olga-ai"];
   const referrers = ["Google", "Direct", "Twitter", "LinkedIn", "GitHub", "Reddit"];
-  const projectIds = ["admin-app", "crm-it", "landing-inmobiliaria", "app-voz", "app-mejores-productos", "gws"];
+  const projectIds = ["admin-app", "crm-it", "landing-inmobiliaria", "app-voz", "app-mejores-productos", "olga-ai"];
 
   return Array.from({ length: count }, (_, i) => {
     const countryIdx = Math.floor(Math.random() * countries.length);
@@ -149,9 +149,7 @@ export const dashboardStats: DashboardStats = {
   topProjects: [
     { name: "AdminApp Maestro", visits: 2340 },
     { name: "Core OPS", visits: 1890 },
-    { name: "GWS Suite", visits: 1560 },
-    { name: "Olga.ai", visits: 1120 },
-    { name: "Asistente General", visits: 870 },
+    { name: "OLGA.ai", visits: 1560 },
     { name: "AppVoz", visits: 520 },
   ],
   deviceBreakdown: [
