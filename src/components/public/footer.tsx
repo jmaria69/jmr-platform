@@ -15,37 +15,41 @@ function AgenticLabLogo({ size = 28 }: { size?: number }) {
         <filter id="fl-fv"><feDropShadow dx="0" dy="0" stdDeviation="3" floodColor="#a78bfa" floodOpacity="1"/></filter>
         <filter id="fl-fg"><feDropShadow dx="0" dy="0" stdDeviation="3" floodColor="#34d399" floodOpacity="1"/></filter>
         <filter id="fl-core"><feDropShadow dx="0" dy="0" stdDeviation="6" floodColor="#a78bfa" floodOpacity="0.9"/></filter>
-        <path id="fl-base" d="M34,0 A34,11 0 1,1 33.999,0.001 Z"/>
       </defs>
+      {/* Orbit rings */}
       <ellipse cx="36" cy="36" rx="34" ry="11" stroke="url(#fl-go)" strokeWidth="1.3" fill="none" opacity="0.45"/>
       <ellipse cx="36" cy="36" rx="34" ry="11" stroke="url(#fl-go)" strokeWidth="1.3" fill="none" opacity="0.45" transform="rotate(60 36 36)"/>
       <ellipse cx="36" cy="36" rx="34" ry="11" stroke="url(#fl-go)" strokeWidth="1.3" fill="none" opacity="0.45" transform="rotate(120 36 36)"/>
+      {/* Nucleus */}
       <circle cx="36" cy="36" r="5.5" fill="url(#fl-go)" filter="url(#fl-core)"/>
       <circle cx="36" cy="36" r="2.5" fill="white" opacity="0.95"/>
-      <g transform="translate(36,36) rotate(0)">
-        <circle r="3.2" fill="#22d3ee" filter="url(#fl-fc)">
-          <animateMotion dur="3.5s" repeatCount="indefinite" calcMode="linear"><mpath href="#fl-base"/></animateMotion>
-        </circle>
-        <circle r="2.2" fill="#38bdf8" filter="url(#fl-fc)" opacity="0.85">
-          <animateMotion dur="3.5s" begin="-1.75s" repeatCount="indefinite" calcMode="linear"><mpath href="#fl-base"/></animateMotion>
-        </circle>
-      </g>
-      <g transform="translate(36,36) rotate(60)">
-        <circle r="3.2" fill="#f472b6" filter="url(#fl-fp)">
-          <animateMotion dur="5s" repeatCount="indefinite" calcMode="linear"><mpath href="#fl-base"/></animateMotion>
-        </circle>
-        <circle r="2.2" fill="#e879f9" filter="url(#fl-fp)" opacity="0.85">
-          <animateMotion dur="5s" begin="-2.5s" repeatCount="indefinite" calcMode="linear"><mpath href="#fl-base"/></animateMotion>
-        </circle>
-      </g>
-      <g transform="translate(36,36) rotate(120)">
-        <circle r="3.2" fill="#a78bfa" filter="url(#fl-fv)">
-          <animateMotion dur="4.2s" repeatCount="indefinite" calcMode="linear"><mpath href="#fl-base"/></animateMotion>
-        </circle>
-        <circle r="2.2" fill="#34d399" filter="url(#fl-fg)" opacity="0.9">
-          <animateMotion dur="4.2s" begin="-2.1s" repeatCount="indefinite" calcMode="linear"><mpath href="#fl-base"/></animateMotion>
-        </circle>
-      </g>
+      {/* Orbit 1 — cyan */}
+      <circle r="3.2" fill="#22d3ee" filter="url(#fl-fc)">
+        <animate attributeName="cx" dur="3.5s" repeatCount="indefinite" calcMode="linear" values="70;60;36;12;2;12;36;60;70"/>
+        <animate attributeName="cy" dur="3.5s" repeatCount="indefinite" calcMode="linear" values="36;44;47;44;36;28;25;28;36"/>
+      </circle>
+      <circle r="2.2" fill="#38bdf8" filter="url(#fl-fc)" opacity="0.85">
+        <animate attributeName="cx" dur="3.5s" begin="-1.75s" repeatCount="indefinite" calcMode="linear" values="70;60;36;12;2;12;36;60;70"/>
+        <animate attributeName="cy" dur="3.5s" begin="-1.75s" repeatCount="indefinite" calcMode="linear" values="36;44;47;44;36;28;25;28;36"/>
+      </circle>
+      {/* Orbit 2 — pink */}
+      <circle r="3.2" fill="#f472b6" filter="url(#fl-fp)">
+        <animate attributeName="cx" dur="5s" repeatCount="indefinite" calcMode="linear" values="53;41;27;17;19;31;46;55;53"/>
+        <animate attributeName="cy" dur="5s" repeatCount="indefinite" calcMode="linear" values="65;61;42;19;7;11;31;53;65"/>
+      </circle>
+      <circle r="2.2" fill="#e879f9" filter="url(#fl-fp)" opacity="0.85">
+        <animate attributeName="cx" dur="5s" begin="-2.5s" repeatCount="indefinite" calcMode="linear" values="53;41;27;17;19;31;46;55;53"/>
+        <animate attributeName="cy" dur="5s" begin="-2.5s" repeatCount="indefinite" calcMode="linear" values="65;61;42;19;7;11;31;53;65"/>
+      </circle>
+      {/* Orbit 3 — violet + emerald */}
+      <circle r="3.2" fill="#a78bfa" filter="url(#fl-fv)">
+        <animate attributeName="cx" dur="4.2s" repeatCount="indefinite" calcMode="linear" values="19;17;27;41;53;55;46;31;19"/>
+        <animate attributeName="cy" dur="4.2s" repeatCount="indefinite" calcMode="linear" values="65;53;31;11;7;19;42;61;65"/>
+      </circle>
+      <circle r="2.2" fill="#34d399" filter="url(#fl-fg)" opacity="0.9">
+        <animate attributeName="cx" dur="4.2s" begin="-2.1s" repeatCount="indefinite" calcMode="linear" values="19;17;27;41;53;55;46;31;19"/>
+        <animate attributeName="cy" dur="4.2s" begin="-2.1s" repeatCount="indefinite" calcMode="linear" values="65;53;31;11;7;19;42;61;65"/>
+      </circle>
     </svg>
   );
 }
