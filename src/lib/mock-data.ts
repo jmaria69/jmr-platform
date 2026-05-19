@@ -147,8 +147,8 @@ export const dashboardStats: DashboardStats = {
   visitorsMonth: 7563,
   activeNow: 12,
   topProjects: [
-    { name: "AdminApp", visits: 2340 },
-    { name: "CRM IT", visits: 1890 },
+    { name: "AdminApp Maestro", visits: 2340 },
+    { name: "Core OPS", visits: 1890 },
     { name: "GWS Suite", visits: 1560 },
     { name: "MejoresProductos", visits: 980 },
     { name: "AppVoz", visits: 520 },

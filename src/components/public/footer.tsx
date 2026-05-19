@@ -35,8 +35,8 @@ export function Footer() {
           <div>
             <h4 className="font-semibold mb-4 text-sm text-white/80">Proyectos</h4>
             <ul className="space-y-2.5 text-sm text-muted-foreground">
-              <li><Link href="/proyectos/admin-app" className="hover:text-foreground transition-colors">AdminApp</Link></li>
-              <li><Link href="/proyectos/crm-it" className="hover:text-foreground transition-colors">CRM IT</Link></li>
+              <li><Link href="/proyectos/admin-app" className="hover:text-foreground transition-colors">AdminApp Maestro</Link></li>
+              <li><Link href="/proyectos/crm-it" className="hover:text-foreground transition-colors">Core OPS</Link></li>
               <li><Link href="/proyectos/gws" className="hover:text-foreground transition-colors">GWS Suite</Link></li>
               <li><Link href="/proyectos/app-voz" className="hover:text-foreground transition-colors">AppVoz</Link></li>
             </ul>
