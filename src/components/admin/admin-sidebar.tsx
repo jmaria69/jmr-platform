@@ -49,7 +49,7 @@ export function AdminSidebar() {
           </div>
           <div>
             <p className="text-sm font-semibold">Admin Panel</p>
-            <p className="text-xs text-muted-foreground">JMR Platform</p>
+            <p className="text-xs text-muted-foreground">AgenticLab</p>
           </div>
         </div>
       </SidebarHeader>

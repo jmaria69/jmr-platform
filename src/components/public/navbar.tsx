@@ -24,7 +24,7 @@ export function Navbar() {
             <Code2 className="h-5 w-5" />
           </div>
           <span className="hidden sm:inline bg-gradient-to-r from-white to-white/70 bg-clip-text text-transparent">
-            JMR Platform
+            AgenticLab
           </span>
         </Link>
 

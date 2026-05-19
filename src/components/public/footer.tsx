@@ -13,7 +13,7 @@ export function Footer() {
                 <Code2 className="h-4 w-4" />
               </div>
               <span className="bg-gradient-to-r from-white to-white/60 bg-clip-text text-transparent">
-                JMR Platform
+                AgenticLab
               </span>
             </Link>
             <p className="text-sm text-muted-foreground leading-relaxed">
@@ -49,7 +49,7 @@ export function Footer() {
               {[
                 { icon: Globe, href: "https://github.com", label: "Web" },
                 { icon: LinkIcon, href: "https://linkedin.com", label: "LinkedIn" },
-                { icon: Mail, href: "mailto:contacto@jmrplatform.com", label: "Email" },
+                { icon: Mail, href: "mailto:contacto@agenticlab.dev", label: "Email" },
               ].map(({ icon: Icon, href, label }) => (
                 <a
                   key={label}
@@ -66,7 +66,7 @@ export function Footer() {
         </div>
 
         <div className="mt-12 border-t border-white/5 pt-6 text-center text-xs text-muted-foreground">
-          &copy; {new Date().getFullYear()} JMR Platform. Todos los derechos reservados.
+          &copy; {new Date().getFullYear()} AgenticLab. Todos los derechos reservados.
         </div>
       </div>
     </footer>

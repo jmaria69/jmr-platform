@@ -5,9 +5,9 @@
  * in components. Reference from here instead.
  */
 
-export const APP_NAME = "JMR Platform";
+export const APP_NAME = "AgenticLab";
 export const APP_DESCRIPTION =
-  "Plataforma de soluciones tecnológicas: aplicaciones web, móviles, IA y automatización empresarial.";
+  "Laboratorio de agentes IA: soluciones inteligentes para automatización, CRM y aplicaciones empresariales.";
 
 // ─── Navigation ───
 
@@ -73,6 +73,6 @@ export const MAX_VISIBLE_VISITORS = 30;
 
 // ─── Contact info ───
 
-export const CONTACT_EMAIL = "contacto@jmrplatform.com";
+export const CONTACT_EMAIL = "contacto@agenticlab.dev";
 export const CONTACT_PHONE = "+34 600 000 000";
 export const CONTACT_LOCATION = "Madrid, España";

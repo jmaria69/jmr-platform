@@ -15,12 +15,12 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "JMR Platform | Soluciones Digitales",
-    template: "%s | JMR Platform",
+    default: "AgenticLab | Laboratorio de Agentes IA",
+    template: "%s | AgenticLab",
   },
   description:
-    "Plataforma de soluciones tecnológicas: aplicaciones web, móviles, IA y automatización empresarial.",
-  keywords: ["desarrollo web", "IA", "CRM", "automatización", "apps móviles"],
+    "Laboratorio de agentes IA: automatización inteligente, CRM, aplicaciones empresariales y soluciones digitales.",
+  keywords: ["agentes IA", "automatización", "CRM", "desarrollo web", "inteligencia artificial"],
 };
 
 export const viewport: Viewport = {
