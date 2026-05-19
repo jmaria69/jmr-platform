@@ -29,31 +29,37 @@ function AgenticLabLogo({ size = 36 }: { size?: number }) {
       <circle cx="36" cy="36" r="5.5" fill="url(#al-go)" filter="url(#al-core)"/>
       <circle cx="36" cy="36" r="2.5" fill="white" opacity="0.95"/>
       {/* Orbit 1 — cyan */}
-      <circle r="3.2" fill="#22d3ee" filter="url(#al-fc)">
-        <animate attributeName="cx" dur="3.5s" repeatCount="indefinite" calcMode="linear" values="70;60;36;12;2;12;36;60;70"/>
-        <animate attributeName="cy" dur="3.5s" repeatCount="indefinite" calcMode="linear" values="36;44;47;44;36;28;25;28;36"/>
+      <circle fill="#22d3ee" filter="url(#al-fc)">
+        <animate attributeName="cx" dur="5s" repeatCount="indefinite" calcMode="linear" values="70;60;36;12;2;12;36;60;70"/>
+        <animate attributeName="cy" dur="5s" repeatCount="indefinite" calcMode="linear" values="36;44;47;44;36;28;25;28;36"/>
+        <animate attributeName="r" dur="2.1s" repeatCount="indefinite" values="2.4;4.2;2.4" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1"/>
       </circle>
-      <circle r="2.2" fill="#38bdf8" filter="url(#al-fc)" opacity="0.85">
-        <animate attributeName="cx" dur="3.5s" begin="-1.75s" repeatCount="indefinite" calcMode="linear" values="70;60;36;12;2;12;36;60;70"/>
-        <animate attributeName="cy" dur="3.5s" begin="-1.75s" repeatCount="indefinite" calcMode="linear" values="36;44;47;44;36;28;25;28;36"/>
+      <circle fill="#38bdf8" filter="url(#al-fc)" opacity="0.85">
+        <animate attributeName="cx" dur="5s" begin="-2.5s" repeatCount="indefinite" calcMode="linear" values="70;60;36;12;2;12;36;60;70"/>
+        <animate attributeName="cy" dur="5s" begin="-2.5s" repeatCount="indefinite" calcMode="linear" values="36;44;47;44;36;28;25;28;36"/>
+        <animate attributeName="r" dur="1.7s" begin="-0.9s" repeatCount="indefinite" values="1.4;3.1;1.4" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1"/>
       </circle>
       {/* Orbit 2 — pink */}
-      <circle r="3.2" fill="#f472b6" filter="url(#al-fp)">
-        <animate attributeName="cx" dur="5s" repeatCount="indefinite" calcMode="linear" values="53;41;27;17;19;31;46;55;53"/>
-        <animate attributeName="cy" dur="5s" repeatCount="indefinite" calcMode="linear" values="65;61;42;19;7;11;31;53;65"/>
+      <circle fill="#f472b6" filter="url(#al-fp)">
+        <animate attributeName="cx" dur="7s" repeatCount="indefinite" calcMode="linear" values="53;41;27;17;19;31;46;55;53"/>
+        <animate attributeName="cy" dur="7s" repeatCount="indefinite" calcMode="linear" values="65;61;42;19;7;11;31;53;65"/>
+        <animate attributeName="r" dur="2.5s" begin="-0.5s" repeatCount="indefinite" values="2.4;4.2;2.4" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1"/>
       </circle>
-      <circle r="2.2" fill="#e879f9" filter="url(#al-fp)" opacity="0.85">
-        <animate attributeName="cx" dur="5s" begin="-2.5s" repeatCount="indefinite" calcMode="linear" values="53;41;27;17;19;31;46;55;53"/>
-        <animate attributeName="cy" dur="5s" begin="-2.5s" repeatCount="indefinite" calcMode="linear" values="65;61;42;19;7;11;31;53;65"/>
+      <circle fill="#e879f9" filter="url(#al-fp)" opacity="0.85">
+        <animate attributeName="cx" dur="7s" begin="-3.5s" repeatCount="indefinite" calcMode="linear" values="53;41;27;17;19;31;46;55;53"/>
+        <animate attributeName="cy" dur="7s" begin="-3.5s" repeatCount="indefinite" calcMode="linear" values="65;61;42;19;7;11;31;53;65"/>
+        <animate attributeName="r" dur="1.9s" begin="-1.2s" repeatCount="indefinite" values="1.4;3.1;1.4" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1"/>
       </circle>
       {/* Orbit 3 — violet + emerald */}
-      <circle r="3.2" fill="#a78bfa" filter="url(#al-fv)">
-        <animate attributeName="cx" dur="4.2s" repeatCount="indefinite" calcMode="linear" values="19;17;27;41;53;55;46;31;19"/>
-        <animate attributeName="cy" dur="4.2s" repeatCount="indefinite" calcMode="linear" values="65;53;31;11;7;19;42;61;65"/>
+      <circle fill="#a78bfa" filter="url(#al-fv)">
+        <animate attributeName="cx" dur="6s" repeatCount="indefinite" calcMode="linear" values="19;17;27;41;53;55;46;31;19"/>
+        <animate attributeName="cy" dur="6s" repeatCount="indefinite" calcMode="linear" values="65;53;31;11;7;19;42;61;65"/>
+        <animate attributeName="r" dur="2.3s" begin="-1.1s" repeatCount="indefinite" values="2.4;4.2;2.4" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1"/>
       </circle>
-      <circle r="2.2" fill="#34d399" filter="url(#al-fg)" opacity="0.9">
-        <animate attributeName="cx" dur="4.2s" begin="-2.1s" repeatCount="indefinite" calcMode="linear" values="19;17;27;41;53;55;46;31;19"/>
-        <animate attributeName="cy" dur="4.2s" begin="-2.1s" repeatCount="indefinite" calcMode="linear" values="65;53;31;11;7;19;42;61;65"/>
+      <circle fill="#34d399" filter="url(#al-fg)" opacity="0.9">
+        <animate attributeName="cx" dur="6s" begin="-3s" repeatCount="indefinite" calcMode="linear" values="19;17;27;41;53;55;46;31;19"/>
+        <animate attributeName="cy" dur="6s" begin="-3s" repeatCount="indefinite" calcMode="linear" values="65;53;31;11;7;19;42;61;65"/>
+        <animate attributeName="r" dur="2.0s" begin="-0.3s" repeatCount="indefinite" values="1.4;3.1;1.4" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1"/>
       </circle>
     </svg>
   );
