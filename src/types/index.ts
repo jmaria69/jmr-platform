@@ -8,6 +8,7 @@ export interface Project {
   category: "web" | "desktop" | "mobile" | "ai" | "automation";
   url?: string;
   github?: string;
+  videoUrl?: string;
   image: string;
   color: string;
   metrics?: {

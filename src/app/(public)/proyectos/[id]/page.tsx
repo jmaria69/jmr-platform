@@ -112,6 +112,24 @@ export default async function ProjectPage({ params }: Props) {
         </div>
       )}
 
+      {/* Video de presentación */}
+      {project.videoUrl && (
+        <div className="mt-10">
+          <h3 className="text-lg font-semibold mb-4">Vídeo de presentación</h3>
+          <div className="relative w-full rounded-2xl overflow-hidden border border-white/10 bg-black aspect-video">
+            <video
+              src={project.videoUrl}
+              controls
+              poster=""
+              className="w-full h-full object-cover"
+              preload="metadata"
+            >
+              Tu navegador no soporta vídeo HTML5.
+            </video>
+          </div>
+        </div>
+      )}
+
       {/* Actions */}
       <div className="mt-10 flex flex-wrap gap-4">
         {project.url && (

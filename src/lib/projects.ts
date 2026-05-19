@@ -77,7 +77,7 @@ export const projects: Project[] = [
     tech: ["Python", "FastAPI", "Docker", "Remotion", "Telegram Bot", "Google APIs", "Ollama"],
     status: "production",
     category: "ai",
-    url: "https://4894de1777b20897-188-26-209-26.serveousercontent.com/dashboard/",
+    url: "https://bb820fb83bca4b94-188-26-209-26.serveousercontent.com/dashboard/landing.html",
     image: "/projects/gws.svg",
     color: "#8b5cf6",
     metrics: { users: 95, revenue: 3200, rating: 4.7 },
