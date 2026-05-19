@@ -23,7 +23,7 @@ export function Navbar() {
           <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-[oklch(0.7_0.18_275)] to-[oklch(0.6_0.15_195)] text-white transition-transform group-hover:scale-110 group-hover:rotate-3">
             <Code2 className="h-5 w-5" />
           </div>
-          <span className="hidden sm:inline bg-gradient-to-r from-white to-white/70 bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-white to-white/70 bg-clip-text text-transparent">
             AgenticLab
           </span>
         </Link>

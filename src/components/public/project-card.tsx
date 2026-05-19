@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Star, Users, ArrowUpRight } from "lucide-react";
+import { Star, Users, ArrowUpRight, ExternalLink } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Project } from "@/types";
 
@@ -27,7 +27,7 @@ export function ProjectCard({
   featured?: boolean;
 }) {
   return (
-    <Link href={`/proyectos/${project.id}`} className={featured ? "sm:col-span-2 sm:row-span-2" : ""}>
+    <div className={featured ? "sm:col-span-2 sm:row-span-2" : ""}>
       <div className="group relative h-full rounded-2xl glass border-gradient overflow-hidden transition-all duration-500 hover:scale-[1.02] glow-hover cursor-pointer">
         {/* Accent glow behind card */}
         <div
@@ -76,8 +76,11 @@ export function ProjectCard({
                 </Badge>
               </div>
             </div>
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/5 text-muted-foreground group-hover:text-foreground group-hover:bg-white/10 transition-all group-hover:rotate-12">
-              <ArrowUpRight className="h-4 w-4" />
+            <div
+              className="flex h-9 w-9 items-center justify-center rounded-xl text-xs font-black uppercase tracking-widest"
+              style={{ background: `${project.color}20`, color: project.color }}
+            >
+              {project.category === "ai" ? "AI" : project.category === "automation" ? "AU" : project.category === "web" ? "WB" : project.category === "mobile" ? "MB" : "DK"}
             </div>
           </div>
 
@@ -125,8 +128,33 @@ export function ProjectCard({
               )}
             </div>
           )}
+
+          {/* Action buttons */}
+          <div className="flex gap-2 mt-4">
+            {project.url && (
+              <a
+                href={project.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                className="flex-1 flex items-center justify-center gap-1.5 rounded-xl py-2 text-xs font-semibold text-white transition-all"
+                style={{ background: `${project.color}CC` }}
+              >
+                <ExternalLink className="h-3.5 w-3.5" />
+                Ver demo
+              </a>
+            )}
+            <Link
+              href={`/proyectos/${project.id}`}
+              onClick={(e) => e.stopPropagation()}
+              className="flex-1 flex items-center justify-center gap-1.5 rounded-xl py-2 text-xs font-semibold text-white/60 hover:text-white bg-white/5 hover:bg-white/10 transition-all"
+            >
+              <ArrowUpRight className="h-3.5 w-3.5" />
+              Detalle
+            </Link>
+          </div>
         </div>
       </div>
-    </Link>
+    </div>
   );
 }
