@@ -150,9 +150,9 @@ export const dashboardStats: DashboardStats = {
     { name: "AdminApp Maestro", visits: 2340 },
     { name: "Core OPS", visits: 1890 },
     { name: "GWS Suite", visits: 1560 },
-    { name: "MejoresProductos", visits: 980 },
+    { name: "Olga.ai", visits: 1120 },
+    { name: "Asistente General", visits: 870 },
     { name: "AppVoz", visits: 520 },
-    { name: "Portal Inmobiliario", visits: 273 },
   ],
   deviceBreakdown: [
     { device: "Desktop", count: 4120 },

@@ -71,16 +71,42 @@ export const projects: Project[] = [
   {
     id: "gws",
     name: "GWS Suite",
-    description: "Suite operativa con agentes IA: Olga (Operative Logistics) y Asistente Personal integrados.",
+    description: "Suite de productividad con Cleo IA, creación de podcasts, sync de inventario y automatización Google Workspace.",
     longDescription:
-      "Plataforma de operaciones empresariales que integra dos agentes IA especializados: Olga, el motor de Operative Logistics que automatiza flujos de supply chain, rutas y stock en tiempo real; y el Asistente Personal, un copiloto conversacional para gestión de tareas, agenda y comunicaciones. Todo en un único dashboard centralizado.",
-    tech: ["Python", "FastAPI", "AI Agents", "Docker", "Redis"],
+      "Plataforma todo-en-uno construida sobre Google Workspace. Integra a Cleo, la asistente IA con red de agentes especializados; un módulo de creación y publicación de podcasts; sincronización de inventario en tiempo real; y automatización completa de correo, Drive, Calendar y Sheets. Un único dashboard para gestionar toda la operativa de negocio.",
+    tech: ["Python", "Google APIs", "AI Agents", "Docker", "Redis"],
     status: "production",
     category: "automation",
     url: "https://4894de1777b20897-188-26-209-26.serveousercontent.com/dashboard/",
     image: "/projects/gws.svg",
     color: "#8b5cf6",
     metrics: { users: 95, revenue: 3200, rating: 4.7 },
+  },
+  {
+    id: "olga-ai",
+    name: "Olga.ai",
+    description: "Agente IA de logística operativa: rutas, stock, proveedores y cadena de suministro en tiempo real.",
+    longDescription:
+      "Olga es un agente de inteligencia artificial especializado en Operative Logistics. Optimiza rutas de distribución, gestiona niveles de stock con alertas predictivas, coordina proveedores y genera informes de cadena de suministro automáticamente. Diseñada para operar sin intervención humana en ciclos operativos completos.",
+    tech: ["Python", "FastAPI", "AI Agents", "PostgreSQL", "Redis"],
+    status: "production",
+    category: "ai",
+    image: "/projects/gws.svg",
+    color: "#f97316",
+    metrics: { users: 40, revenue: 1600, rating: 4.6 },
+  },
+  {
+    id: "asistente-general",
+    name: "Asistente General",
+    description: "Copiloto conversacional IA para gestión de tareas, agenda, comunicaciones y flujos de trabajo.",
+    longDescription:
+      "Asistente de propósito general basado en agentes IA que actúa como copiloto personal y empresarial. Gestiona agenda, prioriza tareas, redacta y responde comunicaciones, automatiza flujos de aprobación y mantiene el contexto entre sesiones. Integrable con Google Workspace, Slack y sistemas propios mediante API.",
+    tech: ["Python", "LLM", "AI Agents", "Google APIs", "FastAPI"],
+    status: "production",
+    category: "ai",
+    image: "/projects/admin-app.svg",
+    color: "#10b981",
+    metrics: { users: 60, revenue: 1200, rating: 4.5 },
   },
 ];
 

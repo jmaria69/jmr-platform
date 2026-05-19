@@ -38,7 +38,8 @@ export function Footer() {
               <li><Link href="/proyectos/admin-app" className="hover:text-foreground transition-colors">AdminApp Maestro</Link></li>
               <li><Link href="/proyectos/crm-it" className="hover:text-foreground transition-colors">Core OPS</Link></li>
               <li><Link href="/proyectos/gws" className="hover:text-foreground transition-colors">GWS Suite</Link></li>
-              <li><Link href="/proyectos/app-voz" className="hover:text-foreground transition-colors">AppVoz</Link></li>
+              <li><Link href="/proyectos/olga-ai" className="hover:text-foreground transition-colors">Olga.ai</Link></li>
+              <li><Link href="/proyectos/asistente-general" className="hover:text-foreground transition-colors">Asistente General</Link></li>
             </ul>
           </div>
 
