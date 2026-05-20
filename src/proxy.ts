@@ -98,7 +98,8 @@ async function verifySession(request: NextRequest): Promise<boolean> {
 
 // ─── Main proxy ───────────────────────────────────────────────────────────────
 export async function proxy(request: NextRequest) {
-  const { pathname, method } = request.nextUrl;
+  const { pathname } = request.nextUrl;
+  const method = request.method;
 
   const isAdminRoute = ADMIN_ROUTES.some((r) => pathname.startsWith(r));
   const isPublicRoute = PUBLIC_ROUTES.some((r) => pathname.startsWith(r));
