@@ -67,7 +67,7 @@ export default function ContactoPage() {
                       <SelectItem value="olga-ai">OLGA.ai</SelectItem>
                       <SelectItem value="campo-abierto">Campo Abierto</SelectItem>
                       <SelectItem value="generador-ideas">Generador de Ideas IA</SelectItem>
-                      <SelectItem value="cf-jaramal">CF Jaramal Rivas</SelectItem>
+                      <SelectItem value="cf-jaramal">Club Fútbol Rivas 2016</SelectItem>
                       <SelectItem value="vozflow">VozFlow Ultra Pro</SelectItem>
                       <SelectItem value="frajamo">Frajamo</SelectItem>
                       <SelectItem value="landing-inmobiliaria">Portal Inmobiliario</SelectItem>

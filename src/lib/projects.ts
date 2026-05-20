@@ -59,10 +59,10 @@ export const projects: Project[] = [
   },
   {
     id: "cf-jaramal",
-    name: "CF Jaramal Rivas",
-    description: "App de gestión para el Club de Fútbol Jaramal Rivas: convocatorias, estadísticas, pagos de cuota y comunicados al equipo.",
+    name: "Club Fútbol Rivas 2016",
+    description: "App de gestión para el Club de Fútbol Rivas 2016: convocatorias, alineaciones, estadísticas de jugadores y comunicados al equipo.",
     longDescription:
-      "Aplicación completa para la gestión del Club de Fútbol Jaramal Rivas (categoría B, Rivas 28016). Permite al cuerpo técnico convocar jugadores con confirmación de asistencia, generar alineaciones, registrar resultados y estadísticas por jugador (goles, asistencias, minutos). Los socios gestionan el pago de cuotas y reciben comunicados del club. Panel de administración para directiva.",
+      "Aplicación completa para la gestión del Club de Fútbol Rivas 2016 (categoría B, Rivas 28016). Permite al cuerpo técnico convocar jugadores con confirmación de asistencia, generar alineaciones, registrar resultados y estadísticas por jugador (goles, asistencias, minutos). Los socios gestionan el pago de cuotas y reciben comunicados del club. Panel de administración para directiva.",
     tech: ["React", "TypeScript", "Node.js", "PostgreSQL", "Tailwind CSS", "PWA"],
     status: "production",
     category: "web",
