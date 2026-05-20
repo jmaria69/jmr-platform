@@ -63,10 +63,11 @@ export const projects: Project[] = [
     name: "Club Fútbol Rivas 2016 B",
     description: "App de gestión para el equipo Rivas 2016 B: convocatorias, alineaciones, estadísticas de jugadores y comunicados internos.",
     longDescription:
-      "Aplicación de gestión interna para el Club de Fútbol Rivas 2016 (categoría B). Permite al cuerpo técnico convocar jugadores con confirmación de asistencia, generar alineaciones, registrar resultados y estadísticas individuales (goles, asistencias, minutos). Los socios gestionan el pago de cuotas y reciben comunicados. Panel de administración para la directiva del club.",
-    tech: ["HTML5", "CSS3", "JavaScript", "Claude AI"],
+      "Aplicación de gestión interna para el Club de Fútbol Rivas 2016 (categoría B). Permite al cuerpo técnico convocar jugadores con confirmación de asistencia, generar alineaciones con visualización en campo, registrar resultados y estadísticas individuales (goles, asistencias, minutos, tarjetas). Panel de comunicados internos para la plantilla y directiva. Datos persistentes en localStorage.",
+    tech: ["HTML5", "CSS3", "JavaScript", "LocalStorage", "CSS Grid", "CSS Animations"],
     status: "production",
     category: "web",
+    url: "https://cf-rivas-2016b.vercel.app",
     image: "/projects/cf-jaramal.svg",
     color: "#ef4444",
     metrics: { users: 40, rating: 4.8 },
