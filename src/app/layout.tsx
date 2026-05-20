@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "AgenticLab | Laboratorio de Agentes IA",
-    template: "%s | AgenticLab",
+    default: "AgenticLab",
+    template: "AgenticLab",
   },
   description:
     "Laboratorio de agentes IA: automatización inteligente, CRM, aplicaciones empresariales y soluciones digitales.",

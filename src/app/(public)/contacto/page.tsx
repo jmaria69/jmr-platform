@@ -62,12 +62,17 @@ export default function ContactoPage() {
                       <SelectValue placeholder="Selecciona un proyecto" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="admin-app">AdminApp</SelectItem>
-                      <SelectItem value="crm-it">CRM IT</SelectItem>
+                      <SelectItem value="admin-app">AdminApp Maestro</SelectItem>
+                      <SelectItem value="crm-it">Core OPS</SelectItem>
+                      <SelectItem value="olga-ai">OLGA.ai</SelectItem>
+                      <SelectItem value="campo-abierto">Campo Abierto</SelectItem>
+                      <SelectItem value="generador-ideas">Generador de Ideas IA</SelectItem>
+                      <SelectItem value="cf-jaramal">CF Jaramal Rivas</SelectItem>
+                      <SelectItem value="vozflow">VozFlow Ultra Pro</SelectItem>
+                      <SelectItem value="frajamo">Frajamo</SelectItem>
                       <SelectItem value="landing-inmobiliaria">Portal Inmobiliario</SelectItem>
                       <SelectItem value="app-voz">AppVoz</SelectItem>
                       <SelectItem value="mejores-productos">MejoresProductos</SelectItem>
-                      <SelectItem value="olga-ai">OLGA.ai</SelectItem>
                       <SelectItem value="custom">Proyecto personalizado</SelectItem>
                     </SelectContent>
                   </Select>
