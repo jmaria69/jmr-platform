@@ -28,15 +28,15 @@ const EMAIL_COOLDOWN_MS = 5 * 60 * 1000; // Don't spam — max 1 email per 5 min
 let lastEmailSentAt = 0;
 
 // ─── Email via EmailJS REST API ────────────────────────────────────────────────
-async function sendAlertEmail(event: SecurityEvent): Promise<void> {
+async function sendAlertEmail(event: SecurityEvent): Promise<string | null> {
   const now = Date.now();
-  if (now - lastEmailSentAt < EMAIL_COOLDOWN_MS) return;
+  if (now - lastEmailSentAt < EMAIL_COOLDOWN_MS) return "cooldown";
 
   const publicKey  = process.env.EMAILJS_PUBLIC_KEY;
   const serviceId  = process.env.EMAILJS_SERVICE_ID;
   const templateId = process.env.EMAILJS_SECURITY_TEMPLATE;
 
-  if (!publicKey || !serviceId || !templateId) return;
+  if (!publicKey || !serviceId || !templateId) return "missing_env";
 
   const severityEmoji = { low: "🟡", medium: "🟠", high: "🔴", critical: "🚨" }[event.severity];
   const typeLabels: Record<string, string> = {
@@ -56,13 +56,14 @@ async function sendAlertEmail(event: SecurityEvent): Promise<void> {
   };
 
   try {
-    await fetch("https://api.emailjs.com/api/v1.0/email/send", {
+    const res = await fetch("https://api.emailjs.com/api/v1.0/email/send", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         service_id:  serviceId,
         template_id: templateId,
         user_id:     publicKey,
+        accessToken: publicKey,
         template_params: {
           severidad:     `${severityEmoji} ${event.severity.toUpperCase()}`,
           tipo_ataque:   typeLabels[event.type] || event.type,
@@ -78,9 +79,16 @@ async function sendAlertEmail(event: SecurityEvent): Promise<void> {
         },
       }),
     });
-    lastEmailSentAt = now;
-  } catch {
-    // Email failure is silent — don't crash the security pipeline
+    const responseText = await res.text();
+    if (res.ok) {
+      lastEmailSentAt = now;
+      return "sent";
+    }
+    console.error("[Security] EmailJS error:", res.status, responseText);
+    return `error_${res.status}`;
+  } catch (err) {
+    console.error("[Security] Email fetch failed:", err);
+    return "fetch_failed";
   }
 }
 
@@ -122,12 +130,13 @@ export async function POST(req: NextRequest) {
   events.unshift(event);
   if (events.length > 200) events.splice(200);
 
-  // Send email for medium+ severity
+  // Send email for medium+ severity — await so Vercel doesn't kill it
+  let emailResult = "skipped";
   if (["medium","high","critical"].includes(severity)) {
-    sendAlertEmail(event); // fire-and-forget
+    emailResult = await sendAlertEmail(event) ?? "unknown";
   }
 
-  return NextResponse.json({ ok: true, id: event.id });
+  return NextResponse.json({ ok: true, id: event.id, email: emailResult });
 }
 
 export async function GET(req: NextRequest) {
