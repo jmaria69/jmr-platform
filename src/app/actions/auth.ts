@@ -40,16 +40,22 @@ export interface AuthState {
 
 async function getAdminByEmail(email: string) {
   if (!process.env.DATABASE_URL) {
-    // Fallback: check env-based admin credentials
-    const adminEmail = process.env.ADMIN_EMAIL || "admin@jmrplatform.com";
-    const adminPassword = process.env.ADMIN_PASSWORD || "Admin123!";
+    // Env-based admin — credentials MUST be set via environment variables
+    const adminEmail = process.env.ADMIN_EMAIL;
+    const adminPassword = process.env.ADMIN_PASSWORD;
+
+    if (!adminEmail || !adminPassword) {
+      // Fail securely: never fall back to hardcoded credentials
+      throw new Error("ADMIN_EMAIL and ADMIN_PASSWORD env vars are required");
+    }
+
     if (email !== adminEmail) return null;
 
     const passwordHash = await hash(adminPassword, 12);
     return {
       id: "env-admin",
       email: adminEmail,
-      name: "JMR Admin",
+      name: "Admin",
       passwordHash,
       role: "admin",
     };

@@ -4,9 +4,14 @@ import { Separator } from "@/components/ui/separator";
 import { getSession } from "@/lib/auth";
 import { Badge } from "@/components/ui/badge";
 import { ShieldCheck } from "lucide-react";
+import { redirect } from "next/navigation";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
+  // Double-check session at the layout level (middleware is the primary gate)
   const session = await getSession();
+  if (!session) {
+    redirect("/login");
+  }
 
   return (
     <SidebarProvider>
