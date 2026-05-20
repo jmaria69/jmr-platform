@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Globe, Wifi, WifiOff, RefreshCw } from "lucide-react";
+import "leaflet/dist/leaflet.css";
 
 interface SecurityEvent {
   id: string;
@@ -140,7 +141,6 @@ export function ThreatMap() {
 
     (async () => {
       const L = (await import("leaflet")).default;
-      await import("leaflet/dist/leaflet.css");
       leafletRef.current = L;
 
       if (destroyed || !containerRef.current) return;

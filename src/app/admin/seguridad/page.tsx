@@ -5,7 +5,11 @@ import { Shield, ShieldAlert, ShieldCheck, RefreshCw, CheckCircle, Bot, Zap, Key
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { ThreatMap } from "@/components/admin/threat-map";
+import dynamic from "next/dynamic";
+const ThreatMap = dynamic(
+  () => import("@/components/admin/threat-map").then(m => m.ThreatMap),
+  { ssr: false, loading: () => <div className="h-[490px] rounded-xl border border-border animate-pulse bg-muted/20 mt-4" /> }
+);
 
 interface SecurityEvent {
   id: string;
