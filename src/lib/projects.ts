@@ -98,16 +98,16 @@ export const projects: Project[] = [
   },
   {
     id: "frajamo",
-    name: "Frajamo",
-    description: "Plataforma de gestión para espacios de coworking: reservas, facturación, acceso y comunidad en un solo panel.",
+    name: "Frajamo Madrid",
+    description: "Web premium para centro de adiestramiento canino profesional en Madrid. Javier Moreno — Instructor RSCE, Juez Internacional, +18 años de experiencia.",
     longDescription:
-      "Solución integral para la gestión de espacios de coworking. Reserva de salas y puestos con calendario en tiempo real, sistema de facturación automática por uso, control de accesos, directorio de miembros y módulo de comunidad con tablón de anuncios y eventos. Panel de administración con métricas de ocupación, ingresos y rotación de clientes.",
-    tech: ["Next.js", "TypeScript", "PostgreSQL", "Stripe", "Tailwind CSS", "NextAuth.js"],
+      "Sitio web premium para Frajamo Madrid, centro de adiestramiento canino profesional dirigido por Javier Moreno: Instructor Formador Superior RSCE, Juez Internacional de Trabajo y profesional acreditado por el Ministerio del Interior con más de 18 años de experiencia. La web incluye presentación de servicios (adiestramiento individual, cursos, formación a instructores), sección de precios detallada, perfil profesional y formulario de contacto. Diseño oscuro con degradados azul marino y detalles dorados, glassmorphism y tipografía premium (Playfair Display). Reconocido por la Comunidad de Madrid.",
+    tech: ["HTML5", "CSS3", "JavaScript", "Google Fonts", "CSS Animations", "Glassmorphism"],
     status: "production",
     category: "web",
     image: "/projects/frajamo.svg",
-    color: "#06b6d4",
-    metrics: { users: 75, revenue: 1200, rating: 4.6 },
+    color: "#c9a84c",
+    metrics: { users: 180, rating: 4.9 },
   },
   {
     id: "landing-inmobiliaria",

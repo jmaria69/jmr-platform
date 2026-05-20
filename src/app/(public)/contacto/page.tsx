@@ -70,7 +70,7 @@ export default function ContactoPage() {
                       <SelectItem value="cf-jaramal">Club Fútbol Rivas 2016 B</SelectItem>
                       <SelectItem value="cd-rivas-jarama">CD Rivas Jarama</SelectItem>
                       <SelectItem value="vozflow">VozFlow Ultra Pro</SelectItem>
-                      <SelectItem value="frajamo">Frajamo</SelectItem>
+                      <SelectItem value="frajamo">Frajamo Madrid</SelectItem>
                       <SelectItem value="landing-inmobiliaria">Portal Inmobiliario</SelectItem>
                       <SelectItem value="app-voz">AppVoz</SelectItem>
                       <SelectItem value="mejores-productos">MejoresProductos</SelectItem>
