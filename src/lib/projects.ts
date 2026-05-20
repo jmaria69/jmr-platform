@@ -46,13 +46,14 @@ export const projects: Project[] = [
   },
   {
     id: "generador-ideas",
-    name: "Generador de Ideas IA",
-    description: "Introduce tu idea de negocio y la IA analiza su viabilidad, mercado objetivo y los pasos exactos para llevarla a cabo.",
+    name: "Agente Emprendedor IA",
+    description: "Evalúa ideas de negocio con IA: análisis DAFO, viabilidad, plan semanal de acción y chat con tu mentor emprendedor personal.",
     longDescription:
-      "Herramienta de evaluación de ideas impulsada por IA. El usuario describe su concepto de negocio y el sistema genera un informe completo: análisis de viabilidad económica, estudio de mercado, competencia, riesgos y una hoja de ruta paso a paso para ejecutarlo. Ideal para emprendedores que quieren validar antes de invertir tiempo y dinero.",
-    tech: ["Python", "FastAPI", "Claude API", "React", "TypeScript", "Tailwind CSS"],
+      "Herramienta SPA para emprendedores impulsada por Claude AI. El usuario registra sus ideas, las evalúa con análisis DAFO completo (fortalezas, debilidades, oportunidades, amenazas), obtiene información sobre mercado objetivo, modelo de negocio, inversión estimada y tiempo al mercado. Genera planes semanales con tareas diarias concretas y permite chatear con un mentor IA sobre cualquier aspecto de su idea. Las ideas se guardan en localStorage para acceso persistente.",
+    tech: ["HTML5", "Vanilla JS", "Claude API", "Vercel Edge Functions", "LocalStorage"],
     status: "production",
     category: "ai",
+    url: "https://generador-ideas.vercel.app",
     image: "/projects/generador-ideas.svg",
     color: "#f59e0b",
     metrics: { users: 340, rating: 4.7 },
