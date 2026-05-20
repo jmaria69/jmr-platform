@@ -110,7 +110,7 @@ export function Footer() {
               {[
                 { icon: Globe, href: "https://github.com", label: "Web" },
                 { icon: LinkIcon, href: "https://linkedin.com", label: "LinkedIn" },
-                { icon: Mail, href: "mailto:contacto@agenticlab.dev", label: "Email" },
+                { icon: Mail, href: "mailto:jmaria.romero79@gmail.com", label: "Email" },
               ].map(({ icon: Icon, href, label }) => (
                 <a
                   key={label}

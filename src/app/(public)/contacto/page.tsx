@@ -67,7 +67,7 @@ export default function ContactoPage() {
                       <SelectItem value="landing-inmobiliaria">Portal Inmobiliario</SelectItem>
                       <SelectItem value="app-voz">AppVoz</SelectItem>
                       <SelectItem value="mejores-productos">MejoresProductos</SelectItem>
-                      <SelectItem value="gws">GWS Suite</SelectItem>
+                      <SelectItem value="olga-ai">OLGA.ai</SelectItem>
                       <SelectItem value="custom">Proyecto personalizado</SelectItem>
                     </SelectContent>
                   </Select>
@@ -100,7 +100,7 @@ export default function ContactoPage() {
               </div>
               <div>
                 <p className="text-sm font-semibold">Email</p>
-                <p className="text-sm text-muted-foreground">contacto@jmrplatform.com</p>
+                <a href="mailto:jmaria.romero79@gmail.com" className="text-sm text-muted-foreground hover:text-foreground transition-colors">jmaria.romero79@gmail.com</a>
               </div>
             </CardContent>
           </Card>
@@ -112,7 +112,7 @@ export default function ContactoPage() {
               </div>
               <div>
                 <p className="text-sm font-semibold">Teléfono</p>
-                <p className="text-sm text-muted-foreground">+34 600 000 000</p>
+                <a href="tel:+34655792350" className="text-sm text-muted-foreground hover:text-foreground transition-colors">+34 655 792 350</a>
               </div>
             </CardContent>
           </Card>

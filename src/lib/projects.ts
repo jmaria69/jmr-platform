@@ -7,7 +7,7 @@ export const projects: Project[] = [
     description: "Panel de administración inteligente con agentes IA VERA y QUENTIN para gestoras de comunidades.",
     longDescription:
       "Plataforma de property management potenciada por agentes IA. VERA Copilot gestiona finanzas, auditorías y morosidad sin intervención humana. QUENTIN Predict anticipa averías en ascensores e infraestructura. Control de accesos NFC/QR y módulo financiero con informes PDF automáticos. Construida con Next.js y Python.",
-    tech: ["Next.js", "Python", "AI Agents", "PostgreSQL", "NFC/QR"],
+    tech: ["Next.js 15", "TypeScript", "Python", "FastAPI", "Claude API", "PostgreSQL", "Tailwind CSS", "NextAuth.js", "NFC/QR", "Vercel"],
     status: "production",
     category: "web",
     url: "https://adminapp-maestro.vercel.app/presentation",
@@ -22,7 +22,7 @@ export const projects: Project[] = [
     description: "Centro de mando enterprise para equipos IT: red, ERP, operaciones y marketing en un único panel.",
     longDescription:
       "Plataforma IT enterprise que unifica monitorización de red, ERP integrado (RRHH, inventario, compras), gestión de campañas de marketing y operaciones en tiempo real. Incluye AutoPilot tour, telemetría Docker, detección de amenazas activa y agente VERA para análisis conversacional. Demo en modo AutoPilot disponible.",
-    tech: ["React", "Vite", "Python", "Docker", "Redis"],
+    tech: ["React 18", "TypeScript", "Vite", "Python", "FastAPI", "Docker", "Redis", "PostgreSQL", "WebSocket", "Chart.js", "Nginx", "Claude API"],
     status: "production",
     category: "web",
     url: "https://core-ops-eight.vercel.app/",
@@ -76,7 +76,7 @@ export const projects: Project[] = [
     description: "Sistema multi-agente de operaciones: logística, Google Workspace, podcasts y automatización total vía Telegram.",
     longDescription:
       "OLGA (Operative Logistics & General Assistant) es un sistema multi-agente dockerizado que actúa como controlador maestro de operaciones. Integra una red de agentes especializados — Cleo (email y LinkedIn), Miguel (auditorías virales de marketing) y Valentina (estética y contenido) — con un motor de podcasts basado en Remotion, sincronización de inventario Amazon/GSheet, automatización completa de Google Workspace y un bot de Telegram como interfaz conversacional. Panel en tiempo real con monitorización de contenedores Docker, métricas de tokens y escudo de seguridad activo.",
-    tech: ["Python", "FastAPI", "Docker", "Remotion", "Telegram Bot", "Google APIs", "Ollama"],
+    tech: ["Python", "FastAPI", "Docker Compose", "Remotion", "FFmpeg", "Telegram Bot API", "Google Workspace APIs", "Ollama", "LangChain", "PostgreSQL", "Serveo"],
     status: "production",
     category: "ai",
     url: "https://bb820fb83bca4b94-188-26-209-26.serveousercontent.com/dashboard/landing.html",
