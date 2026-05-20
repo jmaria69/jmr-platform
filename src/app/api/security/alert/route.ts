@@ -33,6 +33,7 @@ async function sendAlertEmail(event: SecurityEvent): Promise<string | null> {
   if (now - lastEmailSentAt < EMAIL_COOLDOWN_MS) return "cooldown";
 
   const publicKey  = process.env.EMAILJS_PUBLIC_KEY;
+  const privateKey = process.env.EMAILJS_PRIVATE_KEY;
   const serviceId  = process.env.EMAILJS_SERVICE_ID;
   const templateId = process.env.EMAILJS_SECURITY_TEMPLATE;
 
@@ -63,7 +64,7 @@ async function sendAlertEmail(event: SecurityEvent): Promise<string | null> {
         service_id:  serviceId,
         template_id: templateId,
         user_id:     publicKey,
-        accessToken: publicKey,
+        accessToken: privateKey,
         template_params: {
           severidad:     `${severityEmoji} ${event.severity.toUpperCase()}`,
           tipo_ataque:   typeLabels[event.type] || event.type,
