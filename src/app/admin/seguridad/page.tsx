@@ -5,6 +5,7 @@ import { Shield, ShieldAlert, ShieldCheck, RefreshCw, CheckCircle, Bot, Zap, Key
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { ThreatMap } from "@/components/admin/threat-map";
 
 interface SecurityEvent {
   id: string;
@@ -189,6 +190,9 @@ export default function SeguridadPage() {
           <span className="font-semibold">Sistema seguro — No se han detectado ataques. Monitorización activa.</span>
         </div>
       )}
+
+      {/* Threat Map */}
+      <ThreatMap />
 
       {/* Stats grid */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
