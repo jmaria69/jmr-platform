@@ -96,6 +96,33 @@ async function verifySession(request: NextRequest): Promise<boolean> {
   }
 }
 
+// ─── Report attack to internal alert API (fire-and-forget) ───────────────────
+function reportAttack(
+  request: NextRequest,
+  type: string,
+  severity: string,
+  details: string
+): void {
+  const secret = process.env.SECURITY_SECRET;
+  if (!secret) return;
+  const origin = request.nextUrl.origin;
+  fetch(`${origin}/api/security/alert`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-security-secret": secret,
+    },
+    body: JSON.stringify({
+      type,
+      severity,
+      ip: getClientIP(request),
+      path: request.nextUrl.pathname,
+      userAgent: request.headers.get("user-agent") ?? "",
+      details,
+    }),
+  }).catch(() => {}); // never throw from proxy
+}
+
 // ─── Main proxy ───────────────────────────────────────────────────────────────
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -107,6 +134,8 @@ export async function proxy(request: NextRequest) {
 
   // 1 — Block bots and AI agents from all admin routes
   if (isAdminRoute && isBlockedUserAgent(request)) {
+    reportAttack(request, "bot_blocked", "medium",
+      `Bot bloqueado en ${pathname}. UA: ${(request.headers.get("user-agent") ?? "").slice(0, 100)}`);
     return new NextResponse("Forbidden", { status: 403 });
   }
 
@@ -115,6 +144,8 @@ export async function proxy(request: NextRequest) {
     const ip = getClientIP(request);
     const { allowed, retryAfterSec } = checkRateLimit(ip);
     if (!allowed) {
+      reportAttack(request, "rate_limited", "high",
+        `IP ${ip} superó el límite de intentos de login (${MAX_LOGIN_ATTEMPTS} en 15 min)`);
       return new NextResponse(
         JSON.stringify({
           error: `Demasiados intentos. Espera ${Math.ceil(retryAfterSec / 60)} min.`,
@@ -135,10 +166,16 @@ export async function proxy(request: NextRequest) {
 
   // 4 — Guard: unauthenticated → /login
   if (isAdminRoute && !session) {
+    // Distinguish between no token vs invalid/tampered token
+    const token = request.cookies.get(SESSION_COOKIE)?.value;
+    if (token) {
+      // Had a token but it failed verification — suspicious
+      reportAttack(request, "invalid_token", "high",
+        `Token JWT inválido/expirado intentando acceder a ${pathname}`);
+    }
     const url = new URL("/login", request.url);
     url.searchParams.set("from", pathname);
     const redirect = NextResponse.redirect(url);
-    // Clear potentially stale cookie
     redirect.cookies.delete(SESSION_COOKIE);
     return redirect;
   }

@@ -22,6 +22,7 @@ export const ADMIN_NAV_LINKS = [
   { href: "/admin/crm", label: "CRM", icon: "Users" },
   { href: "/admin/analytics", label: "Analytics", icon: "BarChart3" },
   { href: "/admin/proyectos", label: "Proyectos", icon: "FolderKanban" },
+  { href: "/admin/seguridad", label: "Seguridad", icon: "Shield" },
   { href: "/admin/credenciales", label: "Credenciales", icon: "KeyRound" },
 ] as const;
 
