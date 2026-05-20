@@ -1,12 +1,13 @@
 /**
  * /api/security/alert — receives attack events from proxy and:
- *  1. Stores them in the in-memory event log
+ *  1. Persists them in Vercel Blob (survives across serverless instances)
  *  2. Sends an email alert via EmailJS REST API when thresholds are exceeded
  */
 
 import { NextRequest, NextResponse } from "next/server";
+import { put, head, del } from "@vercel/blob";
 
-// ─── In-memory event store (per serverless instance, best-effort) ──────────────
+// ─── Types ────────────────────────────────────────────────────────────────────
 export interface SecurityEvent {
   id: string;
   type: "bot_blocked" | "rate_limited" | "invalid_token" | "brute_force" | "suspicious";
@@ -19,16 +20,49 @@ export interface SecurityEvent {
   resolved: boolean;
 }
 
-// Global store — survives warm lambda restarts
-const events: SecurityEvent[] = (globalThis as any).__sec_events ?? [];
-(globalThis as any).__sec_events = events;
+interface EventStore {
+  events: SecurityEvent[];
+  rateLimitMap: Record<string, { count: number; firstSeen: number }>;
+}
 
-const rateLimitMap = new Map<string, { count: number; firstSeen: number }>();
-const EMAIL_COOLDOWN_MS = 5 * 60 * 1000; // Don't spam — max 1 email per 5 min
+// ─── Blob helpers ─────────────────────────────────────────────────────────────
+const BLOB_KEY = "security-events.json";
+
+async function readStore(): Promise<EventStore> {
+  try {
+    // List blobs to find the one with our key
+    const { list } = await import("@vercel/blob");
+    const { blobs } = await list({ prefix: BLOB_KEY });
+    if (blobs.length === 0) return { events: [], rateLimitMap: {} };
+
+    const res = await fetch(blobs[0].url, { cache: "no-store" });
+    if (!res.ok) return { events: [], rateLimitMap: {} };
+
+    return (await res.json()) as EventStore;
+  } catch {
+    return { events: [], rateLimitMap: {} };
+  }
+}
+
+async function writeStore(store: EventStore): Promise<void> {
+  await put(BLOB_KEY, JSON.stringify(store), {
+    access: "public",
+    contentType: "application/json",
+    addRandomSuffix: false,
+    allowOverwrite: true,
+  });
+}
+
+// ─── Rate-limit helpers (persisted in store) ─────────────────────────────────
+const EMAIL_COOLDOWN_MS = 5 * 60 * 1000;
+// Email cooldown is tracked in-memory (best-effort, acceptable for this case)
 let lastEmailSentAt = 0;
 
 // ─── Email via EmailJS REST API ────────────────────────────────────────────────
-async function sendAlertEmail(event: SecurityEvent): Promise<string | null> {
+async function sendAlertEmail(
+  event: SecurityEvent,
+  totalEvents: number
+): Promise<string | null> {
   const now = Date.now();
   if (now - lastEmailSentAt < EMAIL_COOLDOWN_MS) return "cooldown";
 
@@ -74,12 +108,13 @@ async function sendAlertEmail(event: SecurityEvent): Promise<string | null> {
           fecha_hora:    new Date(event.timestamp).toLocaleString("es-ES", { timeZone: "Europe/Madrid" }),
           detalles:      event.details,
           solucion:      solutions[event.type] || "Revisa el panel de seguridad para más detalles.",
-          total_eventos: String(events.length),
+          total_eventos: String(totalEvents),
           panel_url:     "https://web-orcin-nine-90.vercel.app/admin/seguridad",
           to_email:      "jmaria.romero79@gmail.com",
         },
       }),
     });
+
     const responseText = await res.text();
     if (res.ok) {
       lastEmailSentAt = now;
@@ -103,12 +138,13 @@ export async function POST(req: NextRequest) {
   }
 
   const body = await req.json() as Partial<SecurityEvent>;
+  const store = await readStore();
 
   // Track brute force pattern per IP
   const ip = body.ip ?? "unknown";
-  const ipRecord = rateLimitMap.get(ip) ?? { count: 0, firstSeen: Date.now() };
+  const ipRecord = store.rateLimitMap[ip] ?? { count: 0, firstSeen: Date.now() };
   ipRecord.count++;
-  rateLimitMap.set(ip, ipRecord);
+  store.rateLimitMap[ip] = ipRecord;
 
   // Escalate severity for repeated offenders
   let severity = body.severity ?? "medium";
@@ -128,22 +164,27 @@ export async function POST(req: NextRequest) {
   };
 
   // Keep last 200 events
-  events.unshift(event);
-  if (events.length > 200) events.splice(200);
+  store.events.unshift(event);
+  if (store.events.length > 200) store.events.splice(200);
+
+  // Persist to blob
+  await writeStore(store);
 
   // Send email for medium+ severity — await so Vercel doesn't kill it
   let emailResult = "skipped";
-  if (["medium","high","critical"].includes(severity)) {
-    emailResult = await sendAlertEmail(event) ?? "unknown";
+  if (["medium", "high", "critical"].includes(severity)) {
+    emailResult = (await sendAlertEmail(event, store.events.length)) ?? "unknown";
   }
 
   return NextResponse.json({ ok: true, id: event.id, email: emailResult });
 }
 
 export async function GET(req: NextRequest) {
-  // Only accessible with valid admin session (proxy guards the route)
   const limit = parseInt(req.nextUrl.searchParams.get("limit") ?? "50");
   const type  = req.nextUrl.searchParams.get("type");
+
+  const store = await readStore();
+  const { events } = store;
 
   let filtered = type ? events.filter(e => e.type === type) : events;
   filtered = filtered.slice(0, limit);
@@ -161,7 +202,7 @@ export async function GET(req: NextRequest) {
       brute_force:   events.filter(e => e.type === "brute_force").length,
       suspicious:    events.filter(e => e.type === "suspicious").length,
     },
-    topIPs: [...rateLimitMap.entries()]
+    topIPs: Object.entries(store.rateLimitMap)
       .sort((a, b) => b[1].count - a[1].count)
       .slice(0, 5)
       .map(([ip, r]) => ({ ip, count: r.count })),
@@ -171,9 +212,14 @@ export async function GET(req: NextRequest) {
 }
 
 export async function PATCH(req: NextRequest) {
-  // Mark event as resolved
   const { id } = await req.json();
-  const ev = events.find(e => e.id === id);
-  if (ev) ev.resolved = true;
+  const store = await readStore();
+
+  const ev = store.events.find(e => e.id === id);
+  if (ev) {
+    ev.resolved = true;
+    await writeStore(store);
+  }
+
   return NextResponse.json({ ok: true });
 }
