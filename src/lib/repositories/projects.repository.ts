@@ -14,7 +14,7 @@ let _schemaModule: typeof import("@/lib/db/schema") | null = null;
 let _eqFn: typeof import("drizzle-orm")["eq"] | null = null;
 
 async function getDbModules() {
-  if (!process.env.DATABASE_URL) return null;
+  if (!USE_DB || !process.env.DATABASE_URL) return null;
   if (!_dbModule) {
     _dbModule = await import("@/lib/db");
     _schemaModule = await import("@/lib/db/schema");
@@ -24,7 +24,9 @@ async function getDbModules() {
   return { getDb: _dbModule!.getDb, schema: _schemaModule!, eq: _eqFn! };
 }
 
-// ─── In-memory fallback store ───
+// ─── In-memory store (source of truth until DB migration is run) ───
+// Set USE_DB=true in env to switch to Drizzle/Neon.
+const USE_DB = process.env.USE_DB === "true";
 let memoryStore: Project[] = [...seed];
 
 // ─── Helpers ───

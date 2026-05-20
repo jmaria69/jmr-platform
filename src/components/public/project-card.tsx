@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Star, Users, ArrowUpRight, ExternalLink } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Project } from "@/types";
@@ -26,9 +27,14 @@ export function ProjectCard({
   project: Project;
   featured?: boolean;
 }) {
+  const router = useRouter();
+
   return (
     <div className={featured ? "sm:col-span-2 sm:row-span-2" : ""}>
-      <div className="group relative h-full rounded-2xl glass border-gradient overflow-hidden transition-all duration-500 hover:scale-[1.02] glow-hover cursor-pointer">
+      <div
+        className="group relative h-full rounded-2xl glass border-gradient overflow-hidden transition-all duration-500 hover:scale-[1.02] glow-hover cursor-pointer"
+        onClick={() => router.push(`/proyectos/${project.id}`)}
+      >
         {/* Accent glow behind card */}
         <div
           className="absolute -inset-1 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl -z-10"

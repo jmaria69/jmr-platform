@@ -116,13 +116,14 @@ export default async function ProjectPage({ params }: Props) {
       {project.videoUrl && (
         <div className="mt-10">
           <h3 className="text-lg font-semibold mb-4">Vídeo de presentación</h3>
-          <div className="relative w-full rounded-2xl overflow-hidden border border-white/10 bg-black aspect-video">
+          <div className="relative w-full rounded-2xl overflow-hidden border border-white/10 bg-black aspect-video shadow-2xl">
             <video
               src={project.videoUrl}
               controls
-              poster=""
-              className="w-full h-full object-cover"
+              controlsList="nodownload"
+              className="w-full h-full"
               preload="metadata"
+              playsInline
             >
               Tu navegador no soporta vídeo HTML5.
             </video>
