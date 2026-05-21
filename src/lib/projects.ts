@@ -2,6 +2,21 @@ import { Project } from "@/types";
 
 export const projects: Project[] = [
   {
+    id: "olga-ai",
+    name: "OLGA.ai",
+    description: "Sistema multi-agente de operaciones: logística, Google Workspace, podcasts y automatización total vía Telegram.",
+    longDescription:
+      "OLGA (Operative Logistics & General Assistant) es un sistema multi-agente dockerizado que actúa como controlador maestro de operaciones. Integra una red de agentes especializados — Cleo (email y LinkedIn), Miguel (auditorías virales de marketing) y Valentina (estética y contenido) — con un motor de podcasts basado en Remotion, sincronización de inventario Amazon/GSheet, automatización completa de Google Workspace y un bot de Telegram como interfaz conversacional. Panel en tiempo real con monitorización de contenedores Docker, métricas de tokens y escudo de seguridad activo.",
+    tech: ["Python", "FastAPI", "Docker Compose", "Remotion", "FFmpeg", "Telegram Bot API", "Google Workspace APIs", "Ollama", "LangChain", "PostgreSQL", "Serveo"],
+    status: "production",
+    category: "ai",
+    url: "https://bb820fb83bca4b94-188-26-209-26.serveousercontent.com/dashboard/landing.html",
+    videoUrl: "/videos/olga-ai.mp4",
+    image: "/projects/gws.svg",
+    color: "#8b5cf6",
+    metrics: { users: 95, revenue: 3200, rating: 4.7 },
+  },
+  {
     id: "admin-app",
     name: "AdminApp Maestro",
     description: "Panel de administración inteligente con agentes IA VERA y QUENTIN para gestoras de comunidades.",
@@ -32,19 +47,6 @@ export const projects: Project[] = [
     metrics: { users: 85, revenue: 1800, rating: 4.6 },
   },
   {
-    id: "campo-abierto",
-    name: "Campo Abierto",
-    description: "PWA para comunidades rurales: encuentra ayudas PAC, subvenciones y recursos públicos según tu explotación agraria o ganadera.",
-    longDescription:
-      "Aplicación web progresiva (PWA) pensada para agricultores y ganaderos de España. El usuario describe su explotación y el sistema cruza los datos con una base de ayudas actualizada para mostrar exactamente qué subvenciones PAC, ayudas autonómicas y recursos públicos le corresponden, con los pasos para solicitarlas. Funciona offline gracias al service worker. Backend en Python/FastAPI, frontend PWA instalable en móvil.",
-    tech: ["Python", "FastAPI", "PWA", "Service Worker", "HTML5", "CSS3", "JavaScript", "Pydantic"],
-    status: "production",
-    category: "web",
-    image: "/projects/campo-abierto.svg",
-    color: "#10b981",
-    metrics: { users: 210, rating: 4.6 },
-  },
-  {
     id: "generador-ideas",
     name: "Agente Emprendedor IA",
     description: "Evalúa ideas de negocio con IA: análisis DAFO, viabilidad, plan semanal de acción y chat con tu mentor emprendedor personal.",
@@ -57,6 +59,19 @@ export const projects: Project[] = [
     image: "/projects/generador-ideas.svg",
     color: "#f59e0b",
     metrics: { users: 340, rating: 4.7 },
+  },
+  {
+    id: "campo-abierto",
+    name: "Campo Abierto",
+    description: "PWA para comunidades rurales: encuentra ayudas PAC, subvenciones y recursos públicos según tu explotación agraria o ganadera.",
+    longDescription:
+      "Aplicación web progresiva (PWA) pensada para agricultores y ganaderos de España. El usuario describe su explotación y el sistema cruza los datos con una base de ayudas actualizada para mostrar exactamente qué subvenciones PAC, ayudas autonómicas y recursos públicos le corresponden, con los pasos para solicitarlas. Funciona offline gracias al service worker. Backend en Python/FastAPI, frontend PWA instalable en móvil.",
+    tech: ["Python", "FastAPI", "PWA", "Service Worker", "HTML5", "CSS3", "JavaScript", "Pydantic"],
+    status: "production",
+    category: "web",
+    image: "/projects/campo-abierto.svg",
+    color: "#10b981",
+    metrics: { users: 210, rating: 4.6 },
   },
   {
     id: "cf-jaramal",
@@ -87,19 +102,6 @@ export const projects: Project[] = [
     metrics: { users: 200, rating: 4.9 },
   },
   {
-    id: "vozflow",
-    name: "VozFlow Ultra Pro",
-    description: "Motor de voz avanzado: transcripción en tiempo real, síntesis natural y comandos por voz con modelos de IA de última generación.",
-    longDescription:
-      "Aplicación de escritorio multiplataforma (Windows, macOS) para reconocimiento y síntesis de voz de alta precisión. Transcripción en tiempo real con puntuación automática, síntesis de voz con clonación de timbre, comandos de automatización activados por voz y exportación a múltiples formatos. Construida sobre modelos Whisper y ElevenLabs con interfaz nativa.",
-    tech: ["Python", "Whisper AI", "ElevenLabs", "PyQt6", "FFmpeg", "PyInstaller"],
-    status: "production",
-    category: "desktop",
-    image: "/projects/vozflow.svg",
-    color: "#8b5cf6",
-    metrics: { users: 90, rating: 4.5 },
-  },
-  {
     id: "frajamo",
     name: "Frajamo Madrid",
     description: "Web premium para centro de adiestramiento canino profesional en Madrid. Javier Moreno — Instructor RSCE, Juez Internacional, +18 años de experiencia.",
@@ -116,28 +118,16 @@ export const projects: Project[] = [
   {
     id: "landing-inmobiliaria",
     name: "Portal Inmobiliario",
-    description: "Landing page premium para el sector inmobiliario con búsqueda avanzada.",
+    description: "Portal inmobiliario con búsqueda avanzada, dashboard de gestión y calculadora de hipotecas.",
     longDescription:
-      "Portal inmobiliario con diseño premium, búsqueda avanzada de propiedades con filtros geográficos, galería de imágenes interactiva, calculadora de hipotecas y sistema de contacto directo con agentes.",
-    tech: ["HTML5", "CSS3", "JavaScript", "Maps API"],
+      "Portal inmobiliario completo con landing page premium y dashboard de gestión de propiedades. Incluye búsqueda avanzada con filtros, galería interactiva, calculadora de hipotecas y contacto directo con agentes. Dashboard interno para gestionar el catálogo de inmuebles en tiempo real.",
+    tech: ["Vite", "JavaScript", "CSS3", "HTML5"],
     status: "production",
     category: "web",
+    url: "https://landing-inmobiliaria.vercel.app",
     image: "/projects/inmobiliaria.svg",
     color: "#10b981",
     metrics: { users: 320, revenue: 950, rating: 4.5 },
-  },
-  {
-    id: "app-voz",
-    name: "AppVoz",
-    description: "Aplicación multiplataforma de reconocimiento y síntesis de voz con IA.",
-    longDescription:
-      "App nativa para Android, macOS y Windows que permite reconocimiento de voz avanzado, transcripción en tiempo real, síntesis de voz natural y comandos por voz. Usa modelos de IA de última generación para máxima precisión.",
-    tech: ["Python", "TensorFlow", "Android SDK", "Swift"],
-    status: "beta",
-    category: "mobile",
-    image: "/projects/app-voz.svg",
-    color: "#f59e0b",
-    metrics: { users: 45, rating: 4.3 },
   },
   {
     id: "app-mejores-productos",
@@ -151,21 +141,6 @@ export const projects: Project[] = [
     image: "/projects/mejores-productos.svg",
     color: "#ef4444",
     metrics: { users: 200, revenue: 600, rating: 4.4 },
-  },
-  {
-    id: "olga-ai",
-    name: "OLGA.ai",
-    description: "Sistema multi-agente de operaciones: logística, Google Workspace, podcasts y automatización total vía Telegram.",
-    longDescription:
-      "OLGA (Operative Logistics & General Assistant) es un sistema multi-agente dockerizado que actúa como controlador maestro de operaciones. Integra una red de agentes especializados — Cleo (email y LinkedIn), Miguel (auditorías virales de marketing) y Valentina (estética y contenido) — con un motor de podcasts basado en Remotion, sincronización de inventario Amazon/GSheet, automatización completa de Google Workspace y un bot de Telegram como interfaz conversacional. Panel en tiempo real con monitorización de contenedores Docker, métricas de tokens y escudo de seguridad activo.",
-    tech: ["Python", "FastAPI", "Docker Compose", "Remotion", "FFmpeg", "Telegram Bot API", "Google Workspace APIs", "Ollama", "LangChain", "PostgreSQL", "Serveo"],
-    status: "production",
-    category: "ai",
-    url: "https://bb820fb83bca4b94-188-26-209-26.serveousercontent.com/dashboard/landing.html",
-    videoUrl: "/videos/olga-ai.mp4",
-    image: "/projects/gws.svg",
-    color: "#8b5cf6",
-    metrics: { users: 95, revenue: 3200, rating: 4.7 },
   },
 ];
 
