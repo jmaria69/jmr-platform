@@ -130,6 +130,19 @@ export const projects: Project[] = [
     metrics: { users: 320, revenue: 950, rating: 4.5 },
   },
   {
+    id: "vozflow",
+    name: "VozFlow Ultra Pro",
+    description: "Motor de voz avanzado: transcripción en tiempo real, síntesis natural y comandos por voz con modelos de IA de última generación.",
+    longDescription:
+      "Aplicación de escritorio multiplataforma (Windows, macOS) para reconocimiento y síntesis de voz de alta precisión. Transcripción en tiempo real con puntuación automática, síntesis de voz con clonación de timbre, comandos de automatización activados por voz y exportación a múltiples formatos. Construida sobre modelos Whisper y ElevenLabs con interfaz nativa.",
+    tech: ["Python", "Whisper AI", "ElevenLabs", "PyQt6", "FFmpeg", "PyInstaller"],
+    status: "production",
+    category: "desktop",
+    image: "/projects/vozflow.svg",
+    color: "#8b5cf6",
+    metrics: { users: 90, rating: 4.5 },
+  },
+  {
     id: "app-mejores-productos",
     name: "MejoresProductos",
     description: "Comparador inteligente de productos con scraping y análisis de precios.",
