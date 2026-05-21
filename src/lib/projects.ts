@@ -124,7 +124,7 @@ export const projects: Project[] = [
     tech: ["Vite", "JavaScript", "CSS3", "HTML5"],
     status: "production",
     category: "web",
-    url: "https://landing-inmobiliaria.vercel.app/index.html#demo",
+    url: "https://landing-inmobiliaria-tau.vercel.app/index.html#demo",
     image: "/projects/inmobiliaria.svg",
     color: "#10b981",
     metrics: { users: 320, revenue: 950, rating: 4.5 },
