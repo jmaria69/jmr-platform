@@ -117,10 +117,10 @@ export const projects: Project[] = [
   },
   {
     id: "landing-inmobiliaria",
-    name: "Portal Inmobiliario",
-    description: "Portal inmobiliario con búsqueda avanzada, dashboard de gestión y calculadora de hipotecas.",
+    name: "InmoTech",
+    description: "Plataforma inmobiliaria con IA: cualifica leads automáticamente, genera tours inmersivos y elimina el papeleo de tu agencia.",
     longDescription:
-      "Portal inmobiliario completo con landing page premium y dashboard de gestión de propiedades. Incluye búsqueda avanzada con filtros, galería interactiva, calculadora de hipotecas y contacto directo con agentes. Dashboard interno para gestionar el catálogo de inmuebles en tiempo real.",
+      "InmoTech es la plataforma todo-en-uno para agencias inmobiliarias potenciada por IA. Cualifica leads automáticamente, genera tours inmersivos de propiedades, gestiona el catálogo con dashboard en tiempo real, calculadora de hipotecas integrada y contacto directo con agentes. Diseño premium con búsqueda avanzada y filtros geográficos.",
     tech: ["Vite", "JavaScript", "CSS3", "HTML5"],
     status: "production",
     category: "web",
