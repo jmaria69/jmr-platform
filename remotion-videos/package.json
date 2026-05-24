@@ -1,0 +1,29 @@
+{
+  "name": "remotion-videos",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "npx remotion studio",
+    "render:admin": "npx remotion render AdminApp --output out/admin-app.mp4 --codec h264 --pixel-format yuv420p --jpeg-quality 90 --concurrency 4",
+    "render:core": "npx remotion render CoreOps --output out/core-ops.mp4 --codec h264 --pixel-format yuv420p --jpeg-quality 90 --concurrency 4",
+    "render:olga": "npx remotion render OlgaAi --output out/olga-ai.mp4 --codec h264 --pixel-format yuv420p --jpeg-quality 90 --concurrency 4",
+    "render:all": "npm run render:admin && npm run render:core && npm run render:olga"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@remotion/cli": "^4.0.463",
+    "@remotion/media-utils": "^4.0.463",
+    "@remotion/renderer": "^4.0.463",
+    "@types/react": "^19.2.15",
+    "@types/react-dom": "^19.2.3",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6",
+    "remotion": "^4.0.463",
+    "ts-node": "^10.9.2",
+    "typescript": "^6.0.3"
+  }
+}

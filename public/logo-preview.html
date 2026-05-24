@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<style>
+  body { background: #09090b; display: flex; align-items: center; justify-content: center; min-height: 100vh; font-family: system-ui, sans-serif; color: white; margin: 0; }
+  .card { background: #18181b; border: 1px solid #27272a; border-radius: 24px; padding: 44px 60px; display: flex; align-items: center; gap: 20px; }
+  .name { font-size: 24px; font-weight: 900; letter-spacing: -0.03em; background: linear-gradient(135deg,#f472b6,#a78bfa,#22d3ee); -webkit-background-clip: text; -webkit-text-fill-color: transparent; line-height: 1.1; }
+  .sub { font-size: 9px; color: #4b5563; letter-spacing: 0.22em; text-transform: uppercase; margin-top: 4px; }
+</style>
+</head>
+<body>
+<div class="card">
+  <svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="gO" x1="0" y1="0" x2="72" y2="72" gradientUnits="userSpaceOnUse">
+        <stop offset="0%" stop-color="#f472b6"/>
+        <stop offset="50%" stop-color="#a78bfa"/>
+        <stop offset="100%" stop-color="#22d3ee"/>
+      </linearGradient>
+      <filter id="fc"><feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#22d3ee" flood-opacity="1"/></filter>
+      <filter id="fp"><feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#f472b6" flood-opacity="1"/></filter>
+      <filter id="fw"><feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#a78bfa" flood-opacity="1"/></filter>
+      <filter id="fg"><feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#34d399" flood-opacity="1"/></filter>
+      <filter id="core"><feDropShadow dx="0" dy="0" stdDeviation="6" flood-color="#a78bfa" flood-opacity="0.9"/></filter>
+      <path id="p1" d="M70,36 A34,11 0 0,1 2,36 A34,11 0 0,1 70,36"/>
+      <path id="p2" d="M70,36 A34,11 0 0,1 2,36 A34,11 0 0,1 70,36" transform="rotate(60 36 36)"/>
+      <path id="p3" d="M70,36 A34,11 0 0,1 2,36 A34,11 0 0,1 70,36" transform="rotate(120 36 36)"/>
+    </defs>
+    <ellipse cx="36" cy="36" rx="34" ry="11" stroke="url(#gO)" stroke-width="1.3" fill="none" opacity="0.45"/>
+    <ellipse cx="36" cy="36" rx="34" ry="11" stroke="url(#gO)" stroke-width="1.3" fill="none" opacity="0.45" transform="rotate(60 36 36)"/>
+    <ellipse cx="36" cy="36" rx="34" ry="11" stroke="url(#gO)" stroke-width="1.3" fill="none" opacity="0.45" transform="rotate(120 36 36)"/>
+    <circle cx="36" cy="36" r="5.5" fill="url(#gO)" filter="url(#core)"/>
+    <circle cx="36" cy="36" r="2.5" fill="white" opacity="0.95"/>
+    <circle r="3.2" fill="#22d3ee" filter="url(#fc)">
+      <animateMotion dur="3.5s" repeatCount="indefinite" calcMode="linear"><mpath href="#p1"/></animateMotion>
+    </circle>
+    <circle r="2.2" fill="#38bdf8" filter="url(#fc)" opacity="0.85">
+      <animateMotion dur="3.5s" begin="-1.75s" repeatCount="indefinite" calcMode="linear"><mpath href="#p1"/></animateMotion>
+    </circle>
+    <circle r="3.2" fill="#f472b6" filter="url(#fp)">
+      <animateMotion dur="5s" repeatCount="indefinite" calcMode="linear"><mpath href="#p2"/></animateMotion>
+    </circle>
+    <circle r="2.2" fill="#e879f9" filter="url(#fp)" opacity="0.85">
+      <animateMotion dur="5s" begin="-2.5s" repeatCount="indefinite" calcMode="linear"><mpath href="#p2"/></animateMotion>
+    </circle>
+    <circle r="3.2" fill="#a78bfa" filter="url(#fw)">
+      <animateMotion dur="4.2s" repeatCount="indefinite" calcMode="linear"><mpath href="#p3"/></animateMotion>
+    </circle>
+    <circle r="2.2" fill="#34d399" filter="url(#fg)" opacity="0.9">
+      <animateMotion dur="4.2s" begin="-2.1s" repeatCount="indefinite" calcMode="linear"><mpath href="#p3"/></animateMotion>
+    </circle>
+  </svg>
+  <div>
+    <div class="name">Agentic<span style="-webkit-text-fill-color:#22d3ee">Lab</span></div>
+    <div class="sub">AI Agents Studio</div>
+  </div>
+</div>
+</body>
+</html>
