@@ -33,8 +33,10 @@ export default function ContactoPage() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSelectChange = (value: string) => {
-    setFormData((prev) => ({ ...prev, proyecto: value }));
+  const handleSelectChange = (value: string | null) => {
+    if (value) {
+      setFormData((prev) => ({ ...prev, proyecto: value }));
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
