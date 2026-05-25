@@ -108,7 +108,7 @@ const LogoIntro: React.FC = () => {
             opacity: interpolate(frame, [15, 40], [0, 1], { extrapolateRight: "clamp" }),
           }}
         >
-          AGENTICLAB
+          PRAXIALAB
         </div>
       </div>
     </AbsoluteFill>
@@ -548,7 +548,7 @@ const OutroScene: React.FC = () => {
             letterSpacing: -1,
           }}
         >
-          AgenticLab
+          PraxiaLab
         </div>
         <div
           style={{
@@ -559,7 +559,7 @@ const OutroScene: React.FC = () => {
             marginTop: 8,
           }}
         >
-          agenticlab.dev
+          praxialab.dev
         </div>
       </div>
     </AbsoluteFill>

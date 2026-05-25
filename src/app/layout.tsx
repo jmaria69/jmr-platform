@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import Link from "next/link";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -15,36 +16,31 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "AgenticLab",
-    template: "AgenticLab",
+    default: "Praxia Labs | From Prompt to Praxis",
+    template: "%s | Praxia Labs",
   },
   description:
-    "Laboratorio de agentes IA: automatización inteligente, CRM, aplicaciones empresariales y soluciones digitales.",
-  keywords: ["agentes IA", "automatización", "CRM", "desarrollo web", "inteligencia artificial"],
+    "Agentes de IA que no solo hablan, ejecutan. Transformamos la intención de tu empresa en automatización real, 24/7.",
 };
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  maximumScale: 5,
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#09090b" },
-  ],
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
-    <html
-      lang="es"
-      className={`${geistSans.variable} ${geistMono.variable} dark h-full antialiased`}
-    >
-      <body className="grain min-h-full flex flex-col">
-        <TooltipProvider>{children}</TooltipProvider>
+    <html lang="es" className={`${geistSans.variable} ${geistMono.variable} dark`}>
+      <body className="grain min-h-full flex flex-col bg-gradient-to-b from-slate-950 via-purple-950 to-slate-950">
+        <TooltipProvider>
+          <main className="flex-1">
+            {children}
+          </main>
+        </TooltipProvider>
       </body>
     </html>
   );

@@ -1,152 +1,270 @@
-import type { Metadata } from "next";
-import { Mail, Phone, MapPin, Send } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+'use client';
+
+import { useState } from 'react';
+import { Mail, Phone, MapPin, Send } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-
-export const metadata: Metadata = {
-  title: "Contacto",
-  description: "Hablemos de tu próximo proyecto. Contacta con nosotros sin compromisos.",
-};
+} from '@/components/ui/select';
 
 export default function ContactoPage() {
+  const [formData, setFormData] = useState({
+    nombre: '',
+    email: '',
+    empresa: '',
+    proyecto: '',
+    mensaje: '',
+  });
+
+  const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [message, setMessage] = useState('');
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSelectChange = (value: string) => {
+    setFormData((prev) => ({ ...prev, proyecto: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setLoading(true);
+    setStatus('idle');
+
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        setStatus('success');
+        setMessage('¡Mensaje enviado! Te contactaremos pronto.');
+        setFormData({
+          nombre: '',
+          email: '',
+          empresa: '',
+          proyecto: '',
+          mensaje: '',
+        });
+      } else {
+        setStatus('error');
+        setMessage(data.message || 'Error al enviar el mensaje');
+      }
+    } catch (err) {
+      setStatus('error');
+      setMessage('Error de conexión. Intenta de nuevo.');
+      console.error('Form submit error:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 sm:py-20">
-      <div className="text-center mb-12">
-        <h1 className="text-3xl sm:text-4xl font-bold tracking-tight">Contacto</h1>
-        <p className="mt-3 text-muted-foreground max-w-xl mx-auto">
-          Cuéntanos sobre tu proyecto. Te responderemos en menos de 24 horas.
-        </p>
+    <div className="min-h-screen bg-gradient-to-b from-slate-950 via-purple-950 to-slate-950 text-white">
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-purple-600/10 rounded-full blur-3xl animate-pulse" />
+        <div
+          className="absolute bottom-1/3 right-1/4 w-96 h-96 bg-cyan-600/10 rounded-full blur-3xl animate-pulse"
+          style={{ animationDelay: '1s' }}
+        />
+        <div
+          className="absolute top-1/2 right-0 w-72 h-72 bg-purple-600/5 rounded-full blur-3xl animate-pulse"
+          style={{ animationDelay: '2s' }}
+        />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Contact form */}
-        <Card className="lg:col-span-2">
-          <CardHeader>
-            <CardTitle>Envíanos un mensaje</CardTitle>
-            <CardDescription>
-              Rellena el formulario y nos pondremos en contacto contigo.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form className="space-y-6">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="name">Nombre</Label>
-                  <Input id="name" placeholder="Tu nombre" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
-                  <Input id="email" type="email" placeholder="tu@email.com" />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="company">Empresa</Label>
-                  <Input id="company" placeholder="Tu empresa (opcional)" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="project">Proyecto de interés</Label>
-                  <Select>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Selecciona un proyecto" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="admin-app">AdminApp Maestro</SelectItem>
-                      <SelectItem value="crm-it">Core OPS</SelectItem>
-                      <SelectItem value="olga-ai">OLGA.ai</SelectItem>
-                      <SelectItem value="campo-abierto">Campo Abierto</SelectItem>
-                      <SelectItem value="generador-ideas">Generador de Ideas IA</SelectItem>
-                      <SelectItem value="cf-jaramal">Club Fútbol Rivas 2016 B</SelectItem>
-                      <SelectItem value="cd-rivas-jarama">CD Rivas Jarama</SelectItem>
-                      <SelectItem value="vozflow">VozFlow Ultra Pro</SelectItem>
-                      <SelectItem value="frajamo">Frajamo Madrid</SelectItem>
-                      <SelectItem value="landing-inmobiliaria">Portal Inmobiliario</SelectItem>
-                      <SelectItem value="app-voz">AppVoz</SelectItem>
-                      <SelectItem value="mejores-productos">MejoresProductos</SelectItem>
-                      <SelectItem value="custom">Proyecto personalizado</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="message">Mensaje</Label>
-                <Textarea
-                  id="message"
-                  placeholder="Cuéntanos sobre tu proyecto, necesidades o preguntas..."
-                  rows={5}
-                />
-              </div>
-
-              <Button type="submit" className="w-full sm:w-auto gap-2">
-                <Send className="h-4 w-4" />
-                Enviar mensaje
-              </Button>
-            </form>
-          </CardContent>
-        </Card>
-
-        {/* Contact info */}
-        <div className="space-y-4">
-          <Card>
-            <CardContent className="flex items-center gap-4 p-5">
-              <div className="rounded-lg bg-primary/10 p-3">
-                <Mail className="h-5 w-5 text-primary" />
-              </div>
-              <div>
-                <p className="text-sm font-semibold">Email</p>
-                <a href="mailto:jmaria.romero79@gmail.com" className="text-sm text-muted-foreground hover:text-foreground transition-colors">jmaria.romero79@gmail.com</a>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="flex items-center gap-4 p-5">
-              <div className="rounded-lg bg-primary/10 p-3">
-                <Phone className="h-5 w-5 text-primary" />
-              </div>
-              <div>
-                <p className="text-sm font-semibold">Teléfono</p>
-                <a href="tel:+34655792350" className="text-sm text-muted-foreground hover:text-foreground transition-colors">+34 655 792 350</a>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="flex items-center gap-4 p-5">
-              <div className="rounded-lg bg-primary/10 p-3">
-                <MapPin className="h-5 w-5 text-primary" />
-              </div>
-              <div>
-                <p className="text-sm font-semibold">Ubicación</p>
-                <p className="text-sm text-muted-foreground">Madrid, España</p>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-primary/30 bg-primary/5">
-            <CardContent className="p-5">
-              <p className="text-sm font-semibold mb-2">Horario de atención</p>
-              <div className="space-y-1 text-sm text-muted-foreground">
-                <p>Lunes - Viernes: 9:00 - 19:00</p>
-                <p>Sábados: 10:00 - 14:00</p>
-                <p>Domingos: Cerrado</p>
-              </div>
-            </CardContent>
-          </Card>
+      <section className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 sm:py-20">
+        <div className="text-center mb-12">
+          <h1 className="text-5xl font-black bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
+            Contacto
+          </h1>
+          <p className="mt-3 text-gray-300 max-w-xl mx-auto">
+            Cuéntanos sobre tu proyecto. Te responderemos en menos de 24 horas.
+          </p>
         </div>
-      </div>
-    </section>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <Card className="lg:col-span-2 border-purple-500/30 bg-slate-900/50 backdrop-blur">
+            <CardHeader>
+              <CardTitle className="text-white">Envíanos un mensaje</CardTitle>
+              <CardDescription>Rellena el formulario y nos pondremos en contacto contigo.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="nombre">Nombre</Label>
+                    <Input
+                      id="nombre"
+                      name="nombre"
+                      placeholder="Tu nombre"
+                      value={formData.nombre}
+                      onChange={handleChange}
+                      className="bg-slate-950/50 border-purple-500/30"
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Email</Label>
+                    <Input
+                      id="email"
+                      name="email"
+                      type="email"
+                      placeholder="tu@email.com"
+                      value={formData.email}
+                      onChange={handleChange}
+                      className="bg-slate-950/50 border-purple-500/30"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="empresa">Empresa</Label>
+                    <Input
+                      id="empresa"
+                      name="empresa"
+                      placeholder="Tu empresa (opcional)"
+                      value={formData.empresa}
+                      onChange={handleChange}
+                      className="bg-slate-950/50 border-purple-500/30"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="proyecto">Proyecto de interés</Label>
+                    <Select value={formData.proyecto} onValueChange={handleSelectChange}>
+                      <SelectTrigger className="bg-slate-950/50 border-purple-500/30">
+                        <SelectValue placeholder="Selecciona un proyecto" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="admin-app">AdminApp</SelectItem>
+                        <SelectItem value="crm-it">Core OPS</SelectItem>
+                        <SelectItem value="olga-ai">OLGA.ai</SelectItem>
+                        <SelectItem value="campo-abierto">Campo Abierto</SelectItem>
+                        <SelectItem value="generador-ideas">Generador de Ideas IA</SelectItem>
+                        <SelectItem value="cf-jaramal">Club Fútbol Rivas 2016 B</SelectItem>
+                        <SelectItem value="cd-rivas-jarama">CD Rivas Jarama</SelectItem>
+                        <SelectItem value="vozflow">VozFlow Ultra Pro</SelectItem>
+                        <SelectItem value="frajamo">Frajamo Madrid</SelectItem>
+                        <SelectItem value="landing-inmobiliaria">Portal Inmobiliario</SelectItem>
+                        <SelectItem value="app-voz">AppVoz</SelectItem>
+                        <SelectItem value="mejores-productos">MejoresProductos</SelectItem>
+                        <SelectItem value="custom">Proyecto personalizado</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="mensaje">Mensaje</Label>
+                  <Textarea
+                    id="mensaje"
+                    name="mensaje"
+                    placeholder="Cuéntanos sobre tu proyecto, necesidades o preguntas..."
+                    rows={5}
+                    value={formData.mensaje}
+                    onChange={handleChange}
+                    className="bg-slate-950/50 border-purple-500/30"
+                    required
+                  />
+                </div>
+
+                {message && (
+                  <div
+                    className={`p-4 rounded-lg text-sm ${status === 'success'
+                        ? 'bg-green-950/50 text-green-300 border border-green-500/30'
+                        : 'bg-red-950/50 text-red-300 border border-red-500/30'
+                      }`}
+                  >
+                    {message}
+                  </div>
+                )}
+
+                <Button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full sm:w-auto gap-2 bg-gradient-to-r from-purple-600 to-cyan-600 hover:shadow-lg hover:shadow-purple-500/50 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <Send className="h-4 w-4" />
+                  {loading ? 'Enviando...' : 'Enviar mensaje'}
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
+
+          <div className="space-y-4">
+            <Card className="border-purple-500/30 bg-slate-900/50 backdrop-blur">
+              <CardContent className="flex items-center gap-4 p-5">
+                <div className="rounded-lg bg-purple-600/20 p-3">
+                  <Mail className="h-5 w-5 text-purple-400" />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold">Email</p>
+                  <a
+                    href="mailto:jmaria.romero@praxialabs.com"
+                    className="text-sm text-purple-400 hover:text-purple-300"
+                  >
+                    jmaria.romero@praxialabs.com
+                  </a>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="border-purple-500/30 bg-slate-900/50 backdrop-blur">
+              <CardContent className="flex items-center gap-4 p-5">
+                <div className="rounded-lg bg-cyan-600/20 p-3">
+                  <Phone className="h-5 w-5 text-cyan-400" />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold">Teléfono</p>
+                  <a href="tel:+34655792350" className="text-sm text-cyan-400 hover:text-cyan-300">
+                    +34 655 792 350
+                  </a>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="border-purple-500/30 bg-slate-900/50 backdrop-blur">
+              <CardContent className="flex items-center gap-4 p-5">
+                <div className="rounded-lg bg-violet-600/20 p-3">
+                  <MapPin className="h-5 w-5 text-violet-400" />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold">Ubicación</p>
+                  <p className="text-sm text-gray-400">Madrid, España</p>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="border-purple-500/50 bg-purple-950/30 backdrop-blur">
+              <CardContent className="p-5">
+                <p className="text-sm font-semibold mb-2">Horario de atención</p>
+                <div className="space-y-1 text-sm text-gray-400">
+                  <p>Lunes - Viernes: 9:00 - 19:00</p>
+                  <p>Sábados: 10:00 - 14:00</p>
+                  <p>Domingos: Cerrado</p>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+    </div>
   );
 }

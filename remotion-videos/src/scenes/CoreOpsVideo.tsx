@@ -692,10 +692,10 @@ export const CoreOpsVideo: React.FC = () => {
               <div style={{ opacity, transform: `scale(${scaleVal})`, textAlign: "center" }}>
                 <RadialBloom x="50%" y="50%" color={ACCENT} size={600} />
                 <div style={{ color: "#fff", fontSize: 56, fontWeight: 900, fontFamily: "sans-serif", letterSpacing: -1 }}>
-                  AgenticLab
+                  PraxiaLab
                 </div>
                 <div style={{ color: ACCENT, fontSize: 20, letterSpacing: 4, fontFamily: "monospace", marginTop: 8 }}>
-                  agenticlab.dev
+                  praxialab.dev
                 </div>
               </div>
             );

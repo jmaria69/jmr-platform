@@ -760,7 +760,7 @@ export const OlgaAiVideo: React.FC = () => {
                     marginBottom: 8,
                   }}
                 >
-                  AgenticLab
+                  PraxiaLab
                 </div>
                 <div
                   style={{
@@ -777,7 +777,7 @@ export const OlgaAiVideo: React.FC = () => {
                   OLGA.ai
                 </div>
                 <div style={{ color: VIOLET, fontSize: 18, letterSpacing: 4, fontFamily: "monospace", marginTop: 8 }}>
-                  agenticlab.dev
+                  praxialab.dev
                 </div>
               </div>
             );

@@ -29,7 +29,7 @@ export default function LoginPage() {
             <ShieldCheck className="h-8 w-8 text-indigo-400" />
           </div>
           <h1 className="text-2xl font-bold tracking-tight">
-            <span className="text-gradient">Agentic</span>Lab
+            <span className="text-gradient">Praxia</span>Lab
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
             Accede al panel de administración
@@ -58,7 +58,7 @@ export default function LoginPage() {
                   id="email"
                   name="email"
                   type="email"
-                  placeholder="admin@agenticlab.dev"
+                  placeholder="admin@praxialab.dev"
                   required
                   autoComplete="email"
                   className="pl-10 h-11 bg-white/3 border-white/10 focus:border-indigo-500/50 rounded-xl"

@@ -51,7 +51,7 @@ export function AdminSidebar() {
           </div>
           <div>
             <p className="text-sm font-semibold">Admin Panel</p>
-            <p className="text-xs text-muted-foreground">AgenticLab</p>
+            <p className="text-xs text-muted-foreground">PraxiaLab</p>
           </div>
         </div>
       </SidebarHeader>
