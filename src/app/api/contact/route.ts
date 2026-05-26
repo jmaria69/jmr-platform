@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
     } catch (error) {
         if (error instanceof z.ZodError) {
             return NextResponse.json(
-                { success: false, message: error.errors[0]?.message || 'Validacion fallida' },
+                { success: false, message: error.issues[0]?.message || 'Validacion fallida' },
                 { status: 400 }
             );
         }
