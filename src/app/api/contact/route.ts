@@ -2,7 +2,7 @@ import { Resend } from 'resend';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = new Resend(process.env.RESEND_API_KEY || 're_dummy_key_for_build');
 
 const contactSchema = z.object({
     nombre: z.string().min(2, 'Nombre requerido'),
