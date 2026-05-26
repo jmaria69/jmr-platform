@@ -36,18 +36,24 @@ export default function RootLayout({
 }) {
   return (
     <html lang="es" className={`${geistSans.variable} ${geistMono.variable} dark`}>
-      <head>
-        <Script async src="https://www.googletagmanager.com/gtag/js?id=G-CQ6W47R42W" />
-        <Script id="google-analytics">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-CQ6W47R42W');
-          `}
-        </Script>
-      </head>
+      <head />
       <body className="grain min-h-full flex flex-col bg-gradient-to-b from-slate-950 via-purple-950 to-slate-950">
+        <Script
+          strategy="afterInteractive"
+          src="https://www.googletagmanager.com/gtag/js?id=G-CQ6W47R42W"
+        />
+        <Script
+          id="google-analytics"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-CQ6W47R42W');
+            `,
+          }}
+        />
         <TooltipProvider>
           <main className="flex-1">
             {children}
