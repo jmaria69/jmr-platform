@@ -43,10 +43,10 @@ export function AdminSidebar() {
   const pathname = usePathname();
 
   return (
-    <Sidebar>
-      <SidebarHeader className="border-b px-4 py-3">
+    <Sidebar className="border-r border-purple-500/20 glass">
+      <SidebarHeader className="border-b border-purple-500/20 px-4 py-3 bg-slate-950/50 backdrop-blur-md">
         <div className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-purple-600 to-cyan-600 text-white shadow-[0_0_15px_rgba(168,85,247,0.5)]">
             <Activity className="h-4 w-4" />
           </div>
           <div>
@@ -96,7 +96,7 @@ export function AdminSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="border-t p-4">
+      <SidebarFooter className="border-t border-purple-500/20 p-4 bg-slate-950/50 backdrop-blur-md">
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton render={<Link href="/" />}>

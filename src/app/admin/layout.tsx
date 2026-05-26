@@ -11,12 +11,12 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   return (
     <SidebarProvider>
       <AdminSidebar />
-      <SidebarInset>
-        <header className="flex h-14 items-center justify-between gap-2 border-b px-4 lg:px-6">
+      <SidebarInset className="bg-transparent">
+        <header className="flex h-14 items-center justify-between gap-2 border-b border-purple-500/20 bg-slate-950/50 backdrop-blur-md px-4 lg:px-6">
           <div className="flex items-center gap-2">
-            <SidebarTrigger />
-            <Separator orientation="vertical" className="h-6" />
-            <h1 className="text-sm font-semibold">Panel de Administración</h1>
+            <SidebarTrigger className="hover:bg-purple-500/20 hover:text-purple-300" />
+            <Separator orientation="vertical" className="h-6 bg-purple-500/20" />
+            <h1 className="text-sm font-semibold text-purple-100">Panel de Administración</h1>
           </div>
           {session && (
             <div className="flex items-center gap-2">
