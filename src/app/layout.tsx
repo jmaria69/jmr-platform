@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import Script from "next/script";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import Link from "next/link";
 import "./globals.css";
@@ -35,6 +36,24 @@ export default function RootLayout({
 }) {
   return (
     <html lang="es" className={`${geistSans.variable} ${geistMono.variable} dark`}>
+      <head>
+        <Script
+          strategy="afterInteractive"
+          src="https://www.googletagmanager.com/gtag/js?id=G-CQ6u47R42u"
+        />
+        <Script
+          id="google-analytics"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-CQ6u47R42u');
+            `,
+          }}
+        />
+      </head>
       <body className="grain min-h-full flex flex-col bg-gradient-to-b from-slate-950 via-purple-950 to-slate-950">
         <TooltipProvider>
           <main className="flex-1">
