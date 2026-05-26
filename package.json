@@ -16,7 +16,9 @@
   "dependencies": {
     "@base-ui/react": "^1.4.1",
     "@neondatabase/serverless": "^1.1.0",
+    "@prisma/client": "^5.22.0",
     "@vercel/blob": "^2.4.0",
+    "@vercel/postgres": "^0.10.0",
     "bcryptjs": "^3.0.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -25,6 +27,7 @@
     "jose": "^6.2.3",
     "lucide-react": "^1.14.0",
     "next": "^16.2.6",
+    "prisma": "^5.22.0",
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "recharts": "^3.8.1",
