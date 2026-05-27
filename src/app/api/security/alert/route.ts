@@ -20,7 +20,7 @@ export interface SecurityEvent {
   resolved: boolean;
 }
 
-interface EventStore {
+interface DemoStore {
   events: SecurityEvent[];
   rateLimitMap: Record<string, { count: number; firstSeen: number }>;
 }
@@ -28,7 +28,7 @@ interface EventStore {
 // ─── Blob helpers ─────────────────────────────────────────────────────────────
 const BLOB_KEY = "security-events.json";
 
-async function readStore(): Promise<EventStore> {
+async function readStore(): Promise<DemoStore> {
   try {
     // List blobs to find the one with our key
     const { list } = await import("@vercel/blob");
@@ -38,18 +38,23 @@ async function readStore(): Promise<EventStore> {
     const res = await fetch(blobs[0].url, { cache: "no-store" });
     if (!res.ok) return { events: [], rateLimitMap: {} };
 
-    return (await res.json()) as EventStore;
+    return (await res.json()) as DemoStore;
   } catch {
     return { events: [], rateLimitMap: {} };
   }
 }
 
-async function writeStore(store: EventStore): Promise<void> {
+async function writeStore(store: DemoStore): Promise<void> {
+  if (!process.env.BLOB_READ_WRITE_TOKEN) {
+    console.warn("⚠️ BLOB_READ_WRITE_TOKEN no configurado, saltando almacenamiento");
+    return; // No falla, solo salta
+  }
+
   await put(BLOB_KEY, JSON.stringify(store), {
+    token: process.env.BLOB_READ_WRITE_TOKEN,
     access: "public",
     contentType: "application/json",
     addRandomSuffix: false,
-    allowOverwrite: true,
   });
 }
 
@@ -66,28 +71,28 @@ async function sendAlertEmail(
   const now = Date.now();
   if (now - lastEmailSentAt < EMAIL_COOLDOWN_MS) return "cooldown";
 
-  const publicKey  = process.env.EMAILJS_PUBLIC_KEY;
+  const publicKey = process.env.EMAILJS_PUBLIC_KEY;
   const privateKey = process.env.EMAILJS_PRIVATE_KEY;
-  const serviceId  = process.env.EMAILJS_SERVICE_ID;
+  const serviceId = process.env.EMAILJS_SERVICE_ID;
   const templateId = process.env.EMAILJS_SECURITY_TEMPLATE;
 
   if (!publicKey || !serviceId || !templateId) return "missing_env";
 
   const severityEmoji = { low: "🟡", medium: "🟠", high: "🔴", critical: "🚨" }[event.severity];
   const typeLabels: Record<string, string> = {
-    bot_blocked:    "Bot / Agente IA bloqueado",
-    rate_limited:   "Fuerza bruta / Rate limit",
-    invalid_token:  "Token JWT inválido o expirado",
-    brute_force:    "Intento de fuerza bruta",
-    suspicious:     "Actividad sospechosa",
+    bot_blocked: "Bot / Agente IA bloqueado",
+    rate_limited: "Fuerza bruta / Rate limit",
+    invalid_token: "Token JWT inválido o expirado",
+    brute_force: "Intento de fuerza bruta",
+    suspicious: "Actividad sospechosa",
   };
 
   const solutions: Record<string, string> = {
-    bot_blocked:   "El bot fue bloqueado automáticamente por detección de User-Agent. No se requiere acción inmediata.",
-    rate_limited:  "IP bloqueada durante 15 minutos. Si persiste, considera añadir esta IP a la lista negra permanente.",
+    bot_blocked: "El bot fue bloqueado automáticamente por detección de User-Agent. No se requiere acción inmediata.",
+    rate_limited: "IP bloqueada durante 15 minutos. Si persiste, considera añadir esta IP a la lista negra permanente.",
     invalid_token: "Posible intento de falsificación de sesión (JWT manipulation). Revisa si hay sesiones activas no autorizadas.",
-    brute_force:   "URGENTE: Múltiples intentos fallidos de login. Considera cambiar la contraseña de admin inmediatamente.",
-    suspicious:    "Actividad anómala detectada. Revisa los logs completos en el panel de seguridad.",
+    brute_force: "URGENTE: Múltiples intentos fallidos de login. Considera cambiar la contraseña de admin inmediatamente.",
+    suspicious: "Actividad anómala detectada. Revisa los logs completos en el panel de seguridad.",
   };
 
   try {
@@ -95,22 +100,22 @@ async function sendAlertEmail(
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        service_id:  serviceId,
+        service_id: serviceId,
         template_id: templateId,
-        user_id:     publicKey,
+        user_id: publicKey,
         accessToken: privateKey,
         template_params: {
-          severidad:     `${severityEmoji} ${event.severity.toUpperCase()}`,
-          tipo_ataque:   typeLabels[event.type] || event.type,
-          ip_atacante:   event.ip,
-          ruta:          event.path,
-          user_agent:    event.userAgent.slice(0, 120),
-          fecha_hora:    new Date(event.timestamp).toLocaleString("es-ES", { timeZone: "Europe/Madrid" }),
-          detalles:      event.details,
-          solucion:      solutions[event.type] || "Revisa el panel de seguridad para más detalles.",
+          severidad: `${severityEmoji} ${event.severity.toUpperCase()}`,
+          tipo_ataque: typeLabels[event.type] || event.type,
+          ip_atacante: event.ip,
+          ruta: event.path,
+          user_agent: event.userAgent.slice(0, 120),
+          fecha_hora: new Date(event.timestamp).toLocaleString("es-ES", { timeZone: "Europe/Madrid" }),
+          detalles: event.details,
+          solucion: solutions[event.type] || "Revisa el panel de seguridad para más detalles.",
           total_eventos: String(totalEvents),
-          panel_url:     "https://web-orcin-nine-90.vercel.app/admin/seguridad",
-          to_email:      "jmaria.romero79@gmail.com",
+          panel_url: "https://web-orcin-nine-90.vercel.app/admin/seguridad",
+          to_email: "jmaria.romero79@gmail.com",
         },
       }),
     });
@@ -152,15 +157,15 @@ export async function POST(req: NextRequest) {
   else if (ipRecord.count >= 5) severity = "high";
 
   const event: SecurityEvent = {
-    id:        `sec-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
-    type:      body.type ?? "suspicious",
+    id: `sec-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+    type: body.type ?? "suspicious",
     ip,
-    path:      body.path ?? "/",
+    path: body.path ?? "/",
     userAgent: body.userAgent ?? "",
     timestamp: new Date().toISOString(),
     severity,
-    details:   body.details ?? "",
-    resolved:  false,
+    details: body.details ?? "",
+    resolved: false,
   };
 
   // Keep last 200 events
@@ -181,7 +186,7 @@ export async function POST(req: NextRequest) {
 
 export async function GET(req: NextRequest) {
   const limit = parseInt(req.nextUrl.searchParams.get("limit") ?? "50");
-  const type  = req.nextUrl.searchParams.get("type");
+  const type = req.nextUrl.searchParams.get("type");
 
   const store = await readStore();
   const { events } = store;
@@ -190,17 +195,17 @@ export async function GET(req: NextRequest) {
   filtered = filtered.slice(0, limit);
 
   const stats = {
-    total:    events.length,
+    total: events.length,
     critical: events.filter(e => e.severity === "critical").length,
-    high:     events.filter(e => e.severity === "high").length,
-    medium:   events.filter(e => e.severity === "medium").length,
-    low:      events.filter(e => e.severity === "low").length,
+    high: events.filter(e => e.severity === "high").length,
+    medium: events.filter(e => e.severity === "medium").length,
+    low: events.filter(e => e.severity === "low").length,
     byType: {
-      bot_blocked:   events.filter(e => e.type === "bot_blocked").length,
-      rate_limited:  events.filter(e => e.type === "rate_limited").length,
+      bot_blocked: events.filter(e => e.type === "bot_blocked").length,
+      rate_limited: events.filter(e => e.type === "rate_limited").length,
       invalid_token: events.filter(e => e.type === "invalid_token").length,
-      brute_force:   events.filter(e => e.type === "brute_force").length,
-      suspicious:    events.filter(e => e.type === "suspicious").length,
+      brute_force: events.filter(e => e.type === "brute_force").length,
+      suspicious: events.filter(e => e.type === "suspicious").length,
     },
     topIPs: Object.entries(store.rateLimitMap)
       .sort((a, b) => b[1].count - a[1].count)

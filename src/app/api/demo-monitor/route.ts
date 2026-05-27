@@ -58,11 +58,16 @@ async function readStore(): Promise<DemoStore> {
 }
 
 async function writeStore(store: DemoStore): Promise<void> {
+  if (!process.env.BLOB_READ_WRITE_TOKEN) {
+    console.warn("⚠️ BLOB_READ_WRITE_TOKEN no configurado, saltando almacenamiento");
+    return; // No falla, solo salta
+  }
+
   await put(BLOB_KEY, JSON.stringify(store), {
+    token: process.env.BLOB_READ_WRITE_TOKEN,
     access: "public",
     contentType: "application/json",
     addRandomSuffix: false,
-    allowOverwrite: true,
   });
 }
 
@@ -110,13 +115,13 @@ export async function POST(req: NextRequest) {
     isBot ? "high" : rl.count > 20 ? "medium" : "low";
 
   const event: DemoEvent = {
-    id:        `demo-${Date.now()}-${Math.random().toString(36).slice(2, 5)}`,
-    site:      String(body.site ?? "unknown").slice(0, 50),
+    id: `demo-${Date.now()}-${Math.random().toString(36).slice(2, 5)}`,
+    site: String(body.site ?? "unknown").slice(0, 50),
     eventType: isBot ? "bot" : "visit",
     ip,
     userAgent: ua.slice(0, 200),
-    path:      String(body.path ?? "/").slice(0, 100),
-    referrer:  String(body.referrer ?? "").slice(0, 200),
+    path: String(body.path ?? "/").slice(0, 100),
+    referrer: String(body.referrer ?? "").slice(0, 200),
     timestamp: new Date().toISOString(),
     severity,
   };
@@ -145,7 +150,7 @@ export async function GET() {
     events: events.slice(0, 100),
     stats: {
       total: events.length,
-      bots:  events.filter(e => e.eventType === "bot").length,
+      bots: events.filter(e => e.eventType === "bot").length,
       visits: events.filter(e => e.eventType === "visit").length,
       bySite,
       topIPs: Object.entries(store.rateLimitMap)
