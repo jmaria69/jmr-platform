@@ -30,16 +30,19 @@
 ### ⚠️ In Progress: Drizzle → Prisma Migration
 
 **Context:** Project has TWO ORMs mixed:
+
 - **Drizzle:** `src/lib/db/`, `src/lib/repositories/projects.repository.ts`, `src/lib/repositories/crm.repository.ts`
 - **Prisma:** `src/app/actions/auth.ts`, `src/app/api/contact/route.ts`
 
 **Migration Work:**
+
 - ✅ Schema updated with `AdminUser`, `CrmContact`, `Interaction`, `Contact`
 - ⏳ Need to rewrite: `crm.repository.ts` → Prisma
 - ⏳ Need to rewrite: `projects.repository.ts` → Prisma
 - ⏳ Need to delete: `src/lib/db/index.ts`
 
 **Files Ready (already provided):**
+
 ```
 crm.repository.ts (rewritten with Prisma)
 projects.repository.ts (rewritten with Prisma)
@@ -51,6 +54,7 @@ schema.prisma (with Project model added)
 ## 🏗️ Architecture
 
 ### Tech Stack
+
 ```
 Frontend: Next.js 16.2.6 + React 19.2.4 + Tailwind CSS 4
 Backend: Node.js + TypeScript
@@ -62,6 +66,7 @@ API Style: Server Actions + Route Handlers
 ```
 
 ### Folder Structure
+
 ```
 src/
 ├── app/
@@ -170,6 +175,7 @@ model Interaction {
 ## 🔐 Authentication Flow
 
 ### Login Process
+
 1. User submits email + password in form
 2. `src/app/actions/auth.ts:login()` validates input with Zod schema
 3. Query: `prisma.adminUser.findUnique({ where: { email: email.toLowerCase() } })`
@@ -178,12 +184,14 @@ model Interaction {
 6. Redirect to `/admin/dashboard`
 
 ### Session Management
+
 - **Created by:** `src/lib/auth.ts:createSession()`
 - **Stored:** HTTP-only cookie
 - **Used in:** Server Components via `getSession()`
 - **Clear on:** `logout()` → deletes session → redirects to `/login`
 
 ### Important: Email Normalization
+
 - All email lookups use `.toLowerCase()`
 - Applied in: `getAdminByEmail()`, `login()`, `changePassword()`
 - Schema: `@unique` on email field (case-sensitive in PostgreSQL)
@@ -253,6 +261,7 @@ npm run lint               # ESLint
 ## 🔧 Next Steps (Priority Order)
 
 ### 1. Complete Drizzle → Prisma Migration (TODAY)
+
 ```bash
 # 1. Update schema.prisma with Project model
 # 2. Replace crm.repository.ts (provided in claude.md)
@@ -265,16 +274,19 @@ npm run dev
 ```
 
 ### 2. Fix CSP (Content Security Policy)
+
 - Google Analytics (`https://www.googletagmanager.com`)
 - Leaflet CSS/JS (`https://unpkg.com`)
 - Update in `next.config.ts` or `src/app/layout.tsx`
 
 ### 3. Build Dashboard
+
 - Display real CRM contacts
 - Show project metrics
 - Real-time traffic (GA integration)
 
 ### 4. Deploy to GitHub
+
 ```bash
 git add .
 git commit -m "Migration: Drizzle → Prisma complete"
@@ -282,6 +294,7 @@ git push origin main
 ```
 
 ### 5. Deploy to Vercel
+
 - Connect GitHub repo
 - Set environment variables
 - Deploy
@@ -293,20 +306,25 @@ git push origin main
 ## 🐛 Known Issues & Solutions
 
 ### Issue: "Cannot read properties of undefined (reading 'findUnique')"
+
 **Cause:** `prisma.adminUser` is `undefined`  
 **Solution:** Model doesn't exist in schema. Add to `schema.prisma` and migrate.
 
 ### Issue: "Admin encontrado: undefined" after logout
+
 **Cause:** Database cleaned between sessions OR email not normalized  
-**Solution:** 
+**Solution:**
+
 - Run `npm run db:seed` to recreate admins
 - Ensure `email.toLowerCase()` used in queries
 
 ### Issue: Build error "Module not found: @neondatabase/serverless"
+
 **Cause:** Drizzle code still importing removed dependency  
 **Solution:** Replace `crm.repository.ts` and `projects.repository.ts` with Prisma versions
 
 ### Issue: CSP blocks Google Analytics
+
 **Cause:** `script-src` policy doesn't include `https://www.googletagmanager.com`  
 **Solution:** Update CSP headers in next.config.ts
 
@@ -331,6 +349,7 @@ git push origin main
 ## 💡 Development Tips
 
 ### Run admin locally
+
 ```bash
 npm run db:seed
 npm run dev
@@ -340,7 +359,9 @@ npm run dev
 ```
 
 ### Debug Prisma queries
+
 Add to any file:
+
 ```typescript
 import { prisma } from "@/lib/prisma";
 
@@ -352,11 +373,13 @@ prisma.$on('query', (e) => {
 ```
 
 ### Verify Prisma schema
+
 ```bash
 npx prisma validate
 ```
 
 ### Generate new migration
+
 ```bash
 npx prisma migrate dev --name describe_your_change
 ```
@@ -366,15 +389,18 @@ npx prisma migrate dev --name describe_your_change
 ## 📞 Quick Reference
 
 **Admin Credentials (Dev)**
+
 - Email: `admin@test.com` OR `jmaria.romero@praxialabs.com`
 - Password: `Supercalif` (or `admin123` for test account)
 
 **Database**
+
 - Provider: PostgreSQL
 - ORM: Prisma v5.22.0
 - Client: `@prisma/client`
 
 **Authentication**
+
 - Method: Session-based JWT
 - Token library: `jose`
 - Password hashing: `bcryptjs`
@@ -385,6 +411,7 @@ npx prisma migrate dev --name describe_your_change
 ## 🎯 Session Goals Recap
 
 ✅ **Completed**
+
 - Fixed auth system with Prisma
 - Created AdminUser model
 - Implemented working login/logout
@@ -392,11 +419,13 @@ npx prisma migrate dev --name describe_your_change
 - Created admin seed script
 
 ⏳ **In Progress**
+
 - Migrate remaining repositories to Prisma
 - Fix CSP headers for external resources
 - Complete dashboard implementation
 
 🚀 **Ready for Deploy**
+
 - All auth infrastructure
 - Database migrations
 - Environment setup

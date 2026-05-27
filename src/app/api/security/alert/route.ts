@@ -46,8 +46,8 @@ async function readStore(): Promise<DemoStore> {
 
 async function writeStore(store: DemoStore): Promise<void> {
   if (!process.env.BLOB_READ_WRITE_TOKEN) {
-    console.warn("⚠️ BLOB_READ_WRITE_TOKEN no configurado, saltando almacenamiento");
-    return; // No falla, solo salta
+    console.warn("⚠️ BLOB_READ_WRITE_TOKEN no configurado");
+    return;
   }
 
   await put(BLOB_KEY, JSON.stringify(store), {
