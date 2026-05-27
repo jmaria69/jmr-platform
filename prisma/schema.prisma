@@ -1,18 +1,83 @@
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 generator client {
   provider = "prisma-client-js"
 }
 
+model AdminUser {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  passwordHash  String
+  name          String
+  role          String    @default("admin")
+  lastLoginAt   DateTime?
+  createdAt     DateTime  @default(now()) @map("created_at")
+
+  @@map("admin_users")
+}
+
+model Project {
+  id               String    @id
+  name             String
+  description      String
+  longDescription  String    @default("")
+  tech             String[]  @default([])
+  status           String    @default("development")
+  category         String
+  url              String?
+  github           String?
+  image            String
+  color            String
+  metricsUsers     Int?
+  metricsRevenue   Float?
+  metricsRating    Float?
+  createdAt        DateTime  @default(now()) @map("created_at")
+  updatedAt        DateTime  @updatedAt @map("updated_at")
+
+  @@map("projects")
+}
+
 model Contact {
-  id        Int     @id @default(autoincrement())
+  id        String    @id @default(uuid())
   nombre    String
   email     String
+  phone     String?
   empresa   String?
-  proyecto  String
+  proyecto  String?
   mensaje   String
-  createdAt DateTime @default(now())
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  @@map("contacts")
+}
+
+model CrmContact {
+  id            String         @id @default(uuid())
+  name          String
+  email         String
+  phone         String?
+  company       String?
+  source        String         @default("web")
+  stage         String         @default("lead")
+  value         Float          @default(0)
+  notes         String         @default("")
+  tags          String[]       @default([])
+  lastContact   DateTime       @default(now()) @map("last_contact")
+  createdAt     DateTime       @default(now()) @map("created_at")
+  interactions  Interaction[]
+
+  @@map("crm_contacts")
+}
+
+model Interaction {
+  id        String    @id @default(uuid())
+  contactId String
+  contact   CrmContact @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  type      String
+  date      DateTime  @default(now())
+  summary   String    @default("")
+
+  @@map("interactions")
 }

@@ -1,16 +1,12 @@
 "use server";
 
-/**
- * Auth Server Actions — login, logout, change password
- *
- * These run exclusively on the server and handle
- * credential verification + session management.
- */
-
 import { redirect } from "next/navigation";
 import { compare, hash } from "bcryptjs";
 import { z } from "zod";
+import { prisma } from "../../lib/prisma";
 import { createSession, deleteSession, getSession } from "@/lib/auth";
+
+
 
 // ─── Validation schemas ───
 
@@ -36,73 +32,27 @@ export interface AuthState {
   success?: boolean;
 }
 
-// ─── DB access helpers (lazy import to support no-DB mode) ───
+// ─── DB access helpers ───
 
 async function getAdminByEmail(email: string) {
-  if (!process.env.DATABASE_URL) {
-    // Env-based admin — credentials MUST be set via environment variables
-    const adminEmail = process.env.ADMIN_EMAIL;
-    const adminPassword = process.env.ADMIN_PASSWORD;
-
-    if (!adminEmail || !adminPassword) {
-      // Fail securely: never fall back to hardcoded credentials
-      throw new Error("ADMIN_EMAIL and ADMIN_PASSWORD env vars are required");
-    }
-
-    if (email !== adminEmail) return null;
-
-    const passwordHash = await hash(adminPassword, 12);
-    return {
-      id: "env-admin",
-      email: adminEmail,
-      name: "Admin",
-      passwordHash,
-      role: "admin",
-    };
-  }
-
-  const { getDb } = await import("@/lib/db");
-  const { adminUsers } = await import("@/lib/db/schema");
-  const { eq } = await import("drizzle-orm");
-
-  const db = getDb();
-  const rows = await db
-    .select()
-    .from(adminUsers)
-    .where(eq(adminUsers.email, email));
-
-  return rows[0] ?? null;
+  const admin = await prisma.adminUser.findUnique({
+    where: { email: email.toLowerCase() },
+  });
+  return admin;
 }
 
 async function updateAdminPassword(userId: string, newHash: string) {
-  if (!process.env.DATABASE_URL) {
-    // In env mode, can't persist password changes
-    return;
-  }
-
-  const { getDb } = await import("@/lib/db");
-  const { adminUsers } = await import("@/lib/db/schema");
-  const { eq } = await import("drizzle-orm");
-
-  const db = getDb();
-  await db
-    .update(adminUsers)
-    .set({ passwordHash: newHash, updatedAt: new Date() })
-    .where(eq(adminUsers.id, userId));
+  await prisma.adminUser.update({
+    where: { id: userId },
+    data: { passwordHash: newHash },
+  });
 }
 
 async function updateLastLogin(userId: string) {
-  if (!process.env.DATABASE_URL) return;
-
-  const { getDb } = await import("@/lib/db");
-  const { adminUsers } = await import("@/lib/db/schema");
-  const { eq } = await import("drizzle-orm");
-
-  const db = getDb();
-  await db
-    .update(adminUsers)
-    .set({ lastLoginAt: new Date() })
-    .where(eq(adminUsers.id, userId));
+  await prisma.adminUser.update({
+    where: { id: userId },
+    data: { lastLoginAt: new Date() },
+  });
 }
 
 // ─── Login ───
@@ -110,7 +60,7 @@ async function updateLastLogin(userId: string) {
 export async function login(
   _prevState: AuthState | undefined,
   formData: FormData
-): Promise<AuthState> {
+) {
   const raw = {
     email: formData.get("email") as string,
     password: formData.get("password") as string,
@@ -120,16 +70,24 @@ export async function login(
   if (!validated.success) {
     return { error: validated.error.issues[0].message };
   }
-
   const { email, password } = validated.data;
+  console.log("📧 Email recibido del formulario:", email);
+  console.log("📧 Email en minúsculas:", email.toLowerCase());
+  console.log("📧 Longitud:", email.length);
 
   try {
     const admin = await getAdminByEmail(email);
+    console.log("🔍 Admin encontrado:", admin?.email);
+    console.log("🔑 Hash en BD:", admin?.passwordHash);
+    console.log("📝 Contraseña enviada:", password);
+
     if (!admin) {
       return { error: "Credenciales inválidas" };
     }
 
     const passwordValid = await compare(password, admin.passwordHash);
+    console.log("✅ Compare result:", passwordValid);
+
     if (!passwordValid) {
       return { error: "Credenciales inválidas" };
     }
@@ -162,7 +120,7 @@ export async function logout() {
 export async function changePassword(
   _prevState: AuthState | undefined,
   formData: FormData
-): Promise<AuthState> {
+) {
   const session = await getSession();
   if (!session) {
     return { error: "No autenticado" };
@@ -186,7 +144,7 @@ export async function changePassword(
   }
 
   try {
-    const admin = await getAdminByEmail(session.email);
+    const admin = await getAdminByEmail(session.email.toLowerCase());
     if (!admin) {
       return { error: "Usuario no encontrado" };
     }

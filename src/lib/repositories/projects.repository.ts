@@ -1,53 +1,25 @@
-/**
- * Projects Repository — Data Access Layer
- *
- * Dual-mode: uses Drizzle/Neon when DATABASE_URL is set,
- * falls back to in-memory store for local dev without a DB.
- */
-
+import { prisma } from "@/lib/prisma";
 import { Project } from "@/types";
 import { projects as seed } from "@/lib/projects";
 
-// ─── Database imports (lazy) ───
-let _dbModule: typeof import("@/lib/db") | null = null;
-let _schemaModule: typeof import("@/lib/db/schema") | null = null;
-let _eqFn: typeof import("drizzle-orm")["eq"] | null = null;
-
-async function getDbModules() {
-  if (!USE_DB || !process.env.DATABASE_URL) return null;
-  if (!_dbModule) {
-    _dbModule = await import("@/lib/db");
-    _schemaModule = await import("@/lib/db/schema");
-    const drizzleOrm = await import("drizzle-orm");
-    _eqFn = drizzleOrm.eq;
-  }
-  return { getDb: _dbModule!.getDb, schema: _schemaModule!, eq: _eqFn! };
-}
-
-// ─── In-memory store (source of truth until DB migration is run) ───
-// Set USE_DB=true in env to switch to Drizzle/Neon.
-const USE_DB = process.env.USE_DB === "true";
-let memoryStore: Project[] = [...seed];
-
-// ─── Helpers ───
-
-function dbRowToProject(row: Record<string, unknown>): Project {
+// ─── Helper ───
+function dbRowToProject(row: any): Project {
   return {
-    id: row.id as string,
-    name: row.name as string,
-    description: row.description as string,
-    longDescription: (row.longDescription ?? row.long_description ?? "") as string,
-    tech: (row.tech ?? []) as string[],
+    id: row.id,
+    name: row.name,
+    description: row.description,
+    longDescription: row.longDescription || "",
+    tech: row.tech || [],
     status: row.status as Project["status"],
     category: row.category as Project["category"],
-    url: (row.url ?? undefined) as string | undefined,
-    github: (row.github ?? undefined) as string | undefined,
-    image: row.image as string,
-    color: row.color as string,
+    url: row.url || undefined,
+    github: row.github || undefined,
+    image: row.image,
+    color: row.color,
     metrics: {
-      users: (row.metricsUsers ?? row.metrics_users ?? undefined) as number | undefined,
-      revenue: (row.metricsRevenue ?? row.metrics_revenue ?? undefined) as number | undefined,
-      rating: (row.metricsRating ?? row.metrics_rating ?? undefined) as number | undefined,
+      users: row.metricsUsers || undefined,
+      revenue: row.metricsRevenue || undefined,
+      rating: row.metricsRating || undefined,
     },
   };
 }
@@ -55,66 +27,63 @@ function dbRowToProject(row: Record<string, unknown>): Project {
 // ─── Read operations ───
 
 export async function findAllProjects(): Promise<Project[]> {
-  const mods = await getDbModules();
-  if (mods) {
-    const db = mods.getDb();
-    const rows = await db.select().from(mods.schema.projects);
-    return rows.map(dbRowToProject);
+  try {
+    const projects = await prisma.project.findMany();
+    return projects.map(dbRowToProject);
+  } catch (err) {
+    console.warn("DB error, using seed:", err);
+    return [...seed];
   }
-  return [...memoryStore];
 }
 
 export async function findProjectById(id: string): Promise<Project | undefined> {
-  const mods = await getDbModules();
-  if (mods) {
-    const db = mods.getDb();
-    const rows = await db
-      .select()
-      .from(mods.schema.projects)
-      .where(mods.eq(mods.schema.projects.id, id));
-    return rows[0] ? dbRowToProject(rows[0]) : undefined;
+  try {
+    const project = await prisma.project.findUnique({ where: { id } });
+    return project ? dbRowToProject(project) : undefined;
+  } catch (err) {
+    console.warn("DB error:", err);
+    return seed.find((p) => p.id === id);
   }
-  return memoryStore.find((p) => p.id === id);
 }
 
 export async function findProjectsByCategory(
   category: Project["category"]
 ): Promise<Project[]> {
-  const mods = await getDbModules();
-  if (mods) {
-    const db = mods.getDb();
-    const rows = await db
-      .select()
-      .from(mods.schema.projects)
-      .where(mods.eq(mods.schema.projects.category, category));
-    return rows.map(dbRowToProject);
+  try {
+    const projects = await prisma.project.findMany({ where: { category } });
+    return projects.map(dbRowToProject);
+  } catch (err) {
+    console.warn("DB error:", err);
+    return seed.filter((p) => p.category === category);
   }
-  return memoryStore.filter((p) => p.category === category);
 }
 
 export async function findProjectsByStatus(
   status: Project["status"]
 ): Promise<Project[]> {
-  const mods = await getDbModules();
-  if (mods) {
-    const db = mods.getDb();
-    const rows = await db
-      .select()
-      .from(mods.schema.projects)
-      .where(mods.eq(mods.schema.projects.status, status));
-    return rows.map(dbRowToProject);
+  try {
+    const projects = await prisma.project.findMany({ where: { status } });
+    return projects.map(dbRowToProject);
+  } catch (err) {
+    console.warn("DB error:", err);
+    return seed.filter((p) => p.status === status);
   }
-  return memoryStore.filter((p) => p.status === status);
 }
 
 export async function countProjects(): Promise<number> {
-  const all = await findAllProjects();
-  return all.length;
+  try {
+    return await prisma.project.count();
+  } catch (err) {
+    console.warn("DB error:", err);
+    return seed.length;
+  }
 }
 
 // ─── Write operations ───
 
-export async function createProject(data: Omit<Project, "id">): Promise<Project> {
+export async function createProject(
+  data: Omit<Project, "id">
+): Promise<Project> {
   const id = data.name
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
@@ -123,31 +92,30 @@ export async function createProject(data: Omit<Project, "id">): Promise<Project>
   const existing = await findProjectById(id);
   if (existing) throw new ProjectAlreadyExistsError(id);
 
-  const mods = await getDbModules();
-  if (mods) {
-    const db = mods.getDb();
-    await db.insert(mods.schema.projects).values({
-      id,
-      name: data.name,
-      description: data.description,
-      longDescription: data.longDescription,
-      tech: data.tech,
-      status: data.status,
-      category: data.category,
-      url: data.url ?? null,
-      github: data.github ?? null,
-      image: data.image,
-      color: data.color,
-      metricsUsers: data.metrics?.users ?? null,
-      metricsRevenue: data.metrics?.revenue ?? null,
-      metricsRating: data.metrics?.rating ?? null,
+  try {
+    const project = await prisma.project.create({
+      data: {
+        id,
+        name: data.name,
+        description: data.description,
+        longDescription: data.longDescription,
+        tech: data.tech,
+        status: data.status,
+        category: data.category,
+        url: data.url || null,
+        github: data.github || null,
+        image: data.image,
+        color: data.color,
+        metricsUsers: data.metrics?.users || null,
+        metricsRevenue: data.metrics?.revenue || null,
+        metricsRating: data.metrics?.rating || null,
+      },
     });
-    return { id, ...data };
+    return dbRowToProject(project);
+  } catch (err) {
+    console.error("Create project error:", err);
+    throw err;
   }
-
-  const project: Project = { id, ...data };
-  memoryStore = [...memoryStore, project];
-  return project;
 }
 
 export async function updateProject(
@@ -157,13 +125,12 @@ export async function updateProject(
   const existing = await findProjectById(id);
   if (!existing) throw new ProjectNotFoundError(id);
 
-  const mods = await getDbModules();
-  if (mods) {
-    const db = mods.getDb();
-    const updateData: Record<string, unknown> = {};
+  try {
+    const updateData: any = {};
     if (data.name !== undefined) updateData.name = data.name;
     if (data.description !== undefined) updateData.description = data.description;
-    if (data.longDescription !== undefined) updateData.longDescription = data.longDescription;
+    if (data.longDescription !== undefined)
+      updateData.longDescription = data.longDescription;
     if (data.tech !== undefined) updateData.tech = data.tech;
     if (data.status !== undefined) updateData.status = data.status;
     if (data.category !== undefined) updateData.category = data.category;
@@ -171,38 +138,34 @@ export async function updateProject(
     if (data.github !== undefined) updateData.github = data.github;
     if (data.image !== undefined) updateData.image = data.image;
     if (data.color !== undefined) updateData.color = data.color;
-    if (data.metrics?.users !== undefined) updateData.metricsUsers = data.metrics.users;
-    if (data.metrics?.revenue !== undefined) updateData.metricsRevenue = data.metrics.revenue;
-    if (data.metrics?.rating !== undefined) updateData.metricsRating = data.metrics.rating;
-    updateData.updatedAt = new Date();
+    if (data.metrics?.users !== undefined)
+      updateData.metricsUsers = data.metrics.users;
+    if (data.metrics?.revenue !== undefined)
+      updateData.metricsRevenue = data.metrics.revenue;
+    if (data.metrics?.rating !== undefined)
+      updateData.metricsRating = data.metrics.rating;
 
-    await db
-      .update(mods.schema.projects)
-      .set(updateData)
-      .where(mods.eq(mods.schema.projects.id, id));
-
-    return { ...existing, ...data };
+    const project = await prisma.project.update({
+      where: { id },
+      data: updateData,
+    });
+    return dbRowToProject(project);
+  } catch (err) {
+    console.error("Update project error:", err);
+    throw err;
   }
-
-  const updated = { ...existing, ...data };
-  memoryStore = memoryStore.map((p) => (p.id === id ? updated : p));
-  return updated;
 }
 
 export async function deleteProject(id: string): Promise<void> {
   const existing = await findProjectById(id);
   if (!existing) throw new ProjectNotFoundError(id);
 
-  const mods = await getDbModules();
-  if (mods) {
-    const db = mods.getDb();
-    await db
-      .delete(mods.schema.projects)
-      .where(mods.eq(mods.schema.projects.id, id));
-    return;
+  try {
+    await prisma.project.delete({ where: { id } });
+  } catch (err) {
+    console.error("Delete project error:", err);
+    throw err;
   }
-
-  memoryStore = memoryStore.filter((p) => p.id !== id);
 }
 
 export async function toggleProjectStatus(id: string): Promise<Project> {

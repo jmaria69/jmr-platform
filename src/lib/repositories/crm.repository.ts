@@ -1,167 +1,115 @@
-/**
- * CRM Repository — Data Access Layer
- *
- * Dual-mode: Drizzle/Neon when DATABASE_URL is set,
- * in-memory fallback for local dev without a DB.
- */
-
+import { prisma } from "@/lib/prisma";
 import { CRMContact, Interaction, CRMPipelineStage } from "@/types";
 import { crmContacts as seed } from "@/lib/mock-data";
 
-// ─── Database imports (lazy) ───
-let _dbModule: typeof import("@/lib/db") | null = null;
-let _schemaModule: typeof import("@/lib/db/schema") | null = null;
-let _eqFn: typeof import("drizzle-orm")["eq"] | null = null;
-let _orFn: typeof import("drizzle-orm")["or"] | null = null;
-let _ilikeFn: typeof import("drizzle-orm")["ilike"] | null = null;
-
-async function getDbModules() {
-  if (!process.env.DATABASE_URL) return null;
-  if (!_dbModule) {
-    _dbModule = await import("@/lib/db");
-    _schemaModule = await import("@/lib/db/schema");
-    const drizzleOrm = await import("drizzle-orm");
-    _eqFn = drizzleOrm.eq;
-    _orFn = drizzleOrm.or;
-    _ilikeFn = drizzleOrm.ilike;
-  }
+// ─── Helper: DB row to domain model ───
+function dbRowToContact(row: any, interactions: Interaction[] = []): CRMContact {
   return {
-    getDb: _dbModule!.getDb,
-    schema: _schemaModule!,
-    eq: _eqFn!,
-    or: _orFn!,
-    ilike: _ilikeFn!,
-  };
-}
-
-// ─── In-memory fallback store ───
-let memoryStore: CRMContact[] = [...seed];
-
-// ─── Helpers ───
-
-function dbRowToContact(
-  row: Record<string, unknown>,
-  contactInteractions: Interaction[] = []
-): CRMContact {
-  return {
-    id: row.id as string,
-    name: row.name as string,
-    email: row.email as string,
-    phone: (row.phone ?? undefined) as string | undefined,
-    company: (row.company ?? undefined) as string | undefined,
+    id: row.id,
+    name: row.name,
+    email: row.email,
+    phone: row.phone || undefined,
+    company: row.company || undefined,
     source: row.source as CRMContact["source"],
     stage: row.stage as CRMContact["stage"],
-    value: row.value as number,
-    notes: row.notes as string,
-    tags: (row.tags ?? []) as string[],
-    lastContact: new Date(row.lastContact as string | Date),
-    createdAt: new Date(row.createdAt as string | Date),
-    interactions: contactInteractions,
+    value: row.value,
+    notes: row.notes,
+    tags: row.tags || [],
+    lastContact: row.lastContact,
+    createdAt: row.createdAt,
+    interactions,
   };
 }
 
-function dbRowToInteraction(row: Record<string, unknown>): Interaction {
+function dbRowToInteraction(row: any): Interaction {
   return {
-    id: row.id as string,
+    id: row.id,
     type: row.type as Interaction["type"],
-    date: new Date(row.date as string | Date),
-    summary: row.summary as string,
+    date: row.date,
+    summary: row.summary,
   };
 }
 
 // ─── Read operations ───
 
 export async function findAllContacts(): Promise<CRMContact[]> {
-  const mods = await getDbModules();
-  if (mods) {
-    const db = mods.getDb();
-    const rows = await db.select().from(mods.schema.crmContacts);
-    const contactIds = rows.map((r) => r.id);
-
-    // Batch-fetch interactions
-    let allInteractions: Record<string, unknown>[] = [];
-    if (contactIds.length > 0) {
-      allInteractions = await db.select().from(mods.schema.interactions);
-    }
-
-    return rows.map((row) => {
-      const ints = allInteractions
-        .filter((i) => (i as { contactId: string }).contactId === row.id)
-        .map(dbRowToInteraction);
-      return dbRowToContact(row, ints);
+  try {
+    const contacts = await prisma.crmContact.findMany({
+      include: { interactions: true },
     });
+    return contacts.map((c) =>
+      dbRowToContact(c, c.interactions.map(dbRowToInteraction))
+    );
+  } catch (err) {
+    // Fallback to seed on DB error
+    console.warn("DB error, using seed data:", err);
+    return seed;
   }
-  return [...memoryStore];
 }
 
-export async function findContactById(id: string): Promise<CRMContact | undefined> {
-  const mods = await getDbModules();
-  if (mods) {
-    const db = mods.getDb();
-    const rows = await db
-      .select()
-      .from(mods.schema.crmContacts)
-      .where(mods.eq(mods.schema.crmContacts.id, id));
-    if (!rows[0]) return undefined;
-
-    const ints = await db
-      .select()
-      .from(mods.schema.interactions)
-      .where(mods.eq(mods.schema.interactions.contactId, id));
-
-    return dbRowToContact(rows[0], ints.map(dbRowToInteraction));
+export async function findContactById(
+  id: string
+): Promise<CRMContact | undefined> {
+  try {
+    const contact = await prisma.crmContact.findUnique({
+      where: { id },
+      include: { interactions: true },
+    });
+    if (!contact) return undefined;
+    return dbRowToContact(
+      contact,
+      contact.interactions.map(dbRowToInteraction)
+    );
+  } catch (err) {
+    console.warn("DB error:", err);
+    return seed.find((c) => c.id === id);
   }
-  return memoryStore.find((c) => c.id === id);
 }
 
 export async function findContactsByStage(
   stage: CRMContact["stage"]
 ): Promise<CRMContact[]> {
-  const mods = await getDbModules();
-  if (mods) {
-    const db = mods.getDb();
-    const rows = await db
-      .select()
-      .from(mods.schema.crmContacts)
-      .where(mods.eq(mods.schema.crmContacts.stage, stage));
-
-    const allInts = await db.select().from(mods.schema.interactions);
-    return rows.map((row) => {
-      const ints = allInts
-        .filter((i) => i.contactId === row.id)
-        .map(dbRowToInteraction);
-      return dbRowToContact(row, ints);
+  try {
+    const contacts = await prisma.crmContact.findMany({
+      where: { stage },
+      include: { interactions: true },
     });
+    return contacts.map((c) =>
+      dbRowToContact(c, c.interactions.map(dbRowToInteraction))
+    );
+  } catch (err) {
+    console.warn("DB error:", err);
+    return seed.filter((c) => c.stage === stage);
   }
-  return memoryStore.filter((c) => c.stage === stage);
 }
 
 export async function searchContacts(query: string): Promise<CRMContact[]> {
-  const mods = await getDbModules();
-  if (mods) {
-    const db = mods.getDb();
-    const pattern = `%${query}%`;
-    const rows = await db
-      .select()
-      .from(mods.schema.crmContacts)
-      .where(
-        mods.or(
-          mods.ilike(mods.schema.crmContacts.name, pattern),
-          mods.ilike(mods.schema.crmContacts.email, pattern),
-          mods.ilike(mods.schema.crmContacts.company, pattern)
-        )
-      );
-    return rows.map((row) => dbRowToContact(row));
+  try {
+    const contacts = await prisma.crmContact.findMany({
+      where: {
+        OR: [
+          { name: { contains: query, mode: "insensitive" } },
+          { email: { contains: query, mode: "insensitive" } },
+          { company: { contains: query, mode: "insensitive" } },
+          { tags: { hasSome: [query] } },
+        ],
+      },
+      include: { interactions: true },
+    });
+    return contacts.map((c) =>
+      dbRowToContact(c, c.interactions.map(dbRowToInteraction))
+    );
+  } catch (err) {
+    console.warn("DB error:", err);
+    const q = query.toLowerCase();
+    return seed.filter(
+      (c) =>
+        c.name.toLowerCase().includes(q) ||
+        c.email.toLowerCase().includes(q) ||
+        c.company?.toLowerCase().includes(q) ||
+        c.tags.some((t) => t.toLowerCase().includes(q))
+    );
   }
-
-  const q = query.toLowerCase();
-  return memoryStore.filter(
-    (c) =>
-      c.name.toLowerCase().includes(q) ||
-      c.email.toLowerCase().includes(q) ||
-      c.company?.toLowerCase().includes(q) ||
-      c.tags.some((t) => t.toLowerCase().includes(q))
-  );
 }
 
 // ─── Write operations ───
@@ -170,34 +118,27 @@ export async function createContact(
   data: Omit<CRMContact, "id" | "createdAt" | "interactions">
 ): Promise<CRMContact> {
   const id = `c-${Date.now()}`;
-
-  const mods = await getDbModules();
-  if (mods) {
-    const db = mods.getDb();
-    await db.insert(mods.schema.crmContacts).values({
-      id,
-      name: data.name,
-      email: data.email,
-      phone: data.phone ?? null,
-      company: data.company ?? null,
-      source: data.source,
-      stage: data.stage,
-      value: data.value,
-      notes: data.notes,
-      tags: data.tags,
-      lastContact: data.lastContact,
+  try {
+    const contact = await prisma.crmContact.create({
+      data: {
+        id,
+        name: data.name,
+        email: data.email,
+        phone: data.phone || null,
+        company: data.company || null,
+        source: data.source,
+        stage: data.stage,
+        value: data.value,
+        notes: data.notes,
+        tags: data.tags,
+        lastContact: data.lastContact,
+      },
     });
-    return { ...data, id, createdAt: new Date(), interactions: [] };
+    return dbRowToContact(contact, []);
+  } catch (err) {
+    console.error("Create contact error:", err);
+    throw err;
   }
-
-  const contact: CRMContact = {
-    ...data,
-    id,
-    createdAt: new Date(),
-    interactions: [],
-  };
-  memoryStore = [...memoryStore, contact];
-  return contact;
 }
 
 export async function updateContact(
@@ -207,10 +148,8 @@ export async function updateContact(
   const existing = await findContactById(id);
   if (!existing) throw new ContactNotFoundError(id);
 
-  const mods = await getDbModules();
-  if (mods) {
-    const db = mods.getDb();
-    const updateData: Record<string, unknown> = {};
+  try {
+    const updateData: any = {};
     if (data.name !== undefined) updateData.name = data.name;
     if (data.email !== undefined) updateData.email = data.email;
     if (data.phone !== undefined) updateData.phone = data.phone;
@@ -222,17 +161,20 @@ export async function updateContact(
     if (data.tags !== undefined) updateData.tags = data.tags;
     if (data.lastContact !== undefined) updateData.lastContact = data.lastContact;
 
-    await db
-      .update(mods.schema.crmContacts)
-      .set(updateData)
-      .where(mods.eq(mods.schema.crmContacts.id, id));
+    const contact = await prisma.crmContact.update({
+      where: { id },
+      data: updateData,
+      include: { interactions: true },
+    });
 
-    return { ...existing, ...data };
+    return dbRowToContact(
+      contact,
+      contact.interactions.map(dbRowToInteraction)
+    );
+  } catch (err) {
+    console.error("Update contact error:", err);
+    throw err;
   }
-
-  const updated = { ...existing, ...data };
-  memoryStore = memoryStore.map((c) => (c.id === id ? updated : c));
-  return updated;
 }
 
 export async function moveContactToStage(
@@ -249,47 +191,39 @@ export async function addInteraction(
   const contact = await findContactById(contactId);
   if (!contact) throw new ContactNotFoundError(contactId);
 
-  const interactionId = `i-${Date.now()}`;
-
-  const mods = await getDbModules();
-  if (mods) {
-    const db = mods.getDb();
-    await db.insert(mods.schema.interactions).values({
-      id: interactionId,
-      contactId,
-      type: interaction.type,
-      date: interaction.date,
-      summary: interaction.summary,
+  try {
+    await prisma.interaction.create({
+      data: {
+        contactId,
+        type: interaction.type,
+        date: interaction.date,
+        summary: interaction.summary,
+      },
     });
-    await db
-      .update(mods.schema.crmContacts)
-      .set({ lastContact: interaction.date })
-      .where(mods.eq(mods.schema.crmContacts.id, contactId));
 
-    return findContactById(contactId) as Promise<CRMContact>;
+    await prisma.crmContact.update({
+      where: { id: contactId },
+      data: { lastContact: interaction.date },
+    });
+
+    const updated = await findContactById(contactId);
+    return updated!;
+  } catch (err) {
+    console.error("Add interaction error:", err);
+    throw err;
   }
-
-  const newInteraction: Interaction = { ...interaction, id: interactionId };
-  return updateContact(contactId, {
-    interactions: [...contact.interactions, newInteraction],
-    lastContact: interaction.date,
-  });
 }
 
 export async function deleteContact(id: string): Promise<void> {
   const existing = await findContactById(id);
   if (!existing) throw new ContactNotFoundError(id);
 
-  const mods = await getDbModules();
-  if (mods) {
-    const db = mods.getDb();
-    await db
-      .delete(mods.schema.crmContacts)
-      .where(mods.eq(mods.schema.crmContacts.id, id));
-    return;
+  try {
+    await prisma.crmContact.delete({ where: { id } });
+  } catch (err) {
+    console.error("Delete contact error:", err);
+    throw err;
   }
-
-  memoryStore = memoryStore.filter((c) => c.id !== id);
 }
 
 // ─── Aggregate queries ───
@@ -306,7 +240,6 @@ export async function getPipelineStages(): Promise<CRMPipelineStage[]> {
   ];
 
   const all = await findAllContacts();
-
   return stages.map((stage) => {
     const contacts = all.filter((c) => c.stage === stage);
     return {
@@ -331,7 +264,8 @@ export async function getCRMStats() {
       .reduce((sum, c) => sum + c.value, 0),
     conversionRate:
       all.length > 0
-        ? (all.filter((c) => c.stage === "closed-won").length / all.length) * 100
+        ? (all.filter((c) => c.stage === "closed-won").length / all.length) *
+        100
         : 0,
   };
 }
