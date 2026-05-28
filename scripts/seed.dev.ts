@@ -15,7 +15,7 @@ async function main() {
 
     const hashedPassword = await hash(adminPassword, 12);
 
-    // Admins
+    // ─── Admins ───
     await prisma.adminUser.upsert({
         where: { email: "admin@test.com" },
         update: { passwordHash: hashedPassword },
@@ -38,7 +38,9 @@ async function main() {
         },
     });
 
-    // Proyectos
+    console.log("✅ Admins sincronizados");
+
+    // ─── Proyectos ───
     const projects = [
         {
             id: "adminapp",
@@ -146,7 +148,190 @@ async function main() {
         });
     }
 
-    console.log("✅ Admins y proyectos sincronizados");
+    console.log("✅ Proyectos sincronizados");
+
+    // ─── CRM Contacts ───
+    const crmContacts = [
+        {
+            id: "contact-1",
+            name: "Ana Martínez",
+            email: "ana@startupslab.com",
+            phone: "+34 666 123 456",
+            company: "StartupLab",
+            source: "linkedin",
+            stage: "lead",
+            value: 3000,
+            notes: "Interesada en soluciones CRM",
+            tags: ["startup", "tech"],
+            lastContact: new Date("2025-12-01"),
+        },
+        {
+            id: "contact-2",
+            name: "Carlos López",
+            email: "carlos@innovatech.com",
+            phone: "+34 666 234 567",
+            company: "InnovaTech",
+            source: "referral",
+            stage: "contacted",
+            value: 8000,
+            notes: "Proyecto de integración",
+            tags: ["referral", "crm"],
+            lastContact: new Date("2025-08-15"),
+        },
+        {
+            id: "contact-3",
+            name: "María García",
+            email: "maria@bigexample.com",
+            phone: "+34 666 345 678",
+            company: "BigExample",
+            source: "website",
+            stage: "qualified",
+            value: 15000,
+            notes: "Enterprise solution",
+            tags: ["enterprise", "high-value"],
+            lastContact: new Date("2025-10-10"),
+        },
+        {
+            id: "contact-4",
+            name: "Pedro Sánchez",
+            email: "pedro@mediumbiz.com",
+            phone: "+34 666 456 789",
+            company: "MediumBiz",
+            source: "contact_form",
+            stage: "negotiation",
+            value: 25000,
+            notes: "Negociando términos",
+            tags: ["enterprise", "high-value"],
+            lastContact: new Date("2025-11-20"),
+        },
+        {
+            id: "contact-5",
+            name: "Laura Fernández",
+            email: "laura@designstudio.com",
+            phone: "+34 666 567 890",
+            company: "Design Studio",
+            source: "event",
+            stage: "closed-won",
+            value: 12000,
+            notes: "Contrato firmado",
+            tags: ["design", "completed"],
+            lastContact: new Date("2025-12-15"),
+        },
+        {
+            id: "contact-6",
+            name: "Roberto Díaz",
+            email: "roberto@oldcorp.com",
+            phone: "+34 666 678 901",
+            company: "OldCorp",
+            source: "cold_call",
+            stage: "closed-lost",
+            value: 5000,
+            notes: "No interesado",
+            tags: ["lost", "budget"],
+            lastContact: new Date("2025-11-05"),
+        },
+    ];
+
+    for (const contact of crmContacts) {
+        await prisma.crmContact.upsert({
+            where: { id: contact.id },
+            update: contact,
+            create: contact,
+        });
+    }
+
+    console.log("✅ CRM Contacts sincronizados");
+
+    // ─── Interactions ───
+    const interactions = [
+        {
+            id: "int-1",
+            contactId: "contact-1",
+            type: "email",
+            date: new Date("2025-11-28"),
+            summary: "Email de presentación enviado",
+        },
+        {
+            id: "int-2",
+            contactId: "contact-1",
+            type: "call",
+            date: new Date("2025-12-01"),
+            summary: "Llamada inicial - muy interesada",
+        },
+        {
+            id: "int-3",
+            contactId: "contact-2",
+            type: "meeting",
+            date: new Date("2025-08-10"),
+            summary: "Reunión de descubrimiento",
+        },
+        {
+            id: "int-4",
+            contactId: "contact-2",
+            type: "demo",
+            date: new Date("2025-08-15"),
+            summary: "Demo del producto",
+        },
+        {
+            id: "int-5",
+            contactId: "contact-3",
+            type: "email",
+            date: new Date("2025-09-20"),
+            summary: "Propuesta comercial enviada",
+        },
+        {
+            id: "int-6",
+            contactId: "contact-3",
+            type: "meeting",
+            date: new Date("2025-10-10"),
+            summary: "Reunión con stakeholders",
+        },
+        {
+            id: "int-7",
+            contactId: "contact-4",
+            type: "call",
+            date: new Date("2025-11-15"),
+            summary: "Negociación de precios",
+        },
+        {
+            id: "int-8",
+            contactId: "contact-4",
+            type: "note",
+            date: new Date("2025-11-20"),
+            summary: "Acuerdo cercano - próxima reunión en 1 semana",
+        },
+        {
+            id: "int-9",
+            contactId: "contact-5",
+            type: "meeting",
+            date: new Date("2025-12-10"),
+            summary: "Firma del contrato",
+        },
+        {
+            id: "int-10",
+            contactId: "contact-5",
+            type: "email",
+            date: new Date("2025-12-15"),
+            summary: "Confirmación de implementación",
+        },
+        {
+            id: "int-11",
+            contactId: "contact-6",
+            type: "call",
+            date: new Date("2025-11-05"),
+            summary: "Cliente no tiene presupuesto este año",
+        },
+    ];
+
+    for (const interaction of interactions) {
+        await prisma.interaction.upsert({
+            where: { id: interaction.id },
+            update: interaction,
+            create: interaction,
+        });
+    }
+
+    console.log("✅ Interactions sincronizadas");
 }
 
 main()

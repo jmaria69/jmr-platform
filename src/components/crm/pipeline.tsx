@@ -42,7 +42,7 @@ function ContactCard({ contact }: { contact: CRMContact }) {
 
   return (
     <Link href={`/admin/crm/${contact.id}`}>
-      <Card className="cursor-pointer transition-all hover:shadow-md hover:-translate-y-0.5 hover:border-primary/30">
+      <Card className="group relative rounded-2xl glass border-gradient overflow-hidden transition-all duration-300 hover:scale-[1.02] glow-hover cursor-pointer">
         <CardContent className="p-3 space-y-2">
           <div className="flex items-center gap-2">
             <Avatar className="h-8 w-8">
@@ -92,7 +92,7 @@ export function CRMPipeline({ contacts }: PipelineProps) {
           const stageContacts = contacts.filter((c) => c.stage === stage.id);
           const totalValue = stageContacts.reduce((sum, c) => sum + c.value, 0);
           return (
-            <div key={stage.id} className="flex items-center gap-2 p-2 rounded-lg border bg-card">
+            <div key={stage.id} className="group relative rounded-2xl glass border-gradient overflow-hidden transition-all duration-300 hover:scale-[1.02] glow-hover flex items-center gap-2 p-2">
               <div className={`h-2 w-2 rounded-full ${stage.color}`} />
               <div className="min-w-0">
                 <p className="text-xs font-medium truncate">{stage.label}</p>

@@ -47,14 +47,13 @@ export async function findAllContacts(): Promise<CRMContact[]> {
   }
 }
 
-export async function findContactById(
-  id: string
-): Promise<CRMContact | undefined> {
+export async function findContactById(id: string): Promise<CRMContact | undefined> {
   try {
     const contact = await prisma.crmContact.findUnique({
       where: { id },
       include: { interactions: true },
     });
+    console.log("DEBUG findContactById:", { id, contact, interactions: contact?.interactions });
     if (!contact) return undefined;
     return dbRowToContact(
       contact,

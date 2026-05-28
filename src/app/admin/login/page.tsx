@@ -12,7 +12,7 @@ export default function AdminLoginPage() {
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-            <Card className="w-full max-w-md shadow-2xl border-purple-500/20">
+            <Card className="card-admin w-full max-w-md">
                 <CardHeader className="space-y-2">
                     <CardTitle className="text-2xl">Praxia Labs Admin</CardTitle>
                     <CardDescription>Ingresa tus credenciales para continuar</CardDescription>

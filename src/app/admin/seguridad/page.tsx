@@ -34,18 +34,18 @@ interface SecurityStats {
 }
 
 const TYPE_CONFIG = {
-  bot_blocked:   { label: "Bot bloqueado",       icon: Bot,          color: "text-blue-400",   bg: "bg-blue-500/10",   border: "border-blue-500/30"   },
-  rate_limited:  { label: "Fuerza bruta",         icon: Zap,          color: "text-amber-400",  bg: "bg-amber-500/10",  border: "border-amber-500/30"  },
-  invalid_token: { label: "Token inválido",        icon: KeyRound,     color: "text-purple-400", bg: "bg-purple-500/10", border: "border-purple-500/30" },
-  brute_force:   { label: "Ataque de fuerza bruta", icon: Skull,       color: "text-red-400",    bg: "bg-red-500/10",    border: "border-red-500/30"    },
-  suspicious:    { label: "Actividad sospechosa", icon: AlertTriangle, color: "text-yellow-400", bg: "bg-yellow-500/10", border: "border-yellow-500/30" },
+  bot_blocked: { label: "Bot bloqueado", icon: Bot, color: "text-blue-400", bg: "bg-blue-500/10", border: "border-blue-500/30" },
+  rate_limited: { label: "Fuerza bruta", icon: Zap, color: "text-amber-400", bg: "bg-amber-500/10", border: "border-amber-500/30" },
+  invalid_token: { label: "Token inválido", icon: KeyRound, color: "text-purple-400", bg: "bg-purple-500/10", border: "border-purple-500/30" },
+  brute_force: { label: "Ataque de fuerza bruta", icon: Skull, color: "text-red-400", bg: "bg-red-500/10", border: "border-red-500/30" },
+  suspicious: { label: "Actividad sospechosa", icon: AlertTriangle, color: "text-yellow-400", bg: "bg-yellow-500/10", border: "border-yellow-500/30" },
 };
 
 const SEVERITY_CONFIG = {
-  low:      { label: "BAJA",     class: "bg-slate-500/20 text-slate-300 border-slate-500/30" },
-  medium:   { label: "MEDIA",    class: "bg-amber-500/20 text-amber-300 border-amber-500/30" },
-  high:     { label: "ALTA",     class: "bg-orange-500/20 text-orange-300 border-orange-500/30" },
-  critical: { label: "CRÍTICA",  class: "bg-red-500/20 text-red-300 border-red-500/30" },
+  low: { label: "BAJA", class: "bg-slate-500/20 text-slate-300 border-slate-500/30" },
+  medium: { label: "MEDIA", class: "bg-amber-500/20 text-amber-300 border-amber-500/30" },
+  high: { label: "ALTA", class: "bg-orange-500/20 text-orange-300 border-orange-500/30" },
+  critical: { label: "CRÍTICA", class: "bg-red-500/20 text-red-300 border-red-500/30" },
 };
 
 const SOLUTIONS: Record<string, { title: string; steps: string[] }> = {
@@ -206,7 +206,7 @@ export default function SeguridadPage() {
           { label: "Altos", value: stats?.high ?? 0, color: "text-orange-400" },
           { label: "Medios/Bajos", value: (stats?.medium ?? 0) + (stats?.low ?? 0), color: "text-amber-400" },
         ].map(s => (
-          <Card key={s.label}>
+          <Card key={s.label} className="rounded-2xl glass border-gradient overflow-hidden transition-all duration-300 hover:scale-[1.02] glow-hover">
             <CardContent className="p-4">
               <p className="text-xs text-muted-foreground font-semibold uppercase tracking-wide mb-1">{s.label}</p>
               <p className={`text-3xl font-bold ${s.color}`}>{s.value}</p>
@@ -224,7 +224,7 @@ export default function SeguridadPage() {
             <select
               value={filterType}
               onChange={e => setFilterType(e.target.value)}
-              className="text-sm bg-background border border-border rounded-lg px-3 py-1.5"
+              className="text-sm bg-background/60 backdrop-blur-sm border border-indigo-500/30 rounded-xl px-3 py-2 transition-all hover:border-indigo-500/60 focus:outline-none focus:ring-1 focus:ring-indigo-500/50"
             >
               <option value="">Todos los tipos</option>
               {Object.entries(TYPE_CONFIG).map(([k, v]) => (
@@ -234,7 +234,7 @@ export default function SeguridadPage() {
             <select
               value={filterSeverity}
               onChange={e => setFilterSeverity(e.target.value)}
-              className="text-sm bg-background border border-border rounded-lg px-3 py-1.5"
+              className="text-sm bg-background/60 backdrop-blur-sm border border-indigo-500/30 rounded-xl px-3 py-2 transition-all hover:border-indigo-500/60 focus:outline-none focus:ring-1 focus:ring-indigo-500/50"
             >
               <option value="">Toda severidad</option>
               <option value="critical">Crítica</option>
@@ -247,7 +247,7 @@ export default function SeguridadPage() {
           {loading ? (
             <div className="text-center py-16 text-muted-foreground">Cargando eventos...</div>
           ) : filtered.length === 0 ? (
-            <Card>
+            <Card className="rounded-2xl glass border-gradient overflow-hidden transition-all duration-300 hover:scale-[1.02] glow-hover">
               <CardContent className="flex flex-col items-center gap-3 py-16">
                 <ShieldCheck className="h-12 w-12 text-green-400 opacity-60" />
                 <p className="text-muted-foreground">Sin eventos de seguridad registrados</p>
@@ -263,9 +263,8 @@ export default function SeguridadPage() {
                 <div
                   key={event.id}
                   onClick={() => setSelectedEvent(event)}
-                  className={`flex items-start gap-3 p-4 rounded-xl border cursor-pointer transition-all hover:opacity-90 ${
-                    event.resolved ? "opacity-40" : ""
-                  } ${selectedEvent?.id === event.id ? "ring-2 ring-indigo-500" : ""} ${cfg.border} ${cfg.bg}`}
+                  className={`flex items-start gap-3 p-4 rounded-xl border cursor-pointer transition-all hover:opacity-90 ${event.resolved ? "opacity-40" : ""
+                    } ${selectedEvent?.id === event.id ? "ring-2 ring-indigo-500" : ""} ${cfg.border} ${cfg.bg}`}
                 >
                   <div className={`p-2 rounded-lg ${cfg.bg}`}>
                     <Icon className={`h-4 w-4 ${cfg.color}`} />
@@ -303,7 +302,7 @@ export default function SeguridadPage() {
         <div className="space-y-4">
           {/* Selected event detail */}
           {selectedEvent ? (
-            <Card>
+            <Card className="rounded-2xl glass border-gradient overflow-hidden transition-all duration-300 hover:scale-[1.02] glow-hover">
               <CardHeader className="pb-3">
                 <CardTitle className="text-base flex items-center gap-2">
                   <AlertTriangle className="h-4 w-4 text-amber-400" />
@@ -333,7 +332,7 @@ export default function SeguridadPage() {
               </CardContent>
             </Card>
           ) : (
-            <Card>
+            <Card className="rounded-2xl glass border-gradient overflow-hidden transition-all duration-300 hover:scale-[1.02] glow-hover">
               <CardContent className="py-8 text-center text-muted-foreground text-sm">
                 <Shield className="h-8 w-8 mx-auto mb-2 opacity-30" />
                 Selecciona un evento para ver el detalle y las instrucciones de mitigación
@@ -343,7 +342,7 @@ export default function SeguridadPage() {
 
           {/* Top IPs */}
           {stats?.topIPs && stats.topIPs.length > 0 && (
-            <Card>
+            <Card className="rounded-2xl glass border-gradient overflow-hidden transition-all duration-300 hover:scale-[1.02] glow-hover">
               <CardHeader className="pb-3">
                 <CardTitle className="text-base">🎯 IPs más activas</CardTitle>
                 <CardDescription>Posibles atacantes persistentes</CardDescription>
@@ -352,7 +351,7 @@ export default function SeguridadPage() {
                 {stats.topIPs.map((item, i) => (
                   <div key={item.ip} className="flex items-center justify-between text-sm">
                     <div className="flex items-center gap-2">
-                      <span className="text-muted-foreground text-xs w-4">{i+1}.</span>
+                      <span className="text-muted-foreground text-xs w-4">{i + 1}.</span>
                       <span className="font-mono">{item.ip}</span>
                     </div>
                     <Badge variant="outline" className={item.count >= 5 ? "border-red-500/40 text-red-400" : ""}>{item.count} intentos</Badge>
@@ -363,7 +362,7 @@ export default function SeguridadPage() {
           )}
 
           {/* Email alert config */}
-          <Card>
+          <Card className="rounded-2xl glass border-gradient overflow-hidden transition-all duration-300 hover:scale-[1.02] glow-hover">
             <CardHeader className="pb-3">
               <CardTitle className="text-base flex items-center gap-2">
                 <Mail className="h-4 w-4 text-indigo-400" />
@@ -397,7 +396,7 @@ export default function SeguridadPage() {
 
           {/* By type breakdown */}
           {stats && (
-            <Card>
+            <Card className="rounded-2xl glass border-gradient overflow-hidden transition-all duration-300 hover:scale-[1.02] glow-hover">
               <CardHeader className="pb-3">
                 <CardTitle className="text-base">📊 Por tipo de ataque</CardTitle>
               </CardHeader>
