@@ -219,22 +219,24 @@ export default function SeguridadPage() {
 
         {/* Events list */}
         <div className="lg:col-span-2 space-y-3">
-          {/* Filters */}
-          <div className="flex gap-2 flex-wrap">
+          {<div className="flex gap-2 flex-wrap">
             <select
               value={filterType}
               onChange={e => setFilterType(e.target.value)}
-              className="text-sm bg-background/60 backdrop-blur-sm border border-indigo-500/30 rounded-xl px-3 py-2 transition-all hover:border-indigo-500/60 focus:outline-none focus:ring-1 focus:ring-indigo-500/50"
+              aria-label="Filtrar por tipo de ataque"
+              className="text-sm px-3 py-2 rounded-lg bg-slate-900/60 border border-indigo-500/30 text-slate-200 hover:border-indigo-500/60 focus:outline-none focus:ring-1 focus:ring-indigo-500/50 transition-colors cursor-pointer"
             >
               <option value="">Todos los tipos</option>
               {Object.entries(TYPE_CONFIG).map(([k, v]) => (
                 <option key={k} value={k}>{v.label}</option>
               ))}
             </select>
+
             <select
               value={filterSeverity}
               onChange={e => setFilterSeverity(e.target.value)}
-              className="text-sm bg-background/60 backdrop-blur-sm border border-indigo-500/30 rounded-xl px-3 py-2 transition-all hover:border-indigo-500/60 focus:outline-none focus:ring-1 focus:ring-indigo-500/50"
+              aria-label="Filtrar por severidad"
+              className="text-sm px-3 py-2 rounded-lg bg-slate-900/60 border border-indigo-500/30 text-slate-200 hover:border-indigo-500/60 focus:outline-none focus:ring-1 focus:ring-indigo-500/50 transition-colors cursor-pointer"
             >
               <option value="">Toda severidad</option>
               <option value="critical">Crítica</option>
@@ -242,7 +244,8 @@ export default function SeguridadPage() {
               <option value="medium">Media</option>
               <option value="low">Baja</option>
             </select>
-          </div>
+          </div>}
+
 
           {loading ? (
             <div className="text-center py-16 text-muted-foreground">Cargando eventos...</div>

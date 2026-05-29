@@ -42,6 +42,7 @@ const settingsItems = [
 
 export function AdminSidebar() {
   const pathname = usePathname();
+  const isDemoMode = pathname.includes('/demo');
 
   return (
     <Sidebar className="border-r border-purple-500/20 glass">
@@ -55,7 +56,7 @@ export function AdminSidebar() {
               Praxia<span className="text-sky-400">Lab</span>
             </span>
             <span className="text-[9px] font-semibold text-white/30 uppercase tracking-[0.2em]">
-              Admin Panel
+              {isDemoMode ? 'Demo' : 'Admin Panel'}
             </span>
           </div>
         </div>
@@ -109,16 +110,20 @@ export function AdminSidebar() {
               <span>Volver al sitio</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
-          <SidebarMenuItem>
-            <form action={logout}>
-              <SidebarMenuButton
-                render={<button type="submit" className="w-full" />}
-              >
-                <LogOut className="h-4 w-4" />
-                <span>Cerrar sesión</span>
-              </SidebarMenuButton>
-            </form>
-          </SidebarMenuItem>
+
+          {!isDemoMode && (
+            <SidebarMenuItem>
+              <form action={logout} className="w-full">
+                <button
+                  type="submit"
+                  className="w-full flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-slate-800 transition-colors text-sm text-muted-foreground hover:text-foreground"
+                >
+                  <LogOut className="h-4 w-4" />
+                  <span>Cerrar sesión</span>
+                </button>
+              </form>
+            </SidebarMenuItem>
+          )}
         </SidebarMenu>
       </SidebarFooter>
     </Sidebar>

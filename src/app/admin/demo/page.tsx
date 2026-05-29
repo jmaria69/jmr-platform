@@ -1,20 +1,20 @@
 import type { Metadata } from "next";
-import { getRealDashboardStats } from "@/lib/repositories/dashboard.repository";
+import { getDashboardStats } from "@/lib/repositories/dashboard.repository";
 import { StatsCards } from "@/components/admin/stats-cards";
 import { TrafficChart } from "@/components/admin/traffic-chart";
 import { VisitorsTable } from "@/components/admin/visitors-table";
 import { DeviceChart } from "@/components/admin/device-chart";
 import { AnalyticsAnalysis } from "@/components/admin/analytics-analysis";
 
-export default async function DashboardPage() {
-    const stats = await getRealDashboardStats();
+export default async function DemoDashboardPage() {
+    const stats = await getDashboardStats();
 
     return (
         <div className="space-y-6">
             <div>
-                <h2 className="text-2xl font-bold tracking-tight">Dashboard</h2>
+                <h2 className="text-2xl font-bold tracking-tight">Dashboard Demo</h2>
                 <p className="text-muted-foreground">
-                    Monitorización en tiempo real de tu plataforma.
+                    Datos de demostración con seed/mock. <strong>Inicia sesión para ver datos reales.</strong>
                 </p>
             </div>
 
@@ -31,5 +31,5 @@ export default async function DashboardPage() {
 }
 
 export const metadata: Metadata = {
-    title: "Dashboard",
+    title: "Dashboard Demo",
 };

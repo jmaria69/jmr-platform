@@ -1,436 +1,209 @@
-# Praxia Labs - Project Documentation
+# Praxia Labs - Sesión 28 Mayo 2026
 
-**Last Updated:** 27 Mayo 2026  
-**Status:** Migration Drizzle → Prisma (IN PROGRESS)  
-**Owner:** Jose Maria Romero (@jmaria69)  
-**Location:** `D:\web`
+## ✅ COMPLETADO ESTA SESIÓN
 
----
+### Autenticación & Middleware
 
-## 📋 Current Project State
+- ✅ Middleware creado en `src/middleware.ts` con JWT validation
+- ✅ Login en `src/app/login/page.tsx` con botón "Volver a Home"
+- ✅ Sesión usando `lib/auth/session.ts` con `jmr_session` cookie
+- ✅ `AUTH_SECRET` configurado en `.env.local`
 
-### ✅ Completed This Session
+### Dashboard & Rutas
 
-1. **Fixed Authentication System**
-   - Created `model AdminUser` in Prisma schema
-   - Implemented login/logout with bcryptjs hashing
-   - Added email normalization with `.toLowerCase()`
-   - Created seed script (`scripts/seed.ts`) with two admin users
-   - Admin accounts: `admin@test.com` + `jmaria.romero@praxialabs.com` (password: `Supercalif`)
+- ✅ `/dashboard/demo` → Datos mock/seed (sin login)
+- ✅ `/admin/dashboard` → Datos reales GA (con login)
+- ✅ `/admin/demo` → Demo con navegación admin (excluido del middleware)
+- ✅ Home con `DashboardLink` que detecta sesión:
+  - Logueado → `/admin/dashboard`
+  - Sin login → `/admin/demo`
 
-2. **Database Setup**
-   - PostgreSQL on Vercel
-   - Prisma v5.22.0 as ORM
-   - Created migration for AdminUser model
+### Proyectos
 
-3. **Cleaned package.json**
-   - Removed dead Drizzle dependencies (`drizzle-orm`, `drizzle-kit`, `@neondatabase/serverless`)
-   - Updated build scripts for Prisma only
+- ✅ `src/lib/projects.ts` actualizado con 13 proyectos + URLs correctas:
+  - OLGA.ai: <https://694de94d9c69f2c5-188-26-209-26.serveousercontent.com/dashboard>
+  - AdminApp: <https://adminapp-maestro.vercel.app/presentation>
+  - Core OPS: <https://core-ops-eight.vercel.app/>
+  - InmoTech: <https://landing-inmobiliaria-tau.vercel.app/>
+  - Otros 9 proyectos en producción + 2 en beta
+- ✅ `scripts/seed.dev.ts` actualizado para crear todos los proyectos en BD
+- ✅ `src/lib/repositories/projects.repository.ts` con fallback a seed si BD vacía
+- ✅ Página `/proyectos/[id]` con badge "En preproducción" para proyectos sin URL
 
-### ⚠️ In Progress: Drizzle → Prisma Migration
+### Admin Panel Seguridad
 
-**Context:** Project has TWO ORMs mixed:
+- ✅ `src/app/api/security/alert/route.ts` creado con:
+  - POST: Registra eventos de ataque
+  - GET: Lee eventos (con autenticación)
+  - PATCH: Marca como resuelto (con autenticación)
+  - Validación de `SECURITY_SECRET` en todos los endpoints
+  - Persistencia en Vercel Blob
+  - Email alerts vía EmailJS
+  - Rate limiting por IP con escalado de severidad
+- ✅ `src/components/admin/admin-sidebar.tsx` con lógica de demo:
+  - Si `/admin/demo` → No muestra botón "Cerrar sesión"
+  - Muestra "Demo" en lugar de "Admin Panel"
 
-- **Drizzle:** `src/lib/db/`, `src/lib/repositories/projects.repository.ts`, `src/lib/repositories/crm.repository.ts`
-- **Prisma:** `src/app/actions/auth.ts`, `src/app/api/contact/route.ts`
+### Base de Datos
 
-**Migration Work:**
+- ✅ Seed ejecutado: 13 proyectos + 6 CRM contacts + 11 interactions
+- ✅ Admins creados: <admin@test.com>, <jmaria.romero@praxialabs.com>
 
-- ✅ Schema updated with `AdminUser`, `CrmContact`, `Interaction`, `Contact`
-- ⏳ Need to rewrite: `crm.repository.ts` → Prisma
-- ⏳ Need to rewrite: `projects.repository.ts` → Prisma
-- ⏳ Need to delete: `src/lib/db/index.ts`
+## 🔴 TODO MAÑANA (PRIORITARIO)
 
-**Files Ready (already provided):**
+### 1. CONFIGURAR EMAILJS PARA SEGURIDAD
 
-```
-crm.repository.ts (rewritten with Prisma)
-projects.repository.ts (rewritten with Prisma)
-schema.prisma (with Project model added)
-```
+**Archivo**: `src/app/api/security/alert/route.ts`
+**Qué falta**: Las credenciales de EmailJS en `.env.local` y Vercel
 
----
-
-## 🏗️ Architecture
-
-### Tech Stack
-
-```
-Frontend: Next.js 16.2.6 + React 19.2.4 + Tailwind CSS 4
-Backend: Node.js + TypeScript
-Database: PostgreSQL (Vercel)
-ORM: Prisma v5.22.0 (in transition from Drizzle)
-Auth: Session-based with JWT (jose) + bcryptjs
-Email: Resend API
-API Style: Server Actions + Route Handlers
+```env
+EMAILJS_PUBLIC_KEY=tu_public_key
+EMAILJS_PRIVATE_KEY=tu_private_key
+EMAILJS_SERVICE_ID=tu_service_id
+EMAILJS_SECURITY_TEMPLATE=tu_template_id
 ```
 
-### Folder Structure
-
-```
-src/
-├── app/
-│   ├── actions/auth.ts          [Server actions for login/logout] ✅
-│   ├── api/contact/route.ts      [Contact form endpoint] ✅ (uses Prisma)
-│   ├── admin/dashboard/page.tsx  [Admin dashboard] ⏳
-│   └── layout.tsx               [Root layout]
-├── lib/
-│   ├── prisma.ts                [Prisma client singleton] ✅
-│   ├── auth.ts                  [Session management] ✅
-│   ├── repositories/
-│   │   ├── crm.repository.ts     [CRM data layer] ⏳ (needs Prisma rewrite)
-│   │   ├── projects.repository.ts [Projects data layer] ⏳ (needs Prisma rewrite)
-│   │   └── dashboard.repository.ts [Dashboard stats aggregator] ✅
-│   ├── db/
-│   │   └── index.ts             [OLD Drizzle client] ❌ DELETE
-│   └── projects.ts              [Seed data for projects]
-├── types/
-│   └── index.ts                 [TypeScript interfaces]
-└── components/
-    └── admin/                   [Dashboard UI components]
-
-prisma/
-├── schema.prisma                [Database schema] ⏳ (partially updated)
-└── migrations/                  [Migration history]
-
-scripts/
-└── seed.ts                       [Database seed script] ✅
-```
-
----
-
-## 🗄️ Database Schema (Current - Prisma)
-
-```prisma
-model AdminUser {
-  id            String    @id @default(uuid())
-  email         String    @unique
-  passwordHash  String
-  name          String
-  role          String    @default("admin")
-  lastLoginAt   DateTime?
-  createdAt     DateTime  @default(now())
-  @@map("admin_users")
-}
-
-model Project {
-  id               String    @id
-  name             String
-  description      String
-  longDescription  String
-  tech             String[]
-  status           String    // "production" | "beta" | "development"
-  category         String
-  url              String?
-  github           String?
-  image            String
-  color            String
-  metricsUsers     Int?
-  metricsRevenue   Float?
-  metricsRating    Float?
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
-  @@map("projects")
-}
-
-model Contact {
-  id        String    @id @default(uuid())
-  nombre    String
-  email     String
-  phone     String?
-  createdAt DateTime  @default(now())
-  @@map("contacts")
-}
-
-model CrmContact {
-  id            String         @id @default(uuid())
-  name          String
-  email         String
-  phone         String?
-  company       String?
-  source        String         @default("web")
-  stage         String         @default("lead")
-  value         Float          @default(0)
-  notes         String
-  tags          String[]
-  lastContact   DateTime       @default(now())
-  createdAt     DateTime       @default(now())
-  interactions  Interaction[]
-  @@map("crm_contacts")
-}
-
-model Interaction {
-  id        String    @id @default(uuid())
-  contactId String
-  contact   CrmContact @relation(fields: [contactId], references: [id], onDelete: Cascade)
-  type      String
-  date      DateTime  @default(now())
-  summary   String
-  @@map("interactions")
-}
-```
-
----
-
-## 🔐 Authentication Flow
-
-### Login Process
-
-1. User submits email + password in form
-2. `src/app/actions/auth.ts:login()` validates input with Zod schema
-3. Query: `prisma.adminUser.findUnique({ where: { email: email.toLowerCase() } })`
-4. Compare password hash with bcryptjs `.compare()`
-5. If valid: create session with `createSession()` (Jose JWT)
-6. Redirect to `/admin/dashboard`
-
-### Session Management
-
-- **Created by:** `src/lib/auth.ts:createSession()`
-- **Stored:** HTTP-only cookie
-- **Used in:** Server Components via `getSession()`
-- **Clear on:** `logout()` → deletes session → redirects to `/login`
-
-### Important: Email Normalization
-
-- All email lookups use `.toLowerCase()`
-- Applied in: `getAdminByEmail()`, `login()`, `changePassword()`
-- Schema: `@unique` on email field (case-sensitive in PostgreSQL)
-
----
-
-## 📝 Environment Variables (.env.local)
-
-```bash
-# Database
-DATABASE_URL=postgresql://user:password@host/dbname
-
-# Admin
-AUTH_SECRET=minimo32caracteres
-ADMIN_EMAIL=jmaria.romero@praxialabs.com
-ADMIN_PASSWORD=Supercalif
-
-# JWT
-JWT_SECRET=minimo32caracteres
-
-# Email
-RESEND_API_KEY=re_xxxxxxxxxx
-
-# Analytics
-NEXT_PUBLIC_GA_ID=G-CQ6W47R42W
-
-# Google Maps (if used)
-NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=xxxxxxxx
-```
-
----
-
-## 🛠️ Available Scripts
-
-```bash
-# Development
-npm run dev                  # Start dev server on :3000
-
-# Build & Deploy
-npm run build               # Compile + Prisma generate
-npm start                   # Production server
-
-# Database
-npm run db:seed            # Seed admin users (scripts/seed.ts)
-
-# Code Quality
-npm run lint               # ESLint
-```
-
----
-
-## 🚀 Deployment Checklist
-
-- [ ] All Drizzle code replaced with Prisma
-- [ ] `src/lib/db/index.ts` deleted
-- [ ] All repositories working with Prisma
-- [ ] CSP headers configured for Google Analytics + Leaflet
-- [ ] Environment variables set in Vercel
-- [ ] Database migrated to Vercel Postgres
-- [ ] Seed script executed in production
-- [ ] Admin accounts created
-- [ ] Login works in production
-- [ ] Build passes without errors
-
----
-
-## 🔧 Next Steps (Priority Order)
-
-### 1. Complete Drizzle → Prisma Migration (TODAY)
-
-```bash
-# 1. Update schema.prisma with Project model
-# 2. Replace crm.repository.ts (provided in claude.md)
-# 3. Replace projects.repository.ts (provided in claude.md)
-# 4. Delete src/lib/db/index.ts
-# 5. Test migrations
-npx prisma migrate dev
-npm run build
-npm run dev
-```
-
-### 2. Fix CSP (Content Security Policy)
-
-- Google Analytics (`https://www.googletagmanager.com`)
-- Leaflet CSS/JS (`https://unpkg.com`)
-- Update in `next.config.ts` or `src/app/layout.tsx`
-
-### 3. Build Dashboard
-
-- Display real CRM contacts
-- Show project metrics
-- Real-time traffic (GA integration)
-
-### 4. Deploy to GitHub
-
-```bash
-git add .
-git commit -m "Migration: Drizzle → Prisma complete"
-git push origin main
-```
-
-### 5. Deploy to Vercel
-
-- Connect GitHub repo
-- Set environment variables
-- Deploy
-- Verify login works
-- Verify database connections
-
----
-
-## 🐛 Known Issues & Solutions
-
-### Issue: "Cannot read properties of undefined (reading 'findUnique')"
-
-**Cause:** `prisma.adminUser` is `undefined`  
-**Solution:** Model doesn't exist in schema. Add to `schema.prisma` and migrate.
-
-### Issue: "Admin encontrado: undefined" after logout
-
-**Cause:** Database cleaned between sessions OR email not normalized  
-**Solution:**
-
-- Run `npm run db:seed` to recreate admins
-- Ensure `email.toLowerCase()` used in queries
-
-### Issue: Build error "Module not found: @neondatabase/serverless"
-
-**Cause:** Drizzle code still importing removed dependency  
-**Solution:** Replace `crm.repository.ts` and `projects.repository.ts` with Prisma versions
-
-### Issue: CSP blocks Google Analytics
-
-**Cause:** `script-src` policy doesn't include `https://www.googletagmanager.com`  
-**Solution:** Update CSP headers in next.config.ts
-
----
-
-## 📂 Key Files to Remember
-
-| File | Purpose | Status |
-|------|---------|--------|
-| `src/app/actions/auth.ts` | Login/logout logic | ✅ Working |
-| `src/lib/prisma.ts` | Prisma singleton | ✅ Working |
-| `src/lib/auth.ts` | Session management | ✅ Working |
-| `prisma/schema.prisma` | Database schema | ⏳ Partial |
-| `src/lib/repositories/crm.repository.ts` | CRM data access | ⏳ Needs rewrite |
-| `src/lib/repositories/projects.repository.ts` | Projects data access | ⏳ Needs rewrite |
-| `src/lib/db/index.ts` | OLD Drizzle client | ❌ Delete |
-| `scripts/seed.ts` | Admin seeding | ✅ Working |
-| `package.json` | Dependencies | ✅ Cleaned |
-
----
-
-## 💡 Development Tips
-
-### Run admin locally
-
-```bash
-npm run db:seed
-npm run dev
-# Visit http://localhost:3000/login
-# Email: admin@test.com
-# Password: admin123
-```
-
-### Debug Prisma queries
-
-Add to any file:
+**Pasos**:
+
+1. Ve a <https://emailjs.com/>
+2. Crea una cuenta/login
+3. Copia las credenciales
+4. Añade a `.env.local`
+5. Crea template en EmailJS con las variables que espera el código:
+   - severidad, tipo_ataque, ip_atacante, ruta, user_agent, fecha_hora, detalles, solucion, total_eventos, panel_url, to_email
+
+### 2. INTEGRAR EVENTOS DE SEGURIDAD EN LOGIN FALLIDO
+
+**Archivo**: `src/app/actions/auth.ts`
+**Qué hacer**: Cuando `passwordValid === false`, enviar evento al endpoint `/api/security/alert`
 
 ```typescript
-import { prisma } from "@/lib/prisma";
-
-// Enable query logging
-prisma.$on('query', (e) => {
-  console.log('Query:', e.query);
-  console.log('Duration:', e.duration + 'ms');
-});
+// En la función login(), cuando falla:
+if (!passwordValid) {
+  // Registrar intento fallido
+  await fetch('/api/security/alert', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-security-secret': process.env.SECURITY_SECRET || '',
+    },
+    body: JSON.stringify({
+      type: 'brute_force',
+      ip: request.ip || 'unknown',
+      path: '/admin/login',
+      userAgent: request.headers.get('user-agent') || '',
+      severity: 'medium',
+      details: `Intento fallido de login: ${email}`,
+    }),
+  });
+  return { error: "Credenciales inválidas" };
+}
 ```
 
-### Verify Prisma schema
+### 3. VERIFICAR QUE ADMIN/SEGURIDAD LEE LOS EVENTOS
 
-```bash
-npx prisma validate
+**Archivo**: `src/app/admin/seguridad/page.tsx`
+**Qué hacer**:
+
+- Verificar que fetchea de `/api/security/alert?limit=50` con header `x-security-secret`
+- Que muestre los eventos en tiempo real
+- Que tenga botones para marcar como resuelto (PATCH)
+
+### 4. DEPLOYAR A VERCEL
+
+**Pasos**:
+
+1. Añadir variables de entorno en Vercel Settings:
+
+```
+NEXT_PUBLIC_SITE_URL=https://praxialabs.com
+SECURITY_SECRET=(el que generaste)
+SECURITY_ALERT_EMAIL=jmaria.romero@praxialabs.com
+EMAILJS_*=credenciales
+BLOB_READ_WRITE_TOKEN=(si usas Vercel Blob)
 ```
 
-### Generate new migration
-
-```bash
-npx prisma migrate dev --name describe_your_change
-```
+2. `git push` → Auto-deploy en Vercel
+2. Verificar que `/admin/seguridad` funciona en producción
 
 ---
 
-## 📞 Quick Reference
+## 📋 ESTADO ACTUAL DEL PROYECTO
 
-**Admin Credentials (Dev)**
+### Stack
 
-- Email: `admin@test.com` OR `jmaria.romero@praxialabs.com`
-- Password: `Supercalif` (or `admin123` for test account)
+- Next.js 16.2.6, React 19.2.4, TypeScript, Tailwind 4, shadcn/ui
+- Backend: Next.js API routes, Prisma v5.22.0
+- DB: PostgreSQL (Neon)
+- Auth: JWT + bcryptjs (jmr_session cookie)
+- Seguridad: EmailJS alerts + Vercel Blob storage
+- Hosting: Vercel
 
-**Database**
+### URLs Clave
 
-- Provider: PostgreSQL
-- ORM: Prisma v5.22.0
-- Client: `@prisma/client`
+- Local: <http://localhost:3001>
+- Producción: <https://praxialabs.com>
+- Admin: /admin/dashboard (protegido)
+- Demo: /admin/demo (público)
+- Seguridad: /admin/seguridad (protegido)
+- Proyectos: /proyectos (público)
 
-**Authentication**
+### Credenciales Dev
 
-- Method: Session-based JWT
-- Token library: `jose`
-- Password hashing: `bcryptjs`
-- Session storage: HTTP-only cookie
+- Email: <admin@test.com> | <jmaria.romero@praxialabs.com>
+- Password: TxAJvAPT^WJ*xw8J
+- JWT_SECRET: AUTH_SECRET en .env.local
+- SECURITY_SECRET: Generado (32 chars hex)
+
+### Variables de Entorno Críticas
+
+```
+.env.local:
+- AUTH_SECRET=...
+- DATABASE_URL=postgresql://...
+- ADMIN_PASSWORD=TxAJvAPT^WJ*xw8J
+- SECURITY_SECRET=...
+- NEXT_PUBLIC_SITE_URL=http://localhost:3001
+- EMAILJS_PUBLIC_KEY=...
+- EMAILJS_PRIVATE_KEY=...
+- EMAILJS_SERVICE_ID=...
+- EMAILJS_SECURITY_TEMPLATE=...
+```
+
+### Archivos Clave Modificados
+
+- `src/middleware.ts` - JWT validation
+- `src/app/login/page.tsx` - Login con botón volver
+- `src/components/dashboard-link.tsx` - Detecta sesión
+- `src/components/admin/admin-sidebar.tsx` - Demo mode
+- `src/lib/projects.ts` - 13 proyectos actualizados
+- `scripts/seed.dev.ts` - Seed con proyectos reales
+- `src/lib/repositories/projects.repository.ts` - Fallback a seed
+- `src/app/api/security/alert/route.ts` - Endpoint de seguridad
 
 ---
 
-## 🎯 Session Goals Recap
+## 🎯 PRÓXIMAS SESIONES (POST-MAÑANA)
 
-✅ **Completed**
-
-- Fixed auth system with Prisma
-- Created AdminUser model
-- Implemented working login/logout
-- Cleaned up package.json
-- Created admin seed script
-
-⏳ **In Progress**
-
-- Migrate remaining repositories to Prisma
-- Fix CSP headers for external resources
-- Complete dashboard implementation
-
-🚀 **Ready for Deploy**
-
-- All auth infrastructure
-- Database migrations
-- Environment setup
+1. **Analytics Integration**: Datos reales de Google Analytics en dashboard
+2. **CRM Pipeline**: Visualización de contacts con estados
+3. **Marketing Insights**: ROI tracking y métricas de monetización
+4. **Mobile Optimization**: Responsive design en admin panel
+5. **Deployment Checks**: Verificar todo funciona en praxialabs.com
 
 ---
 
-**Generated by Claude**  
-For next session: Review "Next Steps" section and complete remaining Prisma migration tasks.
+## 📝 NOTAS IMPORTANTES
+
+- El demo nunca va a producción: siempre seed data
+- Admin dashboard intenta GA real, pero fallback a seed si no hay datos
+- Seguridad: Todos los endpoints POST/GET/PATCH requieren header `x-security-secret`
+- Rate limiting: Por IP, persiste en Blob, escalado de severidad automático
+- Email alerts: Cooldown de 5 minutos entre emails (en memoria, mejor en BD)
+- Blob storage: Guarda eventos indefinidamente (200 eventos max en memoria)
+
+---
+
+**Generado**: 29 Mayo 2026, 20:30 CET
+**Última sesión**: Autenticación, Proyectos, Seguridad
+**Próximo foco**: EmailJS + Integración de eventos de login fallido

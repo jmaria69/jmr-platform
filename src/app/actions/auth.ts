@@ -144,7 +144,7 @@ export async function changePassword(
   }
 
   try {
-    const admin = await getAdminByEmail(session.email.toLowerCase());
+    const admin = await getAdminByEmail(session.email);
     if (!admin) {
       return { error: "Usuario no encontrado" };
     }

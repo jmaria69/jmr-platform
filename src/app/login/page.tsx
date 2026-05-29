@@ -5,7 +5,8 @@ import { login, type AuthState } from "@/app/actions/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { AlertCircle, Loader2, Lock, Mail, ShieldCheck } from "lucide-react";
+import { AlertCircle, Loader2, Lock, Mail, ShieldCheck, ArrowLeft } from "lucide-react";
+import Link from "next/link";
 
 export default function LoginPage() {
   const [state, action, pending] = useActionState<AuthState | undefined, FormData>(
@@ -85,21 +86,29 @@ export default function LoginPage() {
               </div>
             </div>
 
-            {/* Submit */}
-            <Button
-              type="submit"
-              disabled={pending}
-              className="w-full h-11 shimmer-btn font-semibold rounded-xl"
-            >
-              {pending ? (
-                <>
-                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                  Iniciando sesión...
-                </>
-              ) : (
-                "Iniciar sesión"
-              )}
-            </Button>
+            {/* Buttons */}
+            <div className="flex gap-3">
+              <Button
+                type="submit"
+                disabled={pending}
+                className="flex-1 h-11 shimmer-btn font-semibold rounded-xl"
+              >
+                {pending ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                    Iniciando sesión...
+                  </>
+                ) : (
+                  "Iniciar sesión"
+                )}
+              </Button>
+              <Link
+                href="/"
+                className="flex items-center justify-center h-11 px-4 rounded-xl border border-white/10 hover:border-indigo-500/50 hover:bg-white/5 transition font-semibold text-sm"
+              >
+                <ArrowLeft className="h-4 w-4" />
+              </Link>
+            </div>
           </form>
         </div>
 

@@ -69,7 +69,7 @@ export async function getSession(): Promise<SessionPayload | null> {
 }
 
 /**
- * Delete the session cookie (logout)
+ * Delete the session cookie ()
  */
 export async function deleteSession() {
   const cookieStore = await cookies();

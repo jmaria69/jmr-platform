@@ -1,9 +1,11 @@
+
+
 'use client';
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { projects } from '@/lib/projects';
-
+import { DashboardLink } from "@/components/dashboard-link";
 import { PraxiaLabLogo } from "@/components/praxia-lab-logo";
 
 export default function Home() {
@@ -65,12 +67,7 @@ export default function Home() {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4 pt-4">
-              <Link
-                href="/admin/dashboard"
-                className="px-8 py-4 rounded-lg bg-gradient-to-r from-purple-600 to-purple-700 font-semibold hover:shadow-lg hover:shadow-purple-500/50 transition transform hover:scale-105 text-center"
-              >
-                🚀 Ir al Dashboard
-              </Link>
+              <DashboardLink />
               <a href="#como-funciona" className="px-8 py-4 rounded-lg border border-cyan-500/30 text-cyan-400 font-semibold hover:bg-cyan-500/10 transition text-center">
                 Ver Cómo Funciona →
               </a>

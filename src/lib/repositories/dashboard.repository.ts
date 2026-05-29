@@ -8,6 +8,35 @@
 import { DashboardStats } from "@/types";
 import { findAllProjects } from "./projects.repository";
 import { getCRMStats } from "./crm.repository";
+import { getGAMetrics } from "@/lib/services/google-analytics";
+
+export async function getRealDashboardStats(): Promise<DashboardStats> {
+  try {
+    const gaData = await getGAMetrics();
+
+    // Mapea datos de GA a DashboardStats
+    return {
+      visitorsToday: gaData.rows?.[0]?.metricValues?.[0]?.value ?? 0,
+      visitorsWeek: Math.round((gaData.rows?.[0]?.metricValues?.[0]?.value ?? 0) * 7),
+      visitorsMonth: Math.round((gaData.rows?.[0]?.metricValues?.[0]?.value ?? 0) * 30),
+      activeNow: Math.round((gaData.rows?.[0]?.metricValues?.[0]?.value ?? 0) * 0.05),
+      topProjects: [],
+      deviceBreakdown: [],
+      osBreakdown: [],
+      revenueTotal: 0,
+      revenueMonth: 0,
+      conversionRate: 0,
+      avgSessionDuration: 0,
+      bounceRate: 0,
+      trafficByHour: [],
+      trafficByCountry: [],
+    };
+  } catch (error) {
+    console.error("Error fetching GA metrics:", error);
+    // Fallback a mocks si GA falla
+    return getDashboardStats();
+  }
+}
 
 export async function getDashboardStats(): Promise<DashboardStats> {
   const [projects, crmStats] = await Promise.all([

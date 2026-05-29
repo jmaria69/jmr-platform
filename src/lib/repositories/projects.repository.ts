@@ -29,6 +29,10 @@ function dbRowToProject(row: any): Project {
 export async function findAllProjects(): Promise<Project[]> {
   try {
     const projects = await prisma.project.findMany();
+    // Si la DB está vacía, usar seed
+    if (projects.length === 0) {
+      return [...seed];
+    }
     return projects.map(dbRowToProject);
   } catch (err) {
     console.warn("DB error, using seed:", err);
@@ -39,11 +43,12 @@ export async function findAllProjects(): Promise<Project[]> {
 export async function findProjectById(id: string): Promise<Project | undefined> {
   try {
     const project = await prisma.project.findUnique({ where: { id } });
-    return project ? dbRowToProject(project) : undefined;
+    if (project) return dbRowToProject(project);
   } catch (err) {
     console.warn("DB error:", err);
-    return seed.find((p) => p.id === id);
   }
+  // Fallback al seed
+  return seed.find((p) => p.id === id);
 }
 
 export async function findProjectsByCategory(
@@ -51,11 +56,11 @@ export async function findProjectsByCategory(
 ): Promise<Project[]> {
   try {
     const projects = await prisma.project.findMany({ where: { category } });
-    return projects.map(dbRowToProject);
+    if (projects.length > 0) return projects.map(dbRowToProject);
   } catch (err) {
     console.warn("DB error:", err);
-    return seed.filter((p) => p.category === category);
   }
+  return seed.filter((p) => p.category === category);
 }
 
 export async function findProjectsByStatus(
@@ -63,20 +68,21 @@ export async function findProjectsByStatus(
 ): Promise<Project[]> {
   try {
     const projects = await prisma.project.findMany({ where: { status } });
-    return projects.map(dbRowToProject);
+    if (projects.length > 0) return projects.map(dbRowToProject);
   } catch (err) {
     console.warn("DB error:", err);
-    return seed.filter((p) => p.status === status);
   }
+  return seed.filter((p) => p.status === status);
 }
 
 export async function countProjects(): Promise<number> {
   try {
-    return await prisma.project.count();
+    const count = await prisma.project.count();
+    if (count > 0) return count;
   } catch (err) {
     console.warn("DB error:", err);
-    return seed.length;
   }
+  return seed.length;
 }
 
 // ─── Write operations ───
