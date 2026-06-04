@@ -20,7 +20,7 @@ const nextConfig = {
         destination: 'https://www.googletagmanager.com/gtag/js?id=G-CQ6W47R42W',
       },
       {
-        source: '/api/analytics',
+        source: '/g/collect',
         destination: 'https://www.google-analytics.com/g/collect',
       },
     ];
