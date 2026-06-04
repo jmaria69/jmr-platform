@@ -13,6 +13,18 @@ const nextConfig = {
       },
     ];
   },
+  async rewrites() {
+    return [
+      {
+        source: '/gtag/js',
+        destination: 'https://www.googletagmanager.com/gtag/js?id=G-CQ6W47R42W',
+      },
+      {
+        source: '/g/collect',
+        destination: 'https://www.google-analytics.com/g/collect',
+      },
+    ];
+  },
 };
 
 module.exports = nextConfig;
