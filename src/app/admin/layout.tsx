@@ -1,20 +1,4 @@
-<head>
-  {/* ... otros metas */}
-  <script
-    async
-    src="https://www.googletagmanager.com/gtag/js?id=G-..."
-  ></script>
-  <script
-    dangerouslySetInnerHTML={{
-      __html: `
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-CQ6W47R42W');
-      `,
-    }}
-  />
-</head>
+
 import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar";
 import { AdminSidebar } from "@/components/admin/admin-sidebar";
 import { Separator } from "@/components/ui/separator";
