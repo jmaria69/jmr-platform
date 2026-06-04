@@ -1,6 +1,7 @@
 import { getSession } from '@/lib/auth/session';
+import { NextResponse } from 'next/server';
 
 export async function GET() {
     const session = await getSession();
-    return Response.json({ hasSession: !!session });
+    return NextResponse.json({ hasSession: !!session });
 }
