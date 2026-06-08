@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 
 export function DashboardLink() {
-    const [href, setHref] = useState('/admin/demo');
+    const [href, setHref] = useState('/demo/dashboard');
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
@@ -12,9 +12,9 @@ export function DashboardLink() {
             try {
                 const res = await fetch('/api/auth/check', { credentials: 'include' });
                 const { hasSession } = await res.json();
-                setHref(hasSession ? '/admin/dashboard' : '/admin/demo');
+                setHref(hasSession ? '/admin/dashboard' : '/demo/dashboard');
             } catch {
-                setHref('/admin/demo');
+                setHref('/demo/dashboard');
             } finally {
                 setIsLoading(false);
             }

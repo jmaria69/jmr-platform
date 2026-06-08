@@ -21,7 +21,12 @@ import { PROJECT_STATUS_LABELS } from "@/lib/constants";
 import { Project } from "@/types";
 import { useState } from "react";
 
-export function ProjectsManager() {
+interface ProjectsManagerProps {
+  /** En modo demo/read-only oculta los controles de edición */
+  isReadOnly?: boolean;
+}
+
+export function ProjectsManager({ isReadOnly = false }: ProjectsManagerProps) {
   const { projects, isLoading, error, addProject, updateProject, deleteProject, toggleStatus } =
     useProjects();
   const [deleteTarget, setDeleteTarget] = useState<Project | null>(null);
@@ -49,7 +54,7 @@ export function ProjectsManager() {
             <Skeleton className="h-8 w-48" />
             <Skeleton className="h-4 w-72" />
           </div>
-          <Skeleton className="h-10 w-40 rounded-xl" />
+          {!isReadOnly && <Skeleton className="h-10 w-40 rounded-xl" />}
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           {Array.from({ length: 4 }).map((_, i) => (
@@ -77,7 +82,9 @@ export function ProjectsManager() {
           <AlertCircle className="h-10 w-10 text-destructive mx-auto mb-4" />
           <h3 className="text-lg font-semibold mb-2">Error al cargar proyectos</h3>
           <p className="text-sm text-muted-foreground mb-4">{error}</p>
-          <Button onClick={() => window.location.reload()}>Reintentar</Button>
+          {!isReadOnly && (
+            <Button onClick={() => window.location.reload()}>Reintentar</Button>
+          )}
         </div>
       </div>
     );
@@ -89,10 +96,16 @@ export function ProjectsManager() {
         <div>
           <h2 className="text-2xl font-bold tracking-tight">Gestión de Proyectos</h2>
           <p className="text-muted-foreground">
-            {projects.length} proyectos registrados. Administra, añade y elimina.
+            {projects.length} proyectos registrados.{" "}
+            {isReadOnly
+              ? "Modo visualización — inicia sesión para gestionar."
+              : "Administra, añade y elimina."}
           </p>
         </div>
-        <AddProjectDialog onAdd={(p) => addProject(p).catch(console.error)} />
+        {/* Solo muestra el botón añadir en modo admin */}
+        {!isReadOnly && (
+          <AddProjectDialog onAdd={(p) => addProject(p).catch(console.error)} />
+        )}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -116,23 +129,31 @@ export function ProjectsManager() {
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <div className="flex items-center gap-2">
-                  <Label htmlFor={`active-${project.id}`} className="text-xs">Activo</Label>
-                  <Switch
-                    id={`active-${project.id}`}
-                    checked={project.status === "production"}
-                    onCheckedChange={() => toggleStatus(project.id)}
-                  />
-                </div>
-                <EditProjectDialog project={project} onSave={updateProject} />
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8 text-muted-foreground hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
-                  onClick={() => setDeleteTarget(project)}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
+                {/* Switch solo en modo admin */}
+                {!isReadOnly && (
+                  <div className="flex items-center gap-2">
+                    <Label htmlFor={`active-${project.id}`} className="text-xs">Activo</Label>
+                    <Switch
+                      id={`active-${project.id}`}
+                      checked={project.status === "production"}
+                      onCheckedChange={() => toggleStatus(project.id)}
+                    />
+                  </div>
+                )}
+                {/* Botones editar/borrar solo en modo admin */}
+                {!isReadOnly && (
+                  <>
+                    <EditProjectDialog project={project} onSave={updateProject} />
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 text-muted-foreground hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                      onClick={() => setDeleteTarget(project)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </>
+                )}
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -160,26 +181,28 @@ export function ProjectsManager() {
         ))}
       </div>
 
-      {/* Delete confirmation */}
-      <Dialog open={deleteTarget !== null} onOpenChange={(v) => { if (!v) setDeleteTarget(null); }}>
-        <DialogContent className="max-w-md glass-strong">
-          <DialogHeader>
-            <DialogTitle>Eliminar proyecto</DialogTitle>
-            <DialogDescription>
-              ¿Estás seguro de que quieres eliminar <strong>{deleteTarget?.name}</strong>? Esta acción no se puede deshacer.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="flex justify-end gap-3 mt-4">
-            <Button variant="outline" onClick={() => setDeleteTarget(null)} disabled={isDeleting}>
-              Cancelar
-            </Button>
-            <Button variant="destructive" onClick={handleDelete} disabled={isDeleting} className="gap-2">
-              {isDeleting && <Loader2 className="h-4 w-4 animate-spin" />}
-              Eliminar
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+      {/* Delete confirmation — solo en modo admin */}
+      {!isReadOnly && (
+        <Dialog open={deleteTarget !== null} onOpenChange={(v) => { if (!v) setDeleteTarget(null); }}>
+          <DialogContent className="max-w-md glass-strong">
+            <DialogHeader>
+              <DialogTitle>Eliminar proyecto</DialogTitle>
+              <DialogDescription>
+                ¿Estás seguro de que quieres eliminar <strong>{deleteTarget?.name}</strong>? Esta acción no se puede deshacer.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="flex justify-end gap-3 mt-4">
+              <Button variant="outline" onClick={() => setDeleteTarget(null)} disabled={isDeleting}>
+                Cancelar
+              </Button>
+              <Button variant="destructive" onClick={handleDelete} disabled={isDeleting} className="gap-2">
+                {isDeleting && <Loader2 className="h-4 w-4 animate-spin" />}
+                Eliminar
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 }
