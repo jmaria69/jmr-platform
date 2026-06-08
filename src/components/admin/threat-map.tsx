@@ -170,7 +170,9 @@ export function ThreatMap() {
                 { subdomains: "abcd", maxZoom: 19 }
             ).addTo(map);
             mapRef.current = map;
-        }).catch(console.error);
+        }).catch((err) => {
+            console.error("[ThreatMap] Leaflet load failed:", err instanceof Error ? err.message : String(err));
+        });
     }, [enabled]);
 
     // Update markers

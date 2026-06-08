@@ -31,7 +31,7 @@ export async function getGAMetrics() {
         const data = await response.json();
         return data;
     } catch (error) {
-        console.error("GA Error:", error);
+        console.error("GA Error:", error instanceof Error ? error.message : String(error));
         throw error;
     }
 }

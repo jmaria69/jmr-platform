@@ -104,7 +104,7 @@ export function ProjectsManager({ isReadOnly = false }: ProjectsManagerProps) {
         </div>
         {/* Solo muestra el botón añadir en modo admin */}
         {!isReadOnly && (
-          <AddProjectDialog onAdd={(p) => addProject(p).catch(console.error)} />
+          <AddProjectDialog onAdd={(p) => addProject(p).catch((err) => console.error("[AddProject] failed:", err instanceof Error ? err.message : String(err)))} />
         )}
       </div>
 

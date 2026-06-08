@@ -9,7 +9,6 @@ import {
   FolderKanban,
   Shield,
   ArrowLeft,
-  LogIn,
 } from "lucide-react";
 import {
   Sidebar,
@@ -81,15 +80,6 @@ export function DemoSidebar() {
             <SidebarMenuButton render={<Link href="/" />}>
               <ArrowLeft className="h-4 w-4" />
               <span>Volver al sitio</span>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              render={<Link href="/login" />}
-              className="text-amber-400 hover:text-amber-300"
-            >
-              <LogIn className="h-4 w-4" />
-              <span>Iniciar sesión</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

@@ -3,16 +3,10 @@
 import { useState, useMemo } from "react";
 import {
     Shield, ShieldAlert, ShieldCheck,
-    Bot, Zap, KeyRound, Skull, AlertTriangle,
+    Bot, Zap, KeyRound, Skull, AlertTriangle, Globe,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import dynamic from "next/dynamic";
-
-const ThreatMap = dynamic(
-    () => import("@/components/admin/threat-map").then(m => m.ThreatMap),
-    { ssr: false, loading: () => <div className="h-[490px] rounded-xl border border-border animate-pulse bg-muted/20 mt-4" /> }
-);
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -31,10 +25,8 @@ interface SecurityEvent {
     resolved: boolean;
 }
 
-// ─── Mock seed data ───────────────────────────────────────────────────────────
-
-const now = Date.now();
-const mins = (m: number) => new Date(now - m * 60_000).toISOString();
+// ─── Mock seed data (fechas estáticas para evitar hydration mismatch) ─────────
+// IMPORTANTE: usar siempre fechas ISO fijas — nunca Date.now() a nivel módulo.
 
 const MOCK_EVENTS: SecurityEvent[] = [
     {
@@ -43,7 +35,7 @@ const MOCK_EVENTS: SecurityEvent[] = [
         ip: "185.220.101.47",
         path: "/admin/login",
         userAgent: "curl/7.88.1",
-        timestamp: mins(3),
+        timestamp: "2026-06-09T00:06:00.000Z",
         severity: "critical",
         details: "23 intentos de login fallidos en 90 segundos desde la misma IP",
         resolved: false,
@@ -54,7 +46,7 @@ const MOCK_EVENTS: SecurityEvent[] = [
         ip: "66.249.66.194",
         path: "/api/admin/users",
         userAgent: "Googlebot/2.1 (+http://www.google.com/bot.html)",
-        timestamp: mins(8),
+        timestamp: "2026-06-09T00:01:00.000Z",
         severity: "low",
         details: "Bot conocido intentó acceder a ruta de API protegida — bloqueado con HTTP 403",
         resolved: true,
@@ -65,7 +57,7 @@ const MOCK_EVENTS: SecurityEvent[] = [
         ip: "91.108.56.11",
         path: "/admin/dashboard",
         userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-        timestamp: mins(15),
+        timestamp: "2026-06-08T23:54:00.000Z",
         severity: "high",
         details: "Token JWT manipulado detectado — firma inválida, posible session hijacking",
         resolved: false,
@@ -76,7 +68,7 @@ const MOCK_EVENTS: SecurityEvent[] = [
         ip: "103.21.244.0",
         path: "/api/auth/login",
         userAgent: "python-requests/2.31.0",
-        timestamp: mins(22),
+        timestamp: "2026-06-08T23:47:00.000Z",
         severity: "high",
         details: "IP bloqueada temporalmente (15 min) por superar el límite de 10 req/min",
         resolved: false,
@@ -87,7 +79,7 @@ const MOCK_EVENTS: SecurityEvent[] = [
         ip: "45.155.205.233",
         path: "/admin/credenciales",
         userAgent: "Mozilla/5.0 (compatible; MJ12bot/v1.4.8)",
-        timestamp: mins(34),
+        timestamp: "2026-06-08T23:35:00.000Z",
         severity: "medium",
         details: "Acceso a ruta sensible de credenciales desde IP con historial de abuso",
         resolved: false,
@@ -98,7 +90,7 @@ const MOCK_EVENTS: SecurityEvent[] = [
         ip: "52.167.144.195",
         path: "/sitemap.xml",
         userAgent: "BingBot/2.0",
-        timestamp: mins(47),
+        timestamp: "2026-06-08T23:22:00.000Z",
         severity: "low",
         details: "Crawler de Bing accediendo a recursos estáticos — monitorizado",
         resolved: true,
@@ -109,7 +101,7 @@ const MOCK_EVENTS: SecurityEvent[] = [
         ip: "178.62.252.190",
         path: "/api/admin/projects",
         userAgent: "axios/1.4.0",
-        timestamp: mins(60),
+        timestamp: "2026-06-08T23:09:00.000Z",
         severity: "medium",
         details: "Token expirado reutilizado — posible intento de replay attack",
         resolved: true,
@@ -120,7 +112,7 @@ const MOCK_EVENTS: SecurityEvent[] = [
         ip: "194.165.16.11",
         path: "/admin/login",
         userAgent: "Hydra v9.4",
-        timestamp: mins(75),
+        timestamp: "2026-06-08T22:54:00.000Z",
         severity: "critical",
         details: "Herramienta de fuerza bruta detectada (Hydra) — 47 intentos en 2 minutos",
         resolved: true,
@@ -131,7 +123,7 @@ const MOCK_EVENTS: SecurityEvent[] = [
         ip: "185.156.73.14",
         path: "/admin/seguridad",
         userAgent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36",
-        timestamp: mins(90),
+        timestamp: "2026-06-08T22:39:00.000Z",
         severity: "medium",
         details: "Múltiples exploraciones de rutas admin en secuencia rápida — fingerprinting",
         resolved: false,
@@ -142,7 +134,7 @@ const MOCK_EVENTS: SecurityEvent[] = [
         ip: "159.89.49.254",
         path: "/api/crm/contacts",
         userAgent: "Go-http-client/1.1",
-        timestamp: mins(110),
+        timestamp: "2026-06-08T22:19:00.000Z",
         severity: "low",
         details: "Script automatizado intentando exfiltrar listado de contactos del CRM",
         resolved: true,
@@ -283,7 +275,82 @@ export default function DemoSeguridadPage() {
                 </div>
             )}
 
-            <ThreatMap />
+            {/* Mapa de amenazas — placeholder estático en demo (sin llamadas a API) */}
+            <Card className="rounded-2xl glass border-gradient overflow-hidden mt-4">
+                <CardHeader className="pb-2">
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                            <Globe className="h-5 w-5 text-muted-foreground" />
+                            <CardTitle className="text-base">Mapa de amenazas</CardTitle>
+                            <Badge variant="outline" className="text-amber-400 border-amber-500/40 text-xs">
+                                Demo — datos simulados
+                            </Badge>
+                        </div>
+                    </div>
+                </CardHeader>
+                <CardContent>
+                    <div className="relative w-full rounded-md border border-border overflow-hidden bg-slate-950" style={{ height: 320 }}>
+                        {/* SVG simplificado del mundo con puntos de ataque */}
+                        <svg viewBox="0 0 800 400" className="w-full h-full opacity-40" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="800" height="400" fill="#0a0f1e" />
+                            {/* Continentes estilizados */}
+                            <path d="M80 120 Q120 100 160 110 Q200 115 220 140 Q240 160 230 190 Q210 220 180 215 Q150 210 130 195 Q100 185 80 160 Z" fill="#1e293b" stroke="#334155" strokeWidth="1" />
+                            <path d="M240 80 Q310 60 380 70 Q440 75 480 100 Q510 120 520 150 Q530 180 510 210 Q490 240 450 250 Q400 260 360 245 Q320 230 290 210 Q260 185 245 155 Q230 125 240 100 Z" fill="#1e293b" stroke="#334155" strokeWidth="1" />
+                            <path d="M260 270 Q290 255 320 265 Q350 275 360 300 Q365 325 345 340 Q320 355 295 348 Q270 340 258 320 Q248 298 260 275 Z" fill="#1e293b" stroke="#334155" strokeWidth="1" />
+                            <path d="M500 80 Q560 65 620 75 Q670 85 700 110 Q725 135 720 165 Q715 195 690 215 Q655 235 615 230 Q575 225 545 205 Q515 185 505 155 Q495 125 500 100 Z" fill="#1e293b" stroke="#334155" strokeWidth="1" />
+                            <path d="M620 240 Q660 225 700 235 Q730 245 740 270 Q748 295 730 315 Q710 335 680 332 Q650 328 635 308 Q620 288 620 265 Z" fill="#1e293b" stroke="#334155" strokeWidth="1" />
+                            <path d="M680 90 Q710 80 730 90 Q750 100 755 120 Q758 140 742 155 Q725 168 705 163 Q685 158 675 142 Q665 126 668 108 Z" fill="#1e293b" stroke="#334155" strokeWidth="1" />
+                        </svg>
+                        {/* Puntos de ataque mock */}
+                        <div className="absolute" style={{ top: "38%", left: "22%" }}>
+                            <div className="relative">
+                                <div className="absolute inset-0 rounded-full bg-red-500 opacity-30 animate-ping" style={{ width: 28, height: 28, margin: -8 }} />
+                                <div className="w-3 h-3 rounded-full bg-red-500 border-2 border-white shadow-lg shadow-red-500/60" title="185.220.101.47 — Rusia" />
+                            </div>
+                        </div>
+                        <div className="absolute" style={{ top: "28%", left: "58%" }}>
+                            <div className="relative">
+                                <div className="absolute inset-0 rounded-full bg-red-600 opacity-25 animate-ping" style={{ width: 28, height: 28, margin: -8, animationDelay: "0.3s" }} />
+                                <div className="w-3 h-3 rounded-full bg-red-600 border-2 border-white shadow-lg shadow-red-600/60" title="194.165.16.11 — Holanda" />
+                            </div>
+                        </div>
+                        <div className="absolute" style={{ top: "32%", left: "48%" }}>
+                            <div className="w-2.5 h-2.5 rounded-full bg-orange-400 border border-white shadow-md shadow-orange-400/50" title="91.108.56.11 — Países Bajos" />
+                        </div>
+                        <div className="absolute" style={{ top: "44%", left: "62%" }}>
+                            <div className="w-2 h-2 rounded-full bg-amber-400 border border-white shadow-md" title="45.155.205.233" />
+                        </div>
+                        <div className="absolute" style={{ top: "25%", left: "80%" }}>
+                            <div className="w-2 h-2 rounded-full bg-amber-400 border border-white shadow-md" title="103.21.244.0 — Asia" />
+                        </div>
+                        <div className="absolute" style={{ top: "35%", left: "15%" }}>
+                            <div className="w-2 h-2 rounded-full bg-blue-400 border border-white shadow-md" title="66.249.66.194 — USA (Google)" />
+                        </div>
+                        <div className="absolute" style={{ top: "52%", left: "18%" }}>
+                            <div className="w-2 h-2 rounded-full bg-yellow-400 border border-white shadow-md" title="159.89.49.254" />
+                        </div>
+                        {/* Label demo */}
+                        <div className="absolute bottom-3 right-3 text-xs text-slate-500">
+                            Datos de demo · <span className="text-amber-500/70">Inicia sesión para el mapa en vivo</span>
+                        </div>
+                    </div>
+                    {/* Leyenda */}
+                    <div className="flex flex-wrap gap-3 mt-3">
+                        {(["critical", "high", "medium", "low"] as const).map(s => {
+                            const colors = { critical: "#dc2626", high: "#ef4444", medium: "#f97316", low: "#eab308" };
+                            const counts = { critical: 2, high: 2, medium: 3, low: 3 };
+                            return (
+                                <div key={s} className="flex items-center gap-1.5 text-xs">
+                                    <div className="w-3 h-3 rounded-full" style={{ background: colors[s], boxShadow: `0 0 6px ${colors[s]}` }} />
+                                    <span className="capitalize text-muted-foreground">{s}:</span>
+                                    <span className="font-semibold">{counts[s]}</span>
+                                </div>
+                            );
+                        })}
+                        <span className="text-xs text-muted-foreground ml-auto">10 eventos · 7 IPs únicas</span>
+                    </div>
+                </CardContent>
+            </Card>
 
             {/* Stats grid */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">

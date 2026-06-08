@@ -144,7 +144,9 @@ export function useProjects(): UseProjectsReturn {
             ? "development"
             : "production",
       }),
-    }).catch(console.error);
+    }).catch((err) => {
+      console.error("[toggleStatus] PATCH failed:", err instanceof Error ? err.message : String(err));
+    });
   }, [projects]);
 
   return {
