@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
+import { after } from "next/server";
 import { verifyToken, SESSION_COOKIE } from "@/lib/auth/session";
-import { checkRateLimit, isMaliciousBot } from "@/lib/security-logger";
+import { checkRateLimit, isMaliciousBot, logThreatAwait } from "@/lib/security-logger";
 
 function getClientIP(req: NextRequest): string {
   return (
@@ -10,22 +11,6 @@ function getClientIP(req: NextRequest): string {
   );
 }
 
-function logToAPI(req: NextRequest, info: Record<string, string>): void {
-  const secret = process.env.SECURITY_LOG_SECRET || process.env.BLOB_READ_WRITE_TOKEN || "";
-  const url = new URL("/api/security/log", req.url);
-
-  fetch(url.toString(), {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "x-security-secret": secret,
-    },
-    body: JSON.stringify(info),
-  }).catch((err) => {
-    console.error("[middleware:logToAPI]", err instanceof Error ? err.message : String(err));
-  });
-}
-
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const ip = getClientIP(request);
@@ -33,12 +18,18 @@ export async function middleware(request: NextRequest) {
 
   // ─── 1. Bot malicioso → 403 ───
   if (isMaliciousBot(ua)) {
-    logToAPI(request, {
-      type: "bot_blocked",
-      ip,
-      path: pathname,
-      userAgent: ua,
-      details: `Bot malicioso bloqueado: ${ua.slice(0, 100)}`,
+    after(async () => {
+      try {
+        await logThreatAwait({
+          type: "bot_blocked",
+          ip,
+          path: pathname,
+          userAgent: ua,
+          details: `Bot malicioso bloqueado: ${ua.slice(0, 100)}`,
+        });
+      } catch (err) {
+        console.error("[middleware:after]", err instanceof Error ? err.message : String(err));
+      }
     });
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
@@ -49,12 +40,18 @@ export async function middleware(request: NextRequest) {
     const { blocked, count } = checkRateLimit(ip, kind);
 
     if (blocked) {
-      logToAPI(request, {
-        type: "rate_limited",
-        ip,
-        path: pathname,
-        userAgent: ua,
-        details: `Rate limit excedido: ${count} peticiones/min (${kind})`,
+      after(async () => {
+        try {
+          await logThreatAwait({
+            type: "rate_limited",
+            ip,
+            path: pathname,
+            userAgent: ua,
+            details: `Rate limit excedido: ${count} peticiones/min (${kind})`,
+          });
+        } catch (err) {
+          console.error("[middleware:after]", err instanceof Error ? err.message : String(err));
+        }
       });
       return NextResponse.json(
         { error: "Too many requests" },
@@ -73,12 +70,18 @@ export async function middleware(request: NextRequest) {
 
     const session = await verifyToken(token);
     if (!session) {
-      logToAPI(request, {
-        type: "invalid_token",
-        ip,
-        path: pathname,
-        userAgent: ua,
-        details: "Token JWT inválido, expirado o manipulado",
+      after(async () => {
+        try {
+          await logThreatAwait({
+            type: "invalid_token",
+            ip,
+            path: pathname,
+            userAgent: ua,
+            details: "Token JWT inválido, expirado o manipulado",
+          });
+        } catch (err) {
+          console.error("[middleware:after]", err instanceof Error ? err.message : String(err));
+        }
       });
       return NextResponse.redirect(new URL("/login", request.url));
     }
