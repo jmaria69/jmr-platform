@@ -16,6 +16,8 @@ export function logThreat(info: ThreatInfo): void {
   });
 }
 
+export { logThreatAsync as logThreatAwait };
+
 async function logThreatAsync(info: ThreatInfo): Promise<void> {
   const store = await readStore();
 

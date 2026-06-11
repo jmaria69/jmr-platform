@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyToken, SESSION_COOKIE } from "@/lib/auth/session";
-import { logThreat, checkRateLimit, isMaliciousBot } from "@/lib/security-logger";
+import { logThreatAwait, checkRateLimit, isMaliciousBot } from "@/lib/security-logger";
 
 function getClientIP(req: NextRequest): string {
   return (
@@ -17,7 +17,7 @@ export async function middleware(request: NextRequest) {
 
   // ─── 1. Bot malicioso → 403 ───
   if (isMaliciousBot(ua)) {
-    logThreat({
+    await logThreatAwait({
       type: "bot_blocked",
       ip,
       path: pathname,
@@ -33,7 +33,7 @@ export async function middleware(request: NextRequest) {
     const { blocked, count } = checkRateLimit(ip, kind);
 
     if (blocked) {
-      logThreat({
+      await logThreatAwait({
         type: "rate_limited",
         ip,
         path: pathname,
@@ -57,7 +57,7 @@ export async function middleware(request: NextRequest) {
 
     const session = await verifyToken(token);
     if (!session) {
-      logThreat({
+      await logThreatAwait({
         type: "invalid_token",
         ip,
         path: pathname,
