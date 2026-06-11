@@ -162,19 +162,19 @@ export default function SeguridadPage() {
             Monitorización en tiempo real · Alertas por email automáticas
           </p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 items-center">
           <Button
             variant="outline"
             size="sm"
-            onClick={() => setAutoRefresh(!autoRefresh)}
+            onClick={() => autoRefresh ? setAutoRefresh(false) : fetchData()}
             className={autoRefresh ? "border-green-500/40 text-green-400" : ""}
+            title={autoRefresh ? "Click para desactivar auto-refresco" : "Click para actualizar ahora"}
           >
-            <Wifi className="h-3.5 w-3.5 mr-1.5" />
-            {autoRefresh ? "Auto (10s)" : "Manual"}
-          </Button>
-          <Button variant="outline" size="sm" onClick={fetchData}>
-            <RefreshCw className="h-3.5 w-3.5 mr-1.5" />
-            Actualizar
+            {autoRefresh ? (
+              <><Wifi className="h-3.5 w-3.5 mr-1.5" /> Auto</>
+            ) : (
+              <><RefreshCw className={`h-3.5 w-3.5 mr-1.5 ${loading ? "animate-spin" : ""}`} /> Actualizar</>
+            )}
           </Button>
         </div>
       </div>
