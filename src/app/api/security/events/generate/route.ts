@@ -18,7 +18,9 @@ export async function POST(req: NextRequest) {
   try {
     const body = (await req.json()) as { count?: number };
     const count = Math.min(body.count || 5, 20);
+    const hasToken = !!process.env.BLOB_READ_WRITE_TOKEN;
     const store = await readStore();
+    const readCount = store.events.length;
 
     for (let i = 0; i < count; i++) {
       const event: SecurityEvent = {
@@ -38,7 +40,12 @@ export async function POST(req: NextRequest) {
     if (store.events.length > 200) store.events = store.events.slice(0, 200);
     await writeStore(store);
 
-    return NextResponse.json({ ok: true, generated: count, total: store.events.length });
+    return NextResponse.json({
+      ok: true,
+      generated: count,
+      total: store.events.length,
+      debug: { hasToken, readBefore: readCount },
+    });
   } catch (err) {
     console.error("[Generate]", err);
     return NextResponse.json({ error: "Server error" }, { status: 500 });

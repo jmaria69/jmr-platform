@@ -313,7 +313,8 @@ export function ThreatMap() {
                                     headers: { "Content-Type": "application/json" },
                                     body: JSON.stringify({ count: 10 }),
                                 });
-                                if (!res.ok) console.error("[Generar ataques]", res.status, await res.text());
+                                const data = await res.json();
+                                console.log("[Generar ataques]", res.status, data);
                                 fetchAndGeolocate();
                             }}
                             className="h-7 gap-1.5"
