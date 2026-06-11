@@ -10,7 +10,7 @@ export const projects: Project[] = [
     tech: ["Python", "FastAPI", "Docker Compose", "Remotion", "FFmpeg", "Telegram Bot API", "Google Workspace APIs", "Ollama", "LangChain", "PostgreSQL", "Serveo"],
     status: "production",
     category: "ai",
-    url: "https://olga.praxialabs.com/dashboard/",
+    url: "https://olga.praxialabs.com",
     videoUrl: "/videos/olga-ai.mp4",
     image: "/projects/gws.svg",
     color: "#8b5cf6",
