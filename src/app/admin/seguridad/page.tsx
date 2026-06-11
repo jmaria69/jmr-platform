@@ -163,19 +163,38 @@ export default function SeguridadPage() {
           </p>
         </div>
         <div className="flex gap-2 items-center">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => autoRefresh ? setAutoRefresh(false) : fetchData()}
-            className={autoRefresh ? "border-green-500/40 text-green-400" : ""}
-            title={autoRefresh ? "Click para desactivar auto-refresco" : "Click para actualizar ahora"}
-          >
-            {autoRefresh ? (
-              <><Wifi className="h-3.5 w-3.5 mr-1.5" /> Auto</>
-            ) : (
-              <><RefreshCw className={`h-3.5 w-3.5 mr-1.5 ${loading ? "animate-spin" : ""}`} /> Actualizar</>
-            )}
-          </Button>
+          {autoRefresh ? (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setAutoRefresh(false)}
+              className="border-green-500/40 text-green-400"
+              title="Click para cambiar a actualización manual"
+            >
+              <Wifi className="h-3.5 w-3.5 mr-1.5" /> Auto
+            </Button>
+          ) : (
+            <>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={fetchData}
+                disabled={loading}
+                title="Click para actualizar ahora"
+              >
+                <RefreshCw className={`h-3.5 w-3.5 mr-1.5 ${loading ? "animate-spin" : ""}`} /> Actualizar
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setAutoRefresh(true)}
+                className="text-xs text-muted-foreground hover:text-green-400"
+                title="Volver a auto-refresco"
+              >
+                (Auto)
+              </Button>
+            </>
+          )}
         </div>
       </div>
 
