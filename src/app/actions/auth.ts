@@ -6,7 +6,7 @@ import { z } from "zod";
 import { headers } from "next/headers";
 import { prisma } from "../../lib/prisma";
 import { createSession, deleteSession, getSession } from "@/lib/auth";
-import { logThreat, checkRateLimit } from "@/lib/security-logger";
+import { logThreatAwait, checkRateLimit } from "@/lib/security-logger";
 
 
 
@@ -81,7 +81,7 @@ export async function login(
 
   const { blocked, count } = checkRateLimit(ip, "login");
   if (blocked) {
-    logThreat({
+    await logThreatAwait({
       type: "brute_force",
       ip,
       path: "/login",
@@ -95,7 +95,7 @@ export async function login(
     const admin = await getAdminByEmail(email);
 
     if (!admin) {
-      logThreat({
+      await logThreatAwait({
         type: "suspicious",
         ip,
         path: "/login",
@@ -108,7 +108,7 @@ export async function login(
     const passwordValid = await compare(password, admin.passwordHash);
 
     if (!passwordValid) {
-      logThreat({
+      await logThreatAwait({
         type: "brute_force",
         ip,
         path: "/login",
