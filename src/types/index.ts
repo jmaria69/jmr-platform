@@ -61,15 +61,16 @@ export interface DashboardStats {
   visitorsWeek: number;
   visitorsMonth: number;
   activeNow: number;
-  topProjects: { name: string; visits: number }[];
-  deviceBreakdown: { device: string; count: number }[];
-  osBreakdown: { os: string; count: number }[];
   revenueTotal: number;
   revenueMonth: number;
   conversionRate: number;
   avgSessionDuration: number;
   bounceRate: number;
-  trafficByHour: { hour: string; visitors: number }[];
+  trafficByDay: { label: string; visitors: number }[];
+  trafficByMonth: { label: string; visitors: number }[];
+  trafficByYear: { label: string; visitors: number }[];
+  deviceData: { device: string; count: number }[];
+  osData: { os: string; count: number }[];
   trafficByCountry: { country: string; visitors: number }[];
 }
 

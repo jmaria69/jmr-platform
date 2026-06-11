@@ -174,7 +174,7 @@ export function ThreatMap() {
 
                 console.log("✅ Leaflet cargado dinámicamente");
 
-                const map = L.default.map(containerRef.current, {
+                const map = L.default.map(containerRef.current!, {
                     center: [20, 0], zoom: 2, minZoom: 1, maxZoom: 6,
                     zoomControl: true, attributionControl: false,
                 });

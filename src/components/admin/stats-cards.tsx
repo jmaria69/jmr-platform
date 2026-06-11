@@ -1,7 +1,7 @@
 "use client";
 
 import { Users, Eye, TrendingUp, DollarSign, Clock, Activity, MousePointerClick } from "lucide-react";
-import { DashboardStats } from "@/types";
+import type { DashboardStats } from "@/lib/repositories/dashboard.repository";
 
 interface StatsCardsProps {
   stats: DashboardStats;

@@ -86,9 +86,6 @@ export default async function AnalyticsPage() {
             </TableHeader>
             <TableBody>
               {projects.map((project) => {
-                const visits = dashboardStats.topProjects.find(
-                  (tp) => tp.name === project.name
-                )?.visits;
                 return (
                   <TableRow key={project.id}>
                     <TableCell>
@@ -124,7 +121,7 @@ export default async function AnalyticsPage() {
                       {project.metrics?.rating ?? "—"}
                     </TableCell>
                     <TableCell className="text-right">
-                      {visits?.toLocaleString("es") ?? "—"}
+                      {project.metrics?.users?.toLocaleString("es") ?? "—"}
                     </TableCell>
                   </TableRow>
                 );

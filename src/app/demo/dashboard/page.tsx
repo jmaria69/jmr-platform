@@ -24,10 +24,14 @@ export default async function DemoDashboardPage() {
             </div>
 
             <StatsCards stats={stats} />
-            <TrafficChart data={stats.trafficByHour} />
+            <TrafficChart
+                trafficByDay={stats.trafficByDay}
+                trafficByMonth={stats.trafficByMonth}
+                trafficByYear={stats.trafficByYear}
+            />
             <DeviceChart
-                deviceData={stats.deviceBreakdown}
-                osData={stats.osBreakdown}
+                deviceData={stats.deviceData}
+                osData={stats.osData}
             />
             <VisitorsTable />
             <AnalyticsAnalysis />

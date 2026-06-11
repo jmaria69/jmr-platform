@@ -146,18 +146,12 @@ export const dashboardStats: DashboardStats = {
   visitorsWeek: 1842,
   visitorsMonth: 7563,
   activeNow: 12,
-  topProjects: [
-    { name: "AdminApp Maestro", visits: 2340 },
-    { name: "Core OPS", visits: 1890 },
-    { name: "OLGA.ai", visits: 1560 },
-    { name: "AppVoz", visits: 520 },
-  ],
-  deviceBreakdown: [
+  deviceData: [
     { device: "Desktop", count: 4120 },
     { device: "Mobile", count: 2780 },
     { device: "Tablet", count: 663 },
   ],
-  osBreakdown: [
+  osData: [
     { os: "Windows", count: 2950 },
     { os: "macOS", count: 1680 },
     { os: "Android", count: 1520 },
@@ -169,10 +163,18 @@ export const dashboardStats: DashboardStats = {
   conversionRate: 3.8,
   avgSessionDuration: 245,
   bounceRate: 34.2,
-  trafficByHour: Array.from({ length: 24 }, (_, i) => ({
-    hour: `${i.toString().padStart(2, "0")}:00`,
-    visitors: Math.floor(Math.random() * 80) + (i >= 9 && i <= 20 ? 60 : 10),
+  trafficByDay: Array.from({ length: 12 }, (_, i) => ({
+    label: `2026-05-${(i + 28).toString().padStart(2, "0")}`,
+    visitors: Math.floor(Math.random() * 80) + 40,
   })),
+  trafficByMonth: [
+    { label: "202605", visitors: 7563 },
+    { label: "202606", visitors: 5200 },
+  ],
+  trafficByYear: [
+    { label: "2025", visitors: 45000 },
+    { label: "2026", visitors: 12763 },
+  ],
   trafficByCountry: [
     { country: "España", visitors: 3200 },
     { country: "México", visitors: 1450 },
