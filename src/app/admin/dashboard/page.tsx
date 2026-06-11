@@ -6,6 +6,8 @@ import { VisitorsTable } from "@/components/admin/visitors-table";
 import { DeviceChart } from "@/components/admin/device-chart";
 import { AnalyticsAnalysis } from "@/components/admin/analytics-analysis";
 
+
+
 export default async function DashboardPage() {
     const stats = await getRealDashboardStats();
 
@@ -19,10 +21,14 @@ export default async function DashboardPage() {
             </div>
 
             <StatsCards stats={stats} />
-            <TrafficChart data={stats.trafficByHour} />
+            <TrafficChart
+                trafficByDay={stats.trafficByDay}
+                trafficByMonth={stats.trafficByMonth}
+                trafficByYear={stats.trafficByYear}
+            />
             <DeviceChart
-                deviceData={stats.deviceBreakdown}
-                osData={stats.osBreakdown}
+                deviceData={stats.deviceData}
+                osData={stats.osData}
             />
             <VisitorsTable />
             <AnalyticsAnalysis />
