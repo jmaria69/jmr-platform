@@ -53,49 +53,16 @@ const TYPE_LABELS: Record<string, string> = {
 async function geolocateIPs(
     ips: string[]
 ): Promise<Record<string, { lat: number; lon: number; country: string; city: string }>> {
-    const unique = [...new Set(ips)].filter(
-        ip => ip !== "unknown" && !ip.startsWith("127.") && !ip.startsWith("::")
-    );
-    if (unique.length === 0) return {};
-
     try {
-        const batch = unique.slice(0, 100).map(query => ({
-            query,
-            fields: "query,lat,lon,country,city,status",
-        }));
-        const res = await fetch(
-            "http://ip-api.com/batch?fields=query,lat,lon,country,city,status",
-            {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(batch),
-            }
-        );
-        if (!res.ok) {
-            console.error("[geolocateIPs] API error:", res.status);
-            return {};
-        }
-
-        const data = await res.json();
-        console.log("[geolocateIPs] Raw response:", data);
-
-        if (!Array.isArray(data)) {
-            console.error("[geolocateIPs] Expected array, got:", typeof data);
-            return {};
-        }
-
-        const map: Record<string, { lat: number; lon: number; country: string; city: string }> = {};
-        for (const item of data) {
-            if (item.status === "success") {
-                map[item.query] = { lat: item.lat, lon: item.lon, country: item.country, city: item.city };
-            } else {
-                console.warn("[geolocateIPs] Failed:", item.query, item.status);
-            }
-        }
-        console.log("[geolocateIPs] Final map:", Object.keys(map).length, "IPs");
-        return map;
-    } catch (err) {
-        console.error("[geolocateIPs] Error:", err);
+        const res = await fetch("/api/security/geolocate", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ ips }),
+        });
+        if (!res.ok) return {};
+        const { geoMap } = await res.json();
+        return geoMap ?? {};
+    } catch {
         return {};
     }
 }
