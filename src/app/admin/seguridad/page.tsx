@@ -106,7 +106,11 @@ export default function SeguridadPage() {
 
   const fetchData = useCallback(async () => {
     try {
-      const url = filterType ? `/api/security/alert?type=${filterType}` : "/api/security/alert";
+      const params = new URLSearchParams();
+      if (filterType) params.set("type", filterType);
+      // cuando quieras filtrar en servidor:
+      // if (filterSeverity) params.set("severity", filterSeverity);
+      const url = `/api/security/events${params.size ? `?${params}` : ""}`;
       const res = await fetch(url);
       const data = await res.json();
       setEvents(data.events ?? []);
@@ -127,7 +131,7 @@ export default function SeguridadPage() {
   }, [autoRefresh, fetchData]);
 
   const resolveEvent = async (id: string) => {
-    await fetch("/api/security/alert", {
+    await fetch("/api/security/events", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id }),

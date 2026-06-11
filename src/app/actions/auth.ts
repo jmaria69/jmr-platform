@@ -3,8 +3,10 @@
 import { redirect } from "next/navigation";
 import { compare, hash } from "bcryptjs";
 import { z } from "zod";
+import { headers } from "next/headers";
 import { prisma } from "../../lib/prisma";
 import { createSession, deleteSession, getSession } from "@/lib/auth";
+import { logThreat, checkRateLimit } from "@/lib/security-logger";
 
 
 
@@ -71,24 +73,48 @@ export async function login(
     return { error: validated.error.issues[0].message };
   }
   const { email, password } = validated.data;
-  console.log("📧 Email recibido del formulario:", email);
-  console.log("📧 Email en minúsculas:", email.toLowerCase());
-  console.log("📧 Longitud:", email.length);
+
+  const hdrs = await headers();
+  const ip = hdrs.get("x-forwarded-for")?.split(",")[0]?.trim()
+    || hdrs.get("x-real-ip") || "unknown";
+  const ua = hdrs.get("user-agent") || "";
+
+  const { blocked, count } = checkRateLimit(ip, "login");
+  if (blocked) {
+    logThreat({
+      type: "brute_force",
+      ip,
+      path: "/login",
+      userAgent: ua,
+      details: `Brute force: ${count} intentos de login en 1 min`,
+    });
+    return { error: "Demasiados intentos. Espera 1 minuto." };
+  }
 
   try {
     const admin = await getAdminByEmail(email);
-    console.log("🔍 Admin encontrado:", admin?.email);
-    console.log("🔑 Hash en BD:", admin?.passwordHash);
-    console.log("📝 Contraseña enviada:", password);
 
     if (!admin) {
+      logThreat({
+        type: "suspicious",
+        ip,
+        path: "/login",
+        userAgent: ua,
+        details: `Login fallido: email no encontrado (${email.slice(0, 3)}***)`,
+      });
       return { error: "Credenciales inválidas" };
     }
 
     const passwordValid = await compare(password, admin.passwordHash);
-    console.log("✅ Compare result:", passwordValid);
 
     if (!passwordValid) {
+      logThreat({
+        type: "brute_force",
+        ip,
+        path: "/login",
+        userAgent: ua,
+        details: `Login fallido: contraseña incorrecta para ${admin.email.slice(0, 3)}***`,
+      });
       return { error: "Credenciales inválidas" };
     }
 

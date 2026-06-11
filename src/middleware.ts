@@ -1,34 +1,76 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { verifyToken, SESSION_COOKIE } from '@/lib/auth/session';
+import { NextRequest, NextResponse } from "next/server";
+import { verifyToken, SESSION_COOKIE } from "@/lib/auth/session";
+import { logThreat, checkRateLimit, isMaliciousBot } from "@/lib/security-logger";
+
+function getClientIP(req: NextRequest): string {
+  return (
+    req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+    req.headers.get("x-real-ip") ||
+    "unknown"
+  );
+}
 
 export async function middleware(request: NextRequest) {
-    const { pathname } = request.nextUrl;
+  const { pathname } = request.nextUrl;
+  const ip = getClientIP(request);
+  const ua = request.headers.get("user-agent") || "";
 
-    // Excluir /admin/demo de protección
-    if (pathname === '/admin/demo') {
-        return NextResponse.next();
+  // ─── 1. Bot malicioso → 403 ───
+  if (isMaliciousBot(ua)) {
+    logThreat({
+      type: "bot_blocked",
+      ip,
+      path: pathname,
+      userAgent: ua,
+      details: `Bot malicioso bloqueado: ${ua.slice(0, 100)}`,
+    });
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+
+  // ─── 2. Rate limiting (login y API) ───
+  if (pathname === "/login" || pathname.startsWith("/api/")) {
+    const kind = pathname === "/login" ? "login" : "api";
+    const { blocked, count } = checkRateLimit(ip, kind);
+
+    if (blocked) {
+      logThreat({
+        type: "rate_limited",
+        ip,
+        path: pathname,
+        userAgent: ua,
+        details: `Rate limit excedido: ${count} peticiones/min (${kind})`,
+      });
+      return NextResponse.json(
+        { error: "Too many requests" },
+        { status: 429, headers: { "Retry-After": "60" } }
+      );
+    }
+  }
+
+  // ─── 3. Auth admin + detección de tokens inválidos ───
+  if (pathname.startsWith("/admin") && pathname !== "/admin/demo") {
+    const token = request.cookies.get(SESSION_COOKIE)?.value;
+
+    if (!token) {
+      return NextResponse.redirect(new URL("/login", request.url));
     }
 
-    if (pathname.startsWith('/admin') && !pathname.startsWith('/login')) {
-        const token = request.cookies.get(SESSION_COOKIE)?.value;
-
-        if (!token) {
-            return NextResponse.redirect(new URL('/login', request.url));
-        }
-
-        try {
-            const session = await verifyToken(token);
-            if (!session) {
-                return NextResponse.redirect(new URL('/login', request.url));
-            }
-        } catch {
-            return NextResponse.redirect(new URL('/login', request.url));
-        }
+    const session = await verifyToken(token);
+    if (!session) {
+      logThreat({
+        type: "invalid_token",
+        ip,
+        path: pathname,
+        userAgent: ua,
+        details: "Token JWT inválido, expirado o manipulado",
+      });
+      return NextResponse.redirect(new URL("/login", request.url));
     }
+  }
 
-    return NextResponse.next();
+  return NextResponse.next();
 }
 
 export const config = {
-    matcher: ['/admin/:path*'],
+  matcher: ["/admin/:path*", "/login", "/api/:path*"],
 };
