@@ -59,7 +59,7 @@ export default function LoginPage() {
                   id="email"
                   name="email"
                   type="email"
-                  placeholder="admin@praxialab.dev"
+                  placeholder="admin@praxialabs.com"
                   required
                   autoComplete="email"
                   className="pl-10 h-11 bg-white/3 border-white/10 focus:border-indigo-500/50 rounded-xl"

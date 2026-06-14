@@ -5,7 +5,7 @@
  * in components. Reference from here instead.
  */
 
-export const APP_NAME = "PraxiaLab";
+export const APP_NAME = "PraxiaLabs";
 export const APP_DESCRIPTION =
   "Laboratorio de agentes IA: soluciones inteligentes para automatización, CRM y aplicaciones empresariales.";
 
@@ -74,6 +74,6 @@ export const MAX_VISIBLE_VISITORS = 30;
 
 // ─── Contact info ───
 
-export const CONTACT_EMAIL = "contacto@praxialab.dev";
+export const CONTACT_EMAIL = "contacto@praxialabs.com";
 export const CONTACT_PHONE = "+34 600 000 000";
 export const CONTACT_LOCATION = "Madrid, España";
