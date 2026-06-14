@@ -27,7 +27,7 @@ export function Navbar() {
           </div>
           <div className="flex flex-col leading-none">
             <span className="text-base font-black tracking-tight bg-gradient-to-r from-violet-300 via-white to-sky-300 bg-clip-text text-transparent">
-              Praxia<span className="text-sky-400">Lab</span>
+              Praxia<span className="text-sky-400">Labs</span>
             </span>
             <span className="text-[9px] font-semibold text-white/30 uppercase tracking-[0.2em]">
               AI Agents Studio

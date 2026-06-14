@@ -71,7 +71,7 @@ export function Footer() {
               <PraxiaLabLogo size={28} />
               <div className="flex flex-col leading-none">
                 <span className="text-sm font-black tracking-tight bg-gradient-to-r from-violet-300 via-white to-sky-300 bg-clip-text text-transparent">
-                  Praxia<span className="text-sky-400">Lab</span>
+                  Praxia<span className="text-sky-400">Labs</span>
                 </span>
                 <span className="text-[8px] font-semibold text-white/30 uppercase tracking-[0.2em]">
                   AI Agents Studio
@@ -127,7 +127,7 @@ export function Footer() {
         </div>
 
         <div className="mt-12 border-t border-white/5 pt-6 text-center text-xs text-muted-foreground">
-          &copy; {new Date().getFullYear()} PraxiaLab. Todos los derechos reservados.
+          &copy; {new Date().getFullYear()} PraxiaLabs. Todos los derechos reservados.
         </div>
       </div>
     </footer>
