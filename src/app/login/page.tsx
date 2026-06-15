@@ -30,7 +30,7 @@ export default function LoginPage() {
             <ShieldCheck className="h-8 w-8 text-indigo-400" />
           </div>
           <h1 className="text-2xl font-bold tracking-tight">
-            <span className="text-gradient">Praxia</span>Lab
+            <span className="text-gradient">Praxia</span>Labs
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
             Accede al panel de administración
