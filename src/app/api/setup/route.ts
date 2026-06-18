@@ -2,7 +2,21 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { hash } from "bcryptjs";
 
+// Endpoint de aprovisionamiento de administradores.
+// Controles ISO 27001 (A.8.2 acceso privilegiado / A.8.9 config segura):
+//  - Deshabilitado en produccion (salvo ALLOW_SETUP=true).
+//  - Requiere cabecera x-setup-secret == SETUP_SECRET.
+//  - Nunca devuelve la contrasena en la respuesta.
 export async function POST(req: NextRequest) {
+    if (process.env.NODE_ENV === "production" && process.env.ALLOW_SETUP !== "true") {
+        return new NextResponse("Not found", { status: 404 });
+    }
+
+    const setupSecret = process.env.SETUP_SECRET;
+    if (!setupSecret || req.headers.get("x-setup-secret") !== setupSecret) {
+        return NextResponse.json({ error: "No autorizado" }, { status: 401 });
+    }
+
     const adminPassword = process.env.ADMIN_PASSWORD;
 
     if (!adminPassword) {
@@ -38,9 +52,8 @@ export async function POST(req: NextRequest) {
         });
 
         return NextResponse.json({
-            message: "✅ Admins sincronizados",
+            message: "Admins sincronizados",
             admins: [admin1.email, admin2.email],
-            password: adminPassword,
         });
     } catch (err) {
         return NextResponse.json(
