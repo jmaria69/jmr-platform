@@ -1,0 +1,23 @@
+/* Global Styles */
+body {
+    font-family: 'Arial', sans-serif;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: #f8f9fa;
+}
+
+.logo {
+    font-size: 1.7em;
+    margin-left: 20px;
+    font-weight: bold;
+}
+
+nav button, .header img{
+    margin-right: 20px;
+    cursor:pointer;
+}

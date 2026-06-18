@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AirGap AI — Local Galaxy | Praxia Labs</title>
+  <meta name="description" content="Infraestructura de IA privada y soberana: RAG on-premise, LLM local y agentes autónomos para entornos regulados sin dependencia de nube.">
+  <meta property="og:title" content="AirGap AI — Arquitectura de agentes autónomos on-premise | Praxia Labs">
+  <meta property="og:description" content="RAG privado + LLM on-premise + agentes autónomos. Soberanía total del dato. Desplegable en entornos regulados.">
+  <meta property="og:url" content="https://praxialabs.com/docs/local-galaxy">
+  <meta property="og:type" content="website">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-deep:    #070714;
+      --bg-mid:     #0d0d2b;
+      --bg-card:    rgba(255,255,255,0.04);
+      --border:     rgba(255,255,255,0.08);
+      --accent1:    #7c3aed;
+      --accent2:    #00d4ff;
+      --accent3:    #06ffa5;
+      --text-main:  #e8e8f0;
+      --text-muted: #8888aa;
+      --text-label: #a78bfa;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg-deep);
+      background-image:
+        radial-gradient(ellipse 80% 60% at 50% -10%, rgba(124,58,237,0.25) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 40% at 90% 80%,  rgba(0,212,255,0.08)  0%, transparent 60%);
+      color: var(--text-main);
+      font-family: 'Inter', system-ui, sans-serif;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      backdrop-filter: blur(16px);
+      background: rgba(7,7,20,0.85);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 60px;
+    }
+    .nav-logo { display: flex; align-items: center; gap: .5rem; text-decoration: none; }
+    .nav-logo-dot {
+      width: 28px; height: 28px; border-radius: 6px;
+      background: linear-gradient(135deg, var(--accent1), var(--accent2));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px;
+    }
+    .nav-logo-text { font-weight: 700; font-size: .95rem; color: var(--text-main); }
+    .nav-logo-text span { color: var(--accent2); }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a { color: var(--text-muted); text-decoration: none; font-size: .9rem;
+      transition: color .2s; }
+    .nav-links a:hover { color: var(--text-main); }
+    .nav-badge {
+      background: linear-gradient(90deg, var(--accent1), var(--accent2));
+      color: #fff; font-size: .8rem; font-weight: 600;
+      padding: .3rem .9rem; border-radius: 20px; text-decoration: none;
+      transition: opacity .2s;
+    }
+    .nav-badge:hover { opacity: .85; }
+
+    /* ── BREADCRUMB ── */
+    .breadcrumb {
+      max-width: 900px; margin: 2rem auto 0; padding: 0 2rem;
+      font-size: .82rem; color: var(--text-muted);
+      display: flex; align-items: center; gap: .4rem;
+    }
+    .breadcrumb a { color: var(--accent2); text-decoration: none; }
+    .breadcrumb a:hover { text-decoration: underline; }
+    .breadcrumb span { opacity: .4; }
+
+    /* ── HERO ── */
+    .hero {
+      max-width: 900px; margin: 0 auto; padding: 4rem 2rem 2rem;
+    }
+    .hero-tag {
+      display: inline-flex; align-items: center; gap: .5rem;
+      background: rgba(124,58,237,.15); border: 1px solid rgba(124,58,237,.3);
+      color: var(--text-label); font-size: .8rem; font-weight: 600;
+      padding: .3rem .8rem; border-radius: 20px; margin-bottom: 1.5rem;
+      letter-spacing: .04em; text-transform: uppercase;
+    }
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 800; line-height: 1.15;
+      letter-spacing: -.02em;
+      background: linear-gradient(135deg, #ffffff 0%, var(--accent2) 60%, var(--accent1) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 1.2rem;
+    }
+    .hero p {
+      font-size: 1.15rem; color: var(--text-muted);
+      max-width: 640px; margin-bottom: 2rem; line-height: 1.7;
+    }
+    .hero-badges { display: flex; flex-wrap: wrap; gap: .6rem; margin-bottom: 2.5rem; }
+    .badge {
+      display: inline-flex; align-items: center; gap: .35rem;
+      background: rgba(255,255,255,.05); border: 1px solid var(--border);
+      color: var(--text-muted); font-size: .78rem; font-weight: 500;
+      padding: .3rem .75rem; border-radius: 6px;
+    }
+    .badge.green  { border-color: rgba(6,255,165,.25); color: var(--accent3); }
+    .badge.cyan   { border-color: rgba(0,212,255,.25); color: var(--accent2); }
+    .badge.purple { border-color: rgba(124,58,237,.3); color: var(--text-label); }
+
+    /* ── ARCHITECTURE VISUAL ── */
+    .arch-block {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.5rem 1.8rem;
+      margin-bottom: 3rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .85rem;
+      color: var(--accent3);
+      position: relative; overflow: hidden;
+    }
+    .arch-block::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent1), var(--accent2), transparent);
+    }
+    .arch-block .comment { color: #4a5568; }
+    .arch-block .keyword { color: var(--accent2); }
+    .arch-block .string  { color: #fbbf24; }
+    .arch-block .fn      { color: var(--accent3); }
+
+    /* ── SECTIONS ── */
+    section { max-width: 900px; margin: 0 auto; padding: 0 2rem 4rem; }
+
+    .section-label {
+      font-size: .78rem; font-weight: 700; letter-spacing: .1em;
+      text-transform: uppercase; color: var(--accent2);
+      margin-bottom: .6rem;
+    }
+    .section-title {
+      font-size: clamp(1.5rem, 3vw, 2rem);
+      font-weight: 800; letter-spacing: -.02em;
+      margin-bottom: .8rem; color: var(--text-main);
+    }
+    .section-sub {
+      color: var(--text-muted); font-size: 1rem;
+      max-width: 600px; margin-bottom: 2.5rem; line-height: 1.7;
+    }
+
+    /* ── COMPONENT CARDS ── */
+    .components-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.25rem; margin-bottom: 1rem;
+    }
+    .component-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px; padding: 1.5rem;
+      transition: border-color .25s, transform .25s;
+      position: relative; overflow: hidden;
+    }
+    .component-card:hover {
+      border-color: rgba(124,58,237,.4);
+      transform: translateY(-3px);
+    }
+    .component-card::after {
+      content: '';
+      position: absolute; inset: 0; border-radius: 14px; opacity: 0;
+      background: radial-gradient(circle at 50% 0%, rgba(124,58,237,.08), transparent 70%);
+      transition: opacity .25s;
+    }
+    .component-card:hover::after { opacity: 1; }
+    .card-icon {
+      width: 44px; height: 44px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem; margin-bottom: 1rem;
+    }
+    .icon-purple { background: rgba(124,58,237,.2); }
+    .icon-cyan   { background: rgba(0,212,255,.15); }
+    .icon-green  { background: rgba(6,255,165,.12); }
+    .card-title {
+      font-size: 1rem; font-weight: 700; color: var(--text-main);
+      margin-bottom: .3rem;
+    }
+    .card-subtitle {
+      font-size: .78rem; color: var(--text-label);
+      font-family: 'JetBrains Mono', monospace;
+      margin-bottom: .7rem;
+    }
+    .card-desc { font-size: .88rem; color: var(--text-muted); line-height: 1.6; }
+
+    /* ── FLOW DIAGRAM ── */
+    .flow-row {
+      display: flex; align-items: center; gap: 0;
+      margin-bottom: 2.5rem; flex-wrap: wrap;
+    }
+    .flow-node {
+      flex: 1; min-width: 140px;
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 1.1rem 1rem; text-align: center;
+    }
+    .flow-node .fn  { font-size: .75rem; font-family: 'JetBrains Mono', monospace;
+      color: var(--accent3); display: block; margin-bottom: .25rem; }
+    .flow-node .lbl { font-size: .82rem; font-weight: 600; color: var(--text-main); }
+    .flow-arrow {
+      flex: 0 0 40px; text-align: center;
+      color: var(--accent1); font-size: 1.2rem;
+    }
+
+    /* ── USE CASES ── */
+    .use-cases-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
+      gap: 1rem; margin-bottom: 1rem;
+    }
+    .use-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 1.2rem;
+      display: flex; flex-direction: column; gap: .4rem;
+    }
+    .use-card .uc-icon { font-size: 1.6rem; }
+    .use-card .uc-title { font-size: .92rem; font-weight: 700; color: var(--text-main); }
+    .use-card .uc-desc  { font-size: .82rem; color: var(--text-muted); line-height: 1.5; }
+
+    /* ── STACK TABLE ── */
+    .stack-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: .7rem; margin-bottom: 1rem;
+    }
+    .stack-item {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 8px; padding: .6rem .9rem;
+      font-size: .82rem; font-family: 'JetBrains Mono', monospace;
+      color: var(--text-muted); text-align: center;
+      transition: border-color .2s, color .2s;
+    }
+    .stack-item:hover { border-color: var(--accent1); color: var(--text-main); }
+
+    /* ── DIVIDER ── */
+    .divider {
+      max-width: 900px; margin: 0 auto 3rem;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border), transparent);
+    }
+
+    /* ── CTA ── */
+    .cta-block {
+      max-width: 900px; margin: 0 auto 5rem; padding: 0 2rem;
+    }
+    .cta-inner {
+      background: linear-gradient(135deg, rgba(124,58,237,.15), rgba(0,212,255,.08));
+      border: 1px solid rgba(124,58,237,.3);
+      border-radius: 20px; padding: 3rem 2rem; text-align: center;
+      position: relative; overflow: hidden;
+    }
+    .cta-inner::before {
+      content: '';
+      position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+      width: 60%; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent1), var(--accent2), transparent);
+    }
+    .cta-inner h2 {
+      font-size: clamp(1.4rem, 3vw, 1.9rem); font-weight: 800;
+      margin-bottom: .6rem; letter-spacing: -.02em;
+    }
+    .cta-inner p { color: var(--text-muted); margin-bottom: 1.8rem; }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: .5rem;
+      background: linear-gradient(90deg, var(--accent1), var(--accent2));
+      color: #fff; font-weight: 700; font-size: .95rem;
+      padding: .75rem 1.8rem; border-radius: 10px; text-decoration: none;
+      transition: opacity .2s, transform .2s; border: none; cursor: pointer;
+    }
+    .btn-primary:hover { opacity: .88; transform: translateY(-2px); }
+    .btn-ghost {
+      display: inline-flex; align-items: center; gap: .5rem;
+      background: transparent; color: var(--text-muted);
+      border: 1px solid var(--border); font-size: .9rem;
+      padding: .7rem 1.6rem; border-radius: 10px; text-decoration: none;
+      margin-left: 1rem; transition: border-color .2s, color .2s;
+    }
+    .btn-ghost:hover { border-color: var(--accent2); color: var(--text-main); }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 1rem;
+      max-width: 900px; margin: 0 auto;
+    }
+    footer .f-logo { font-size: .9rem; color: var(--text-muted); }
+    footer .f-logo span { color: var(--accent2); font-weight: 700; }
+    footer .f-links { display: flex; gap: 1.5rem; }
+    footer .f-links a { color: var(--text-muted); font-size: .85rem;
+      text-decoration: none; transition: color .2s; }
+    footer .f-links a:hover { color: var(--text-main); }
+
+    @media (max-width: 600px) {
+      .flow-row { flex-direction: column; align-items: stretch; }
+      .flow-arrow { transform: rotate(90deg); }
+      .btn-ghost { margin-left: 0; margin-top: .6rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="https://praxialabs.com" class="nav-logo">
+    <div class="nav-logo-dot">⚡</div>
+    <span class="nav-logo-text">Praxia<span>Labs</span></span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="https://praxialabs.com/#proyectos">Proyectos</a></li>
+    <li><a href="https://praxialabs.com/#contacto">Contacto</a></li>
+  </ul>
+  <a href="https://praxialabs.com/#contacto" class="nav-badge">🚀 Demo gratuita</a>
+</nav>
+
+<!-- BREADCRUMB -->
+<div class="breadcrumb">
+  <a href="https://praxialabs.com">Inicio</a>
+  <span>/</span>
+  <a href="https://praxialabs.com/docs">Docs</a>
+  <span>/</span>
+  <span style="color:var(--text-main)">Local Galaxy</span>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-tag">🛡️ &nbsp; Infraestructura · Soberanía del dato</div>
+  <h1>AirGap AI —<br>Agentes autónomos<br>sin conectividad externa</h1>
+  <p>Infraestructura de IA completamente local y soberana. Cero dependencia de APIs externas ni proveedores cloud. Desplegable en redes aisladas, intranets hospitalarias o cualquier entorno con normativa estricta de privacidad.</p>
+  <div class="hero-badges">
+    <span class="badge green">✓ LLM on-premise</span>
+    <span class="badge cyan">✓ RAG privado</span>
+    <span class="badge purple">✓ Zero-cloud</span>
+    <span class="badge green">✓ Entornos regulados</span>
+    <span class="badge">🏥 Salud</span>
+    <span class="badge">⚖️ Legal</span>
+    <span class="badge">🏦 Financiero</span>
+    <span class="badge">🛡️ Defensa</span>
+  </div>
+
+  <!-- CODE BLOCK -->
+  <div class="arch-block">
+    <div><span class="comment">// AirGap AI — Local Galaxy Architecture</span></div>
+    <br>
+    <div><span class="keyword">const</span> localGalaxy = {</div>
+    <div>&nbsp;&nbsp;memory:      <span class="string">"Obsidian"</span>,   <span class="comment">// base de conocimiento privada</span></div>
+    <div>&nbsp;&nbsp;agent:       <span class="string">"Hermes"</span>,    <span class="comment">// agente operativo autónomo</span></div>
+    <div>&nbsp;&nbsp;orchestrator:<span class="string">"Odysseus"</span>,  <span class="comment">// motor RAG + enrutador</span></div>
+    <div>&nbsp;&nbsp;cloud:        <span class="string">false</span>,       <span class="comment">// zero external dependencies</span></div>
+    <div>&nbsp;&nbsp;sovereignty:  <span class="string">true</span>,</div>
+    <div>}</div>
+    <br>
+    <div><span class="fn">localGalaxy</span>.<span class="fn">execute</span>() <span class="comment">// → 24/7 · air-gap ready · GDPR compliant</span></div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ARQUITECTURA -->
+<section>
+  <div class="section-label">Arquitectura</div>
+  <h2 class="section-title">Tres componentes. Un sistema.</h2>
+  <p class="section-sub">Cada pieza tiene una función específica. Juntas forman una infraestructura de agentes autónomos que opera sin salir del perímetro.</p>
+
+  <div class="components-grid">
+    <div class="component-card">
+      <div class="card-icon icon-purple">🪐</div>
+      <div class="card-title">Obsidian</div>
+      <div class="card-subtitle">// Núcleo de memoria</div>
+      <div class="card-desc">Base de conocimiento privada sobre archivos Markdown. Segunda memoria permanente accesible tanto por humanos como por agentes IA. Sincronización mediante repositorio Git local — sin nube, sin exposición.</div>
+    </div>
+    <div class="component-card">
+      <div class="card-icon icon-cyan">🦅</div>
+      <div class="card-title">Hermes</div>
+      <div class="card-subtitle">// Agente operativo</div>
+      <div class="card-desc">Agente autónomo local que lee, indexa, procesa y escribe de forma autónoma dentro de la bóveda de conocimiento. Conectado vía variables de entorno al sistema local o VPS. Opera 24/7 sin intervención humana.</div>
+    </div>
+    <div class="component-card">
+      <div class="card-icon icon-green">⛵</div>
+      <div class="card-title">Odysseus</div>
+      <div class="card-subtitle">// Orquestador RAG</div>
+      <div class="card-desc">Motor de búsqueda semántica sobre la base de conocimiento privada. Enruta el contexto exacto a Hermes para ejecuciones autónomas de fondo. Retrieval-Augmented Generation sin depender de ninguna API externa.</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- FLUJO -->
+<section>
+  <div class="section-label">Flujo de datos</div>
+  <h2 class="section-title">Cómo funciona</h2>
+  <p class="section-sub">El dato entra, se indexa localmente, y el agente actúa. Todo dentro del perímetro.</p>
+
+  <div class="flow-row">
+    <div class="flow-node">
+      <span class="fn">input()</span>
+      <span class="lbl">Consulta / Tarea</span>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node">
+      <span class="fn">odysseus.rag()</span>
+      <span class="lbl">Búsqueda semántica local</span>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node">
+      <span class="fn">hermes.think()</span>
+      <span class="lbl">LLM on-premise</span>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node">
+      <span class="fn">obsidian.write()</span>
+      <span class="lbl">Acción + Memoria</span>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CASOS DE USO -->
+<section>
+  <div class="section-label">Casos de uso</div>
+  <h2 class="section-title">Dónde desplegarlo</h2>
+  <p class="section-sub">Diseñado para organizaciones donde la privacidad no es opcional.</p>
+
+  <div class="use-cases-grid">
+    <div class="use-card">
+      <div class="uc-icon">🏥</div>
+      <div class="uc-title">Salud</div>
+      <div class="uc-desc">Intranets hospitalarias, historiales clínicos, normativa HIPAA/GDPR. Datos de pacientes que nunca salen del CPD.</div>
+    </div>
+    <div class="use-card">
+      <div class="uc-icon">⚖️</div>
+      <div class="uc-title">Legal & Compliance</div>
+      <div class="uc-desc">Documentación confidencial, contratos, due diligence. Búsqueda semántica sobre repositorios privados.</div>
+    </div>
+    <div class="use-card">
+      <div class="uc-icon">🏦</div>
+      <div class="uc-title">Financiero</div>
+      <div class="uc-desc">Entornos regulados por CNMV, BDE o BCE. Cero transmisión de datos a terceros proveedores.</div>
+    </div>
+    <div class="use-card">
+      <div class="uc-icon">🛡️</div>
+      <div class="uc-title">Defensa & Gobierno</div>
+      <div class="uc-desc">Redes air-gap, entornos clasificados, infraestructura crítica. Operación completamente offline.</div>
+    </div>
+    <div class="use-card">
+      <div class="uc-icon">🏭</div>
+      <div class="uc-title">Industria</div>
+      <div class="uc-desc">Documentación técnica, manuales, ERP propietario. Agentes que conocen tu operativa interna.</div>
+    </div>
+    <div class="use-card">
+      <div class="uc-icon">🎓</div>
+      <div class="uc-title">Educación & Research</div>
+      <div class="uc-desc">Repositorios de investigación privados. Asistentes IA sobre conocimiento institucional propio.</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- STACK -->
+<section>
+  <div class="section-label">Stack tecnológico</div>
+  <h2 class="section-title">Tecnologías</h2>
+  <p class="section-sub">Componentes open-source, probados en producción, sin vendor lock-in.</p>
+
+  <div class="stack-grid">
+    <div class="stack-item">Python</div>
+    <div class="stack-item">n8n</div>
+    <div class="stack-item">FastAPI</div>
+    <div class="stack-item">Obsidian</div>
+    <div class="stack-item">Ollama</div>
+    <div class="stack-item">LangChain</div>
+    <div class="stack-item">RAG local</div>
+    <div class="stack-item">PostgreSQL</div>
+    <div class="stack-item">Git</div>
+    <div class="stack-item">Docker</div>
+    <div class="stack-item">Linux</div>
+    <div class="stack-item">REST APIs</div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="cta-block">
+  <div class="cta-inner">
+    <h2>¿Tu organización necesita<br>IA con soberanía del dato?</h2>
+    <p>Demo gratuita en 15 minutos. Te mostramos la arquitectura en funcionamiento real.</p>
+    <a href="mailto:jmaria.romero@praxialabs.com" class="btn-primary">🚀 Solicitar demo</a>
+    <a href="https://praxialabs.com" class="btn-ghost">Ver más proyectos →</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="f-logo"><span>Praxia</span>Labs · AI Agents Studio</div>
+  <div class="f-links">
+    <a href="https://praxialabs.com">Inicio</a>
+    <a href="https://linkedin.com/in/jmromero-ai">LinkedIn</a>
+    <a href="mailto:jmaria.romero@praxialabs.com">Contacto</a>
+  </div>
+</footer>
+
+</body>
+</html>
