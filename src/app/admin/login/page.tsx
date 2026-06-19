@@ -12,7 +12,7 @@ export default function AdminLoginPage() {
     const [state, formAction, pending] = useFormState(login, { error: '' });
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+        <div className="flex items-center justify-center min-h-screen bg-transparent">
             <Card className="card-admin w-full max-w-md">
                 <CardHeader className="space-y-2">
                     <CardTitle className="text-2xl">Praxia Labs Admin</CardTitle>

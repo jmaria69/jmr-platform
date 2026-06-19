@@ -38,13 +38,7 @@ export default function Home() {
   const avgRating = (projects.reduce((sum, p) => sum + (p.metrics?.rating || 0), 0) / projects.length).toFixed(1);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-950 via-purple-950 to-slate-950 text-white overflow-hidden">
-      {/* Background Orbs */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-purple-600/10 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-1/3 right-1/4 w-96 h-96 bg-cyan-600/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
-        <div className="absolute top-1/2 right-0 w-72 h-72 bg-purple-600/5 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }}></div>
-      </div>
+    <div className="min-h-screen bg-transparent text-[#e8e8f0] overflow-hidden">
 
       {/* HERO SECTION */}
       <section className="relative pt-32 pb-24 px-6">

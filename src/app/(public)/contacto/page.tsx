@@ -77,18 +77,7 @@ export default function ContactoPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-950 via-purple-950 to-slate-950 text-white">
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-purple-600/10 rounded-full blur-3xl animate-pulse" />
-        <div
-          className="absolute bottom-1/3 right-1/4 w-96 h-96 bg-cyan-600/10 rounded-full blur-3xl animate-pulse"
-          style={{ animationDelay: '1s' }}
-        />
-        <div
-          className="absolute top-1/2 right-0 w-72 h-72 bg-purple-600/5 rounded-full blur-3xl animate-pulse"
-          style={{ animationDelay: '2s' }}
-        />
-      </div>
+    <div className="min-h-screen bg-transparent text-[#e8e8f0]">
 
       <section className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 sm:py-20">
         <div className="text-center mb-12">

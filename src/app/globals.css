@@ -60,46 +60,41 @@
 
 /* ─── Praxia Labs Color Palette (Violet + Cyan) ─── */
 :root {
-    --background: oklch(0.09 0.005 270);
-    --foreground: oklch(0.95 0 0);
-    --card: oklch(0.13 0.005 270);
-    --card-foreground: oklch(0.95 0 0);
-    --popover: oklch(0.13 0.005 270);
-    --popover-foreground: oklch(0.95 0 0);
-    --primary: oklch(0.65 0.2 275);
-    /* Violet */
-    --primary-foreground: oklch(0.98 0 0);
-    --secondary: oklch(0.65 0.18 190);
-    /* Cyan */
-    --secondary-foreground: oklch(0.9 0 0);
-    --muted: oklch(0.18 0.005 270);
-    --muted-foreground: oklch(0.6 0.01 270);
-    --accent: oklch(0.22 0.015 270);
-    --accent-foreground: oklch(0.95 0 0);
-    --destructive: oklch(0.65 0.2 25);
-    --border: oklch(1 0 0 / 8%);
-    --input: oklch(1 0 0 / 10%);
-    --ring: oklch(0.65 0.2 275);
-    /* Violet ring */
-    --chart-1: oklch(0.65 0.2 275);
-    /* Violet */
-    --chart-2: oklch(0.65 0.18 190);
-    /* Cyan */
-    --chart-3: oklch(0.65 0.18 130);
-    /* Green */
-    --chart-4: oklch(0.65 0.18 55);
-    /* Yellow */
-    --chart-5: oklch(0.65 0.18 325);
-    /* Pink */
+    --background: #070714;
+    --foreground: #e8e8f0;
+    --card: #0d0d2b;
+    --card-foreground: #e8e8f0;
+    --popover: #0d0d2b;
+    --popover-foreground: #e8e8f0;
+    --primary: #7c3aed;
+    --primary-foreground: #ffffff;
+    --secondary: #00d4ff;
+    --secondary-foreground: #070714;
+    --muted: rgba(255, 255, 255, 0.04);
+    --muted-foreground: #8888aa;
+    --accent: rgba(255, 255, 255, 0.04);
+    --accent-foreground: #e8e8f0;
+    --destructive: #ef4444;
+    --border: rgba(255, 255, 255, 0.08);
+    --input: rgba(255, 255, 255, 0.08);
+    --ring: #00d4ff;
     --radius: 0.75rem;
-    --sidebar: oklch(0.11 0.005 270);
-    --sidebar-foreground: oklch(0.95 0 0);
-    --sidebar-primary: oklch(0.65 0.2 275);
-    --sidebar-primary-foreground: oklch(0.98 0 0);
-    --sidebar-accent: oklch(0.18 0.015 270);
-    --sidebar-accent-foreground: oklch(0.95 0 0);
-    --sidebar-border: oklch(1 0 0 / 8%);
-    --sidebar-ring: oklch(0.65 0.2 275);
+    --sidebar: #070714;
+    --sidebar-foreground: #e8e8f0;
+    --sidebar-primary: #7c3aed;
+    --sidebar-primary-foreground: #ffffff;
+    --sidebar-accent: rgba(255, 255, 255, 0.04);
+    --sidebar-accent-foreground: #e8e8f0;
+    --sidebar-border: rgba(255, 255, 255, 0.08);
+    --sidebar-ring: #00d4ff;
+    
+    /* local-galaxy custom design system tokens */
+    --accent1: #7c3aed;
+    --accent2: #00d4ff;
+    --accent3: #06ffa5;
+    --text-main: #e8e8f0;
+    --text-muted: #8888aa;
+    --text-label: #a78bfa;
 }
 
 /* ─── Keyframes ─── */

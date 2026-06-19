@@ -11,6 +11,7 @@ import { PraxiaLabLogo } from "@/components/praxia-lab-logo";
 const links = [
   { href: "/", label: "Inicio" },
   { href: "/proyectos", label: "Proyectos" },
+  { href: "/local-galaxy/index.html", label: "Acerca de" },
   { href: "/contacto", label: "Contacto" },
 ];
 

@@ -37,7 +37,9 @@ export default function RootLayout({
   return (
     <html lang="es" className={`${geistSans.variable} ${geistMono.variable} dark`}>
       <head />
-      <body className="grain min-h-full flex flex-col bg-gradient-to-b from-slate-950 via-purple-950 to-slate-950">
+      <body className="grain min-h-full flex flex-col bg-[#070714] text-[#e8e8f0]" style={{
+        backgroundImage: 'radial-gradient(ellipse 80% 60% at 50% -10%, rgba(124,58,237,0.25) 0%, transparent 70%), radial-gradient(ellipse 50% 40% at 90% 80%, rgba(0,212,255,0.08) 0%, transparent 60%)'
+      }}>
         <Script
           strategy="afterInteractive"
           src="/gtag/js"
