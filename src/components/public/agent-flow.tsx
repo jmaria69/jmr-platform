@@ -113,7 +113,7 @@ export function AgentFlowWidget() {
           label="Entrada"
           text={scenario.input}
           visible
-          done={!isProcessing || phase !== "input"}
+          done={phase !== "input"}
           accent="#8888aa"
         />
 
