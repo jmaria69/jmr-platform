@@ -81,7 +81,6 @@ export default async function AnalyticsPage() {
                 <TableHead className="text-right">Usuarios</TableHead>
                 <TableHead className="text-right">Ingresos/mes</TableHead>
                 <TableHead className="text-right">Rating</TableHead>
-                <TableHead className="text-right">Visitas</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -119,9 +118,6 @@ export default async function AnalyticsPage() {
                     </TableCell>
                     <TableCell className="text-right">
                       {project.metrics?.rating ?? "—"}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      {project.metrics?.users?.toLocaleString("es") ?? "—"}
                     </TableCell>
                   </TableRow>
                 );

@@ -1,21 +1,19 @@
-'use client';
-
-import { useState } from 'react';
 import Link from 'next/link';
 import { MessageSquare, Bot, Zap, ArrowRight, ExternalLink, Clock, Package, Timer, TrendingUp, Shield } from 'lucide-react';
-import { projects } from '@/lib/projects';
+import { findAllProjects } from '@/lib/repositories/projects.repository';
 import { PraxiaLabLogo } from "@/components/praxia-lab-logo";
 import { AgentFlowWidget } from "@/components/public/agent-flow";
 import { DiagnosticoWidget } from "@/components/public/diagnostico";
+import { ContactForm } from "@/components/public/contact-form";
 
-const featuredProjects = [
-  projects.find(p => p.id === 'olga-ai'),
-  projects.find(p => p.id === 'admin-app'),
-  projects.find(p => p.id === 'crm-it'),
-  projects.find(p => p.id === 'generador-ideas'),
-].filter(Boolean);
+export const dynamic = "force-dynamic";
 
-const productionCount = projects.filter(p => p.status === 'production').length;
+const FEATURED_IDS = ['olga-ai', 'admin-app', 'crm-it', 'generador-ideas'];
+
+const PUBLIC_PROJECT_IDS = new Set([
+  "olga-ai", "admin-app", "crm-it", "generador-ideas",
+  "app-voz", "app-mejores-productos", "siam", "saludapp",
+]);
 
 const STEPS = [
   {
@@ -50,20 +48,12 @@ const STEP_COLORS: Record<string, string> = {
   teal: "6,255,165",
 };
 
-const STATS = [
-  { value: `${productionCount}`, label: "Proyectos en producción", icon: Package, color: "text-cyan-400" },
-  { value: "40h+", label: "Ahorro mensual por cliente", icon: Clock, color: "text-purple-400" },
-  { value: "< 48h", label: "De idea a agente operativo", icon: Timer, color: "text-cyan-400" },
-];
-
-// Tech stack logos — herramientas reales que usamos
 const STACK = [
   "Claude API", "FastAPI", "Python", "Next.js", "Docker",
   "PostgreSQL", "n8n", "Vercel", "Google Workspace", "Telegram",
   "Resend", "Redis", "Twilio", "LangChain", "Neon DB",
 ];
 
-// Casos de estudio — estructura real, contenido a completar con datos reales
 const CASOS = [
   {
     icon: Bot,
@@ -100,32 +90,23 @@ const CASOS = [
   },
 ];
 
-export default function Home() {
-  const [form, setForm] = useState({
-    nombre: '', email: '', empresa: '',
-    proyecto: 'Automatizacion de procesos', mensaje: '',
-  });
-  const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
-  const [errorMsg, setErrorMsg] = useState('');
+export default async function Home() {
+  // Fuente única de verdad: DB (con fallback al seed si la DB falla)
+  const allProjects = await findAllProjects();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setStatus('sending');
-    setErrorMsg('');
-    try {
-      const res = await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message || 'Error al enviar');
-      setStatus('sent');
-    } catch (err) {
-      setStatus('error');
-      setErrorMsg(err instanceof Error ? err.message : 'Error al enviar. Inténtalo de nuevo.');
-    }
-  };
+  const productionCount = allProjects.filter(
+    (p) => PUBLIC_PROJECT_IDS.has(p.id) || p.category === "ai" || p.category === "automation"
+  ).filter(p => p.status === 'production').length;
+
+  const featuredProjects = FEATURED_IDS
+    .map(id => allProjects.find(p => p.id === id))
+    .filter(Boolean);
+
+  const STATS = [
+    { value: `${productionCount}`, label: "Proyectos en producción", icon: Package, color: "text-cyan-400" },
+    { value: "40h+", label: "Ahorro mensual por cliente", icon: Clock, color: "text-purple-400" },
+    { value: "< 48h", label: "De idea a agente operativo", icon: Timer, color: "text-cyan-400" },
+  ];
 
   return (
     <div className="min-h-screen bg-transparent overflow-hidden">
@@ -175,7 +156,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── DIAGNÓSTICO INTERACTIVO (INNOVACIÓN) ── */}
+      {/* ── DIAGNÓSTICO INTERACTIVO ── */}
       <section className="relative py-20 px-6 border-t border-purple-500/20">
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-6">
@@ -239,10 +220,7 @@ export default function Home() {
                 key={caso.tag}
                 className="relative rounded-2xl border border-white/8 bg-[#0d0d2b]/60 p-6 flex flex-col"
               >
-                {/* Color bar */}
                 <div className="h-0.5 rounded-full mb-5" style={{ background: `linear-gradient(90deg, ${caso.color}, ${caso.color}30, transparent)` }} />
-
-                {/* Tag */}
                 <div className="flex items-center justify-between mb-4">
                   <span className="text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full"
                     style={{ background: `${caso.color}18`, color: caso.color, border: `1px solid ${caso.color}30` }}>
@@ -250,10 +228,8 @@ export default function Home() {
                   </span>
                   <span className="font-display text-xl font-black" style={{ color: caso.color }}>{caso.saving}</span>
                 </div>
-
                 <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Cliente</p>
                 <p className="text-sm text-white font-semibold mb-4">{caso.cliente}</p>
-
                 <div className="space-y-3 flex-1">
                   <div>
                     <p className="text-[10px] uppercase tracking-widest text-gray-600 font-bold mb-0.5">Problema</p>
@@ -273,7 +249,6 @@ export default function Home() {
           </div>
           <p className="text-center text-xs text-gray-600 mt-8">
             * Datos de clientes reales. Nombres omitidos por confidencialidad.
-            Próximamente: vídeos de demostración con datos en vivo.
           </p>
         </div>
       </section>
@@ -393,61 +368,7 @@ export default function Home() {
             </p>
           </div>
           <div className="surface-card p-8 rounded-2xl border border-purple-500/20">
-            {status === 'sent' ? (
-              <div className="text-center py-8">
-                <div className="w-16 h-16 rounded-full bg-green-500/20 border border-green-500/30 flex items-center justify-center mx-auto mb-4">
-                  <Zap className="h-8 w-8 text-green-400" />
-                </div>
-                <h3 className="font-display text-xl font-bold text-white mb-2">Mensaje recibido</h3>
-                <p className="text-gray-400">Te contactamos en menos de 2 horas. Sin bots.</p>
-              </div>
-            ) : (
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-semibold text-gray-400 mb-1.5 uppercase tracking-wider">Nombre *</label>
-                    <input type="text" placeholder="Tu nombre" value={form.nombre}
-                      onChange={e => setForm(f => ({ ...f, nombre: e.target.value }))} required
-                      className="w-full px-4 py-3 rounded-lg bg-white/5 border border-purple-500/30 text-white placeholder-gray-500 focus:border-purple-500 focus:outline-none transition" />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-semibold text-gray-400 mb-1.5 uppercase tracking-wider">Email *</label>
-                    <input type="email" placeholder="tu@empresa.com" value={form.email}
-                      onChange={e => setForm(f => ({ ...f, email: e.target.value }))} required
-                      className="w-full px-4 py-3 rounded-lg bg-white/5 border border-purple-500/30 text-white placeholder-gray-500 focus:border-purple-500 focus:outline-none transition" />
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-gray-400 mb-1.5 uppercase tracking-wider">Empresa</label>
-                  <input type="text" placeholder="Nombre de tu empresa (opcional)" value={form.empresa}
-                    onChange={e => setForm(f => ({ ...f, empresa: e.target.value }))}
-                    className="w-full px-4 py-3 rounded-lg bg-white/5 border border-purple-500/30 text-white placeholder-gray-500 focus:border-purple-500 focus:outline-none transition" />
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-gray-400 mb-1.5 uppercase tracking-wider">¿Qué quieres automatizar? *</label>
-                  <select value={form.proyecto} onChange={e => setForm(f => ({ ...f, proyecto: e.target.value }))} required
-                    className="w-full px-4 py-3 rounded-lg bg-white/5 border border-purple-500/30 text-white focus:border-purple-500 focus:outline-none transition">
-                    <option value="Automatizacion de procesos">Automatización de procesos</option>
-                    <option value="CRM y seguimiento de clientes">CRM y seguimiento de clientes</option>
-                    <option value="Panel de administracion con IA">Panel de administración con IA</option>
-                    <option value="Agente IA para operaciones">Agente IA para operaciones</option>
-                    <option value="Otro">Otro</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-gray-400 mb-1.5 uppercase tracking-wider">Cuéntanos más *</label>
-                  <textarea placeholder="¿Qué proceso haces a mano ahora? ¿Cuánto tiempo te lleva? Cualquier contexto que nos ayude a preparar la demo."
-                    value={form.mensaje} onChange={e => setForm(f => ({ ...f, mensaje: e.target.value }))} required rows={4}
-                    className="w-full px-4 py-3 rounded-lg bg-white/5 border border-purple-500/30 text-white placeholder-gray-500 focus:border-purple-500 focus:outline-none transition resize-none" />
-                </div>
-                {status === 'error' && <p className="text-red-400 text-sm">{errorMsg}</p>}
-                <button type="submit" disabled={status === 'sending'}
-                  className="w-full px-8 py-4 rounded-lg shimmer-btn font-semibold text-white transition-transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100">
-                  {status === 'sending' ? 'Enviando...' : 'Reservar demo gratuita'}
-                </button>
-                <p className="text-center text-xs text-gray-500">Sin compromiso. Sin tarjeta. Respuesta en menos de 2 horas.</p>
-              </form>
-            )}
+            <ContactForm />
           </div>
           <p className="mt-8 text-center text-sm text-gray-400">
             O escríbenos directamente a{' '}
