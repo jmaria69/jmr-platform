@@ -209,6 +209,34 @@ async function main() {
             metricsRevenue: 600,
             metricsRating: 4.4,
         },
+        {
+            id: "siam",
+            name: "SIAM",
+            description: "Plataforma de ciberseguridad con IA: detecta amenazas en tiempo real, clasifica vectores de ataque y automatiza la respuesta a incidentes.",
+            longDescription:
+                "SIAM (Security Intelligence & Automation Monitor) es una plataforma de ciberseguridad potenciada por IA que monitoriza el tráfico de red en tiempo real, detecta patrones de ataque (fuerza bruta, bots, tokens inválidos, rate-limit abuse) y clasifica automáticamente cada evento por severidad. El agente IA analiza correlaciones entre eventos, identifica campañas coordinadas y genera informes de incidentes estructurados. Incluye dashboard en tiempo real con filtros por tipo de amenaza, panel de resolución de alertas y exportación de logs para auditoría.",
+            tech: ["Python", "FastAPI", "Claude API", "PostgreSQL", "WebSocket", "React 18", "TypeScript", "Redis", "Docker"],
+            status: "beta",
+            category: "ai",
+            image: "/projects/siam.svg",
+            color: "#dc2626",
+            metricsUsers: 12,
+            metricsRating: 4.5,
+        },
+        {
+            id: "saludapp",
+            name: "SaludApp",
+            description: "Gestión sanitaria con IA: automatiza citas, seguimiento de pacientes y documentación clínica para centros médicos.",
+            longDescription:
+                "SaludApp es una plataforma de automatización sanitaria que elimina la carga administrativa de clínicas y consultas médicas. El agente IA gestiona la agenda de citas con recordatorios automáticos por WhatsApp y email, genera resúmenes de consulta a partir de notas de voz del médico, automatiza el seguimiento post-consulta y organiza el historial del paciente. Reduce el tiempo administrativo hasta un 60% por consulta. Integración con sistemas de facturación y mutuas.",
+            tech: ["Next.js 15", "TypeScript", "Python", "FastAPI", "Claude API", "PostgreSQL", "Twilio", "Resend", "Vercel"],
+            status: "beta",
+            category: "ai",
+            image: "/projects/saludapp.svg",
+            color: "#06b6d4",
+            metricsUsers: 8,
+            metricsRating: 4.6,
+        },
     ];
 
     for (const project of seedProjects) {

@@ -1,6 +1,6 @@
 "use client";
 
-import { Trash2, Users, Star, DollarSign, AlertCircle, Loader2 } from "lucide-react";
+import { Trash2, Users, Star, DollarSign, AlertCircle, Loader2, GripVertical } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -19,12 +19,13 @@ import { EditProjectDialog } from "@/components/admin/edit-project-dialog";
 import { useProjects } from "@/hooks/use-projects";
 import { PROJECT_STATUS_LABELS } from "@/lib/constants";
 import { Project } from "@/types";
-import { useState } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 
 interface ProjectsManagerProps {
-  /** En modo demo/read-only oculta los controles de edición */
   isReadOnly?: boolean;
 }
+
+const STORAGE_KEY = "praxia-projects-order";
 
 export function ProjectsManager({ isReadOnly = false }: ProjectsManagerProps) {
   const { projects, isLoading, error, addProject, updateProject, deleteProject, toggleStatus } =
@@ -32,6 +33,69 @@ export function ProjectsManager({ isReadOnly = false }: ProjectsManagerProps) {
   const [deleteTarget, setDeleteTarget] = useState<Project | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
+  // ─── Drag & drop state ───
+  const [orderedIds, setOrderedIds] = useState<string[]>([]);
+  const dragIndexRef = useRef<number | null>(null);
+  const [overIndex, setOverIndex] = useState<number | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+
+  // Cargar orden guardado en localStorage
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) setOrderedIds(JSON.parse(saved));
+    } catch { /* ignorar */ }
+  }, []);
+
+  // Proyectos en el orden del usuario; los nuevos (no guardados) van al final
+  const orderedProjects = useMemo(() => {
+    if (orderedIds.length === 0) return projects;
+    const map = new Map(projects.map(p => [p.id, p]));
+    const inOrder = orderedIds.map(id => map.get(id)).filter(Boolean) as Project[];
+    const inOrderIds = new Set(orderedIds);
+    const extra = projects.filter(p => !inOrderIds.has(p.id));
+    return [...inOrder, ...extra];
+  }, [projects, orderedIds]);
+
+  function saveOrder(ordered: Project[]) {
+    const ids = ordered.map(p => p.id);
+    setOrderedIds(ids);
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(ids)); } catch { /* ignorar */ }
+  }
+
+  // ─── Handlers de drag ───
+  function onDragStart(index: number) {
+    dragIndexRef.current = index;
+    setIsDragging(true);
+  }
+
+  function onDragOver(e: React.DragEvent, index: number) {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+    setOverIndex(index);
+  }
+
+  function onDragEnd() {
+    setIsDragging(false);
+    setOverIndex(null);
+    dragIndexRef.current = null;
+  }
+
+  function onDrop(e: React.DragEvent, dropIndex: number) {
+    e.preventDefault();
+    const from = dragIndexRef.current;
+    if (from === null || from === dropIndex) {
+      onDragEnd();
+      return;
+    }
+    const next = [...orderedProjects];
+    const [moved] = next.splice(from, 1);
+    next.splice(dropIndex, 0, moved);
+    saveOrder(next);
+    onDragEnd();
+  }
+
+  // ─── Delete ───
   async function handleDelete() {
     if (!deleteTarget) return;
     setIsDeleting(true);
@@ -45,7 +109,7 @@ export function ProjectsManager({ isReadOnly = false }: ProjectsManagerProps) {
     }
   }
 
-  // ─── Loading state ───
+  // ─── Loading ───
   if (isLoading) {
     return (
       <div className="space-y-6">
@@ -74,7 +138,7 @@ export function ProjectsManager({ isReadOnly = false }: ProjectsManagerProps) {
     );
   }
 
-  // ─── Error state ───
+  // ─── Error ───
   if (error) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center">
@@ -99,89 +163,122 @@ export function ProjectsManager({ isReadOnly = false }: ProjectsManagerProps) {
             {projects.length} proyectos registrados.{" "}
             {isReadOnly
               ? "Modo visualización — inicia sesión para gestionar."
-              : "Administra, añade y elimina."}
+              : "Arrastra las tarjetas para reordenar."}
           </p>
         </div>
-        {/* Solo muestra el botón añadir en modo admin */}
         {!isReadOnly && (
           <AddProjectDialog onAdd={(p) => addProject(p).catch((err) => console.error("[AddProject] failed:", err instanceof Error ? err.message : String(err)))} />
         )}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {projects.map((project) => (
-          <Card
-            key={project.id}
-            className="group relative overflow-hidden rounded-2xl glass border-gradient glow-hover transition-all"
-          >
+        {orderedProjects.map((project, index) => {
+          const isOver = overIndex === index && isDragging && dragIndexRef.current !== index;
+          const isBeingDragged = isDragging && dragIndexRef.current === index;
+
+          return (
             <div
-              className="absolute top-0 left-0 right-0 h-1"
-              style={{ backgroundColor: project.color }}
-            />
-            <CardHeader className="flex flex-row items-start justify-between space-y-0">
-              <div>
-                <CardTitle className="text-lg">{project.name}</CardTitle>
-                <div className="flex items-center gap-2 mt-1">
-                  <Badge variant="outline">{PROJECT_STATUS_LABELS[project.status]}</Badge>
-                  <Badge variant="secondary" className="text-xs bg-white/5 border-white/10">
-                    {project.category}
-                  </Badge>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                {/* Switch solo en modo admin */}
-                {!isReadOnly && (
-                  <div className="flex items-center gap-2">
-                    <Label htmlFor={`active-${project.id}`} className="text-xs">Activo</Label>
-                    <Switch
-                      id={`active-${project.id}`}
-                      checked={project.status === "production"}
-                      onCheckedChange={() => toggleStatus(project.id)}
-                    />
+              key={project.id}
+              className="relative"
+              draggable={!isReadOnly}
+              onDragStart={() => onDragStart(index)}
+              onDragOver={(e) => onDragOver(e, index)}
+              onDrop={(e) => onDrop(e, index)}
+              onDragEnd={onDragEnd}
+            >
+              {/* Línea indicadora de inserción */}
+              {isOver && (
+                <div className="absolute -top-1.5 left-4 right-4 h-0.5 rounded-full bg-purple-400 z-10 shadow-[0_0_8px_rgba(167,139,250,0.8)]" />
+              )}
+
+              <Card
+                className={[
+                  "group relative overflow-hidden rounded-2xl glass border-gradient glow-hover transition-all duration-200",
+                  isBeingDragged ? "opacity-40 scale-[0.98] shadow-none" : "",
+                  isOver ? "translate-y-1" : "",
+                ].join(" ")}
+              >
+                <div
+                  className="absolute top-0 left-0 right-0 h-1"
+                  style={{ backgroundColor: project.color }}
+                />
+                <CardHeader className="flex flex-row items-start justify-between space-y-0">
+                  <div className="flex items-start gap-2">
+                    {/* Handle de arrastre — solo en modo admin */}
+                    {!isReadOnly && (
+                      <div
+                        className="mt-0.5 cursor-grab active:cursor-grabbing text-muted-foreground/40 hover:text-muted-foreground transition-colors touch-none"
+                        title="Arrastra para reordenar"
+                      >
+                        <GripVertical className="h-5 w-5" />
+                      </div>
+                    )}
+                    <div>
+                      <CardTitle className="text-lg">{project.name}</CardTitle>
+                      <div className="flex items-center gap-2 mt-1">
+                        <Badge variant="outline">{PROJECT_STATUS_LABELS[project.status]}</Badge>
+                        <Badge variant="secondary" className="text-xs bg-white/5 border-white/10">
+                          {project.category}
+                        </Badge>
+                      </div>
+                    </div>
                   </div>
-                )}
-                {/* Botones editar/borrar solo en modo admin */}
-                {!isReadOnly && (
-                  <>
-                    <EditProjectDialog project={project} onSave={updateProject} />
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8 text-muted-foreground hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
-                      onClick={() => setDeleteTarget(project)}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </>
-                )}
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <p className="text-sm text-muted-foreground">{project.description}</p>
-              <div className="grid grid-cols-3 gap-3">
-                {[
-                  { icon: Users, value: project.metrics?.users, label: "Usuarios", color: "text-blue-400" },
-                  { icon: Star, value: project.metrics?.rating, label: "Rating", color: "text-amber-400" },
-                  { icon: DollarSign, value: project.metrics?.revenue ? `${project.metrics.revenue}€` : undefined, label: "€/mes", color: "text-green-400" },
-                ].map(({ icon: Icon, value, label, color }) => (
-                  <div key={label} className="text-center p-2 rounded-lg bg-white/3">
-                    <Icon className={`h-4 w-4 mx-auto mb-1 ${color}`} />
-                    <p className="text-sm font-bold">{value ?? "—"}</p>
-                    <p className="text-[10px] text-muted-foreground">{label}</p>
+
+                  <div className="flex items-center gap-3">
+                    {!isReadOnly && (
+                      <div className="flex items-center gap-2">
+                        <Label htmlFor={`active-${project.id}`} className="text-xs">Activo</Label>
+                        <Switch
+                          id={`active-${project.id}`}
+                          checked={project.status === "production"}
+                          onCheckedChange={() => toggleStatus(project.id)}
+                        />
+                      </div>
+                    )}
+                    {!isReadOnly && (
+                      <>
+                        <EditProjectDialog project={project} onSave={updateProject} />
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 text-muted-foreground hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                          onClick={() => setDeleteTarget(project)}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </>
+                    )}
                   </div>
-                ))}
-              </div>
-              <div className="flex flex-wrap gap-1">
-                {project.tech.map((t) => (
-                  <span key={t} className="text-xs bg-white/5 border border-white/5 px-2 py-0.5 rounded-md">{t}</span>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+                </CardHeader>
+
+                <CardContent className="space-y-4">
+                  <p className="text-sm text-muted-foreground">{project.description}</p>
+                  <div className="grid grid-cols-3 gap-3">
+                    {[
+                      { icon: Users, value: project.metrics?.users, label: "Usuarios", color: "text-blue-400" },
+                      { icon: Star, value: project.metrics?.rating, label: "Rating", color: "text-amber-400" },
+                      { icon: DollarSign, value: project.metrics?.revenue ? `${project.metrics.revenue}€` : undefined, label: "€/mes", color: "text-green-400" },
+                    ].map(({ icon: Icon, value, label, color }) => (
+                      <div key={label} className="text-center p-2 rounded-lg bg-white/3">
+                        <Icon className={`h-4 w-4 mx-auto mb-1 ${color}`} />
+                        <p className="text-sm font-bold">{value ?? "—"}</p>
+                        <p className="text-[10px] text-muted-foreground">{label}</p>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="flex flex-wrap gap-1">
+                    {project.tech.map((t) => (
+                      <span key={t} className="text-xs bg-white/5 border border-white/5 px-2 py-0.5 rounded-md">{t}</span>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          );
+        })}
       </div>
 
-      {/* Delete confirmation — solo en modo admin */}
+      {/* Delete confirmation */}
       {!isReadOnly && (
         <Dialog open={deleteTarget !== null} onOpenChange={(v) => { if (!v) setDeleteTarget(null); }}>
           <DialogContent className="max-w-md glass-strong">

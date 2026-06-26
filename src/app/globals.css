@@ -97,6 +97,92 @@
     --text-label: #a78bfa;
 }
 
+/* ─── Tema marfil (ivory) ─── */
+html.ivory {
+    --background: #FAF9F6;
+    --foreground: #1a1a2e;
+    --card: #F2F1EC;
+    --card-foreground: #1a1a2e;
+    --popover: #F2F1EC;
+    --popover-foreground: #1a1a2e;
+    --primary: #6d28d9;
+    --primary-foreground: #ffffff;
+    --secondary: #0891b2;
+    --secondary-foreground: #ffffff;
+    --muted: rgba(0, 0, 0, 0.04);
+    --muted-foreground: #555577;
+    --accent: rgba(0, 0, 0, 0.04);
+    --accent-foreground: #1a1a2e;
+    --destructive: #dc2626;
+    --border: rgba(0, 0, 0, 0.10);
+    --input: rgba(0, 0, 0, 0.08);
+    --ring: #0891b2;
+    --sidebar: #FAF9F6;
+    --sidebar-foreground: #1a1a2e;
+    --sidebar-primary: #6d28d9;
+    --sidebar-primary-foreground: #ffffff;
+    --sidebar-accent: rgba(0, 0, 0, 0.04);
+    --sidebar-accent-foreground: #1a1a2e;
+    --sidebar-border: rgba(0, 0, 0, 0.08);
+    --sidebar-ring: #0891b2;
+
+    --accent1: #6d28d9;
+    --accent2: #0891b2;
+    --accent3: #059669;
+    --text-main: #1a1a2e;
+    --text-muted: #555577;
+    --text-label: #6d28d9;
+}
+
+/* Sobreescrituras específicas en modo marfil */
+html.ivory body {
+    background-image:
+        radial-gradient(ellipse 80% 60% at 50% -10%, rgba(109,40,217,0.08) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 40% at 90% 80%, rgba(8,145,178,0.05) 0%, transparent 60%);
+}
+
+html.ivory .glass {
+    background: rgba(255, 255, 255, 0.65);
+    backdrop-filter: blur(16px) saturate(1.4);
+    -webkit-backdrop-filter: blur(16px) saturate(1.4);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+html.ivory .glass-strong {
+    background: rgba(255, 255, 255, 0.80);
+    backdrop-filter: blur(24px) saturate(1.6);
+    -webkit-backdrop-filter: blur(24px) saturate(1.6);
+    border: 1px solid rgba(0, 0, 0, 0.10);
+}
+
+html.ivory .text-gradient {
+    background: linear-gradient(135deg, #6d28d9 0%, #5b21b6 25%, #0891b2 50%, #0e7490 75%, #6d28d9 100%);
+    background-size: 300% 300%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradient-x 8s ease infinite;
+}
+
+html.ivory .shimmer-btn {
+    background: linear-gradient(110deg,
+        #6d28d9 0%,
+        #5b21b6 40%,
+        #7c3aed 50%,
+        #5b21b6 60%,
+        #6d28d9 100%);
+    background-size: 200% 100%;
+    animation: shimmer 2.5s linear infinite;
+}
+
+html.ivory .praxia-gradient {
+    background: linear-gradient(135deg, #6d28d9 0%, #0891b2 100%);
+}
+
+html.ivory .grain::before {
+    opacity: 0.015;
+}
+
 /* ─── Keyframes ─── */
 @keyframes float {
 
@@ -407,4 +493,266 @@
 
 .praxia-glow {
     box-shadow: 0 0 30px oklch(0.65 0.2 275 / 20%), 0 0 60px oklch(0.65 0.18 190 / 10%);
+}
+
+/* ─── Logo navbar ─── */
+.navbar-logo-name {
+    background: linear-gradient(135deg, #a78bfa 0%, #ffffff 50%, #7dd3fc 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+html.ivory .navbar-logo-name {
+    background: linear-gradient(135deg, #5b21b6 0%, #1a1a2e 50%, #0369a1 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* ─── Body con background reactivo al tema ─── */
+.praxia-body {
+    background-color: var(--background);
+    color: var(--foreground);
+    background-image:
+        radial-gradient(ellipse 80% 60% at 50% -10%, rgba(124, 58, 237, 0.25) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 40% at 90% 80%, rgba(0, 212, 255, 0.08) 0%, transparent 60%);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+html.ivory .praxia-body {
+    background-image:
+        radial-gradient(ellipse 80% 60% at 50% -10%, rgba(109, 40, 217, 0.07) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 40% at 90% 80%, rgba(8, 145, 178, 0.04) 0%, transparent 60%);
+}
+
+/* ─── Overrides de colores Tailwind hardcoded en modo marfil ─── */
+
+/* Textos blancos y claros → oscuros */
+html.ivory .text-white        { color: #1a1a2e !important; }
+html.ivory .text-\[#e8e8f0\] { color: #1a1a2e !important; }
+
+/* Grises claros → grises oscuros */
+html.ivory .text-gray-100 { color: #2a2a3e !important; }
+html.ivory .text-gray-200 { color: #3a3a50 !important; }
+html.ivory .text-gray-300 { color: #44445a !important; }
+html.ivory .text-gray-400 { color: #555570 !important; }
+html.ivory .text-gray-500 { color: #666688 !important; }
+html.ivory .text-gray-600 { color: #888899 !important; }
+
+/* Acentos: cyan y purple se oscurecen para contraste sobre fondo claro */
+html.ivory .text-cyan-300  { color: #0369a1 !important; }
+html.ivory .text-cyan-400  { color: #0284c7 !important; }
+html.ivory .text-purple-300 { color: #6d28d9 !important; }
+html.ivory .text-purple-400 { color: #7c3aed !important; }
+html.ivory .text-violet-300 { color: #6d28d9 !important; }
+html.ivory .text-sky-300   { color: #0369a1 !important; }
+html.ivory .text-sky-400   { color: #0284c7 !important; }
+html.ivory .text-green-400 { color: #16a34a !important; }
+html.ivory .text-red-400   { color: #dc2626 !important; }
+
+/* Fondos de tarjetas oscuros → claros */
+html.ivory [class*="bg-slate-900"] { background-color: rgba(240, 240, 235, 0.85) !important; }
+html.ivory [class*="bg-slate-950"] { background-color: rgba(245, 245, 240, 0.75) !important; }
+html.ivory .bg-transparent         { background-color: transparent !important; }
+
+/* Bordes */
+html.ivory [class*="border-white"]          { border-color: rgba(0, 0, 0, 0.08) !important; }
+html.ivory [class*="border-purple-500"]     { border-color: rgba(109, 40, 217, 0.25) !important; }
+html.ivory [class*="border-cyan-500"]       { border-color: rgba(8, 145, 178, 0.25) !important; }
+html.ivory [class*="border-green-500"]      { border-color: rgba(22, 163, 74, 0.25) !important; }
+
+/* Fondos decorativos de iconos */
+html.ivory [class*="bg-purple-600"] { background-color: rgba(109, 40, 217, 0.12) !important; }
+html.ivory [class*="bg-purple-500"] { background-color: rgba(109, 40, 217, 0.15) !important; }
+html.ivory [class*="bg-cyan-600"]   { background-color: rgba(8, 145, 178, 0.12) !important; }
+html.ivory [class*="bg-violet-600"] { background-color: rgba(109, 40, 217, 0.12) !important; }
+html.ivory [class*="bg-green-500"]  { background-color: rgba(22, 163, 74, 0.12) !important; }
+html.ivory [class*="bg-white"]      { background-color: rgba(0, 0, 0, 0.04) !important; }
+
+/* Texto de placeholders */
+html.ivory .placeholder-gray-500::placeholder { color: #9999bb !important; }
+
+/* Inputs: fondo claro */
+html.ivory input,
+html.ivory textarea,
+html.ivory select {
+    background-color: rgba(255, 255, 255, 0.9) !important;
+    color: #1a1a2e !important;
+    border-color: rgba(109, 40, 217, 0.25) !important;
+}
+html.ivory input::placeholder,
+html.ivory textarea::placeholder {
+    color: #9999bb !important;
+}
+html.ivory select option {
+    background-color: #FAF9F6;
+    color: #1a1a2e;
+}
+
+/* Logo navbar: texto en modo marfil */
+html.ivory .navbar-logo-text {
+    background: linear-gradient(to right, #5b21b6, #1a1a2e, #0369a1) !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+}
+html.ivory .text-white\/30 { color: rgba(0,0,0,0.30) !important; }
+html.ivory .text-sky-400   { color: #0284c7 !important; }
+
+/* Transicion suave al cambiar tema */
+.praxia-body *,
+.praxia-body *::before,
+.praxia-body *::after {
+    transition: background-color 0.25s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+/* ═══════════════════════════════════════════════════════
+   DESIGN SYSTEM v2 — Praxia Labs
+   Tokens semanticos, tipografia display, element signature
+   ═══════════════════════════════════════════════════════ */
+
+/* ─── Semantic design tokens ─── */
+:root {
+    /* Brand palette (max 5 tokens) */
+    --ds-brand:        #7c3aed;   /* violet — primary brand color */
+    --ds-accent:       #00d4ff;   /* cyan — secondary accent */
+    --ds-surface:      #0d0d2b;   /* dark card surface */
+    --ds-bg:           #070714;   /* page background */
+    --ds-success:      #06ffa5;   /* confirmation / success */
+
+    /* Typography */
+    --ds-font-display: var(--font-space-grotesk, var(--font-geist-sans), system-ui, sans-serif);
+    --ds-font-body:    var(--font-geist-sans, system-ui, sans-serif);
+    --ds-font-mono:    var(--font-geist-mono, "Courier New", monospace);
+
+    /* Spacing scale */
+    --ds-space-xs:  0.25rem;
+    --ds-space-sm:  0.5rem;
+    --ds-space-md:  1rem;
+    --ds-space-lg:  1.5rem;
+    --ds-space-xl:  2.5rem;
+    --ds-space-2xl: 4rem;
+    --ds-space-3xl: 6rem;
+}
+
+html.ivory {
+    --ds-brand:   #6d28d9;
+    --ds-accent:  #0891b2;
+    --ds-surface: #F2F1EC;
+    --ds-bg:      #FAF9F6;
+    --ds-success: #059669;
+}
+
+/* ─── Display font utility ─── */
+/* Apply to h1, h2, hero titles — distinct from body Geist */
+.font-display {
+    font-family: var(--ds-font-display);
+    font-feature-settings: "ss01", "cv01";
+    letter-spacing: -0.025em;
+    font-weight: 700;
+}
+
+/* ─── Surface card (replaces glassmorphism as primary pattern) ─── */
+/* Use .surface-card for primary content containers */
+.surface-card {
+    background-color: var(--ds-surface);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 1rem;
+}
+
+html.ivory .surface-card {
+    background-color: rgba(242, 241, 236, 0.9);
+    border-color: rgba(0, 0, 0, 0.07);
+}
+
+/* ─── Signature element: Agent Flow Widget ─── */
+/* Praxia-specific animation for the hero panel */
+
+@keyframes agent-pulse {
+    0%, 100% { opacity: 0.5; transform: scale(0.97); }
+    50%       { opacity: 1;   transform: scale(1.0);  }
+}
+
+@keyframes flow-progress {
+    from { width: 0%; }
+    to   { width: 100%; }
+}
+
+@keyframes agent-blink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0; }
+}
+
+@keyframes step-appear {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0);   }
+}
+
+@keyframes result-glow {
+    0%, 100% { box-shadow: 0 0 0px rgba(6, 255, 165, 0); }
+    50%       { box-shadow: 0 0 16px rgba(6, 255, 165, 0.3); }
+}
+
+.agent-step-appear {
+    animation: step-appear 0.4s ease-out forwards;
+}
+
+.agent-result-glow {
+    animation: result-glow 2s ease-in-out infinite;
+}
+
+.agent-cursor {
+    display: inline-block;
+    width: 2px;
+    height: 1em;
+    background-color: var(--ds-accent);
+    margin-left: 2px;
+    vertical-align: middle;
+    animation: agent-blink 1s step-end infinite;
+}
+
+/* ─── ProjectCard v2 ─── */
+/* Cleaner card without glassmorphism as primary texture */
+.project-card-v2 {
+    background-color: var(--ds-surface);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 1rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.project-card-v2:hover {
+    border-color: rgba(124, 58, 237, 0.35);
+    box-shadow: 0 0 24px rgba(124, 58, 237, 0.1);
+}
+
+html.ivory .project-card-v2 {
+    background-color: rgba(242, 241, 236, 0.9);
+    border-color: rgba(0, 0, 0, 0.07);
+}
+
+html.ivory .project-card-v2:hover {
+    border-color: rgba(109, 40, 217, 0.25);
+    box-shadow: 0 0 24px rgba(109, 40, 217, 0.08);
+}
+
+/* ─── Badge pill ─── */
+.badge-tech {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.15rem 0.6rem;
+    border-radius: 9999px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    background-color: rgba(124, 58, 237, 0.12);
+    color: #a78bfa;
+    border: 1px solid rgba(124, 58, 237, 0.2);
+}
+
+html.ivory .badge-tech {
+    background-color: rgba(109, 40, 217, 0.08);
+    color: #6d28d9;
+    border-color: rgba(109, 40, 217, 0.2);
 }

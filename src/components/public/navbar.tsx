@@ -2,17 +2,18 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Menu, Rocket } from "lucide-react";
+import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 import { PraxiaLabLogo } from "@/components/praxia-lab-logo";
+import { ThemeToggle } from "@/components/public/theme-toggle";
 
 const links = [
   { href: "/", label: "Inicio" },
   { href: "/proyectos", label: "Proyectos" },
-  { href: "/local-galaxy/index.html", label: "Acerca de" },
-  { href: "/contacto", label: "Contacto" },
+  { href: "/precios", label: "Precios" },
+  { href: "/acerca-de", label: "Acerca de" },
 ];
 
 export function Navbar() {
@@ -27,10 +28,10 @@ export function Navbar() {
             <PraxiaLabLogo size={36} />
           </div>
           <div className="flex flex-col leading-none">
-            <span className="text-base font-black tracking-tight bg-gradient-to-r from-violet-300 via-white to-sky-300 bg-clip-text text-transparent">
-              Praxia<span className="text-sky-400">Labs</span>
+            <span className="navbar-logo-name text-base font-black tracking-tight">
+              PraxiaLabs
             </span>
-            <span className="text-[9px] font-semibold text-white/30 uppercase tracking-[0.2em]">
+            <span className="text-[9px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
               AI Agents Studio
             </span>
           </div>
@@ -47,18 +48,19 @@ export function Navbar() {
               {link.label}
             </Link>
           ))}
-          <Link href="/admin/dashboard" className="ml-3">
+          <ThemeToggle />
+          <Link href="/contacto" className="ml-1">
             <button className="inline-flex items-center gap-2 rounded-xl shimmer-btn px-4 py-2 text-sm font-semibold text-white transition-transform hover:scale-105">
-              <Rocket className="h-4 w-4" />
-              Admin
+              Reservar demo
             </button>
           </Link>
         </nav>
 
         {/* Mobile nav */}
-        <Sheet open={open} onOpenChange={setOpen}>
+        <div className="flex items-center gap-1 md:hidden">
+          <ThemeToggle />
+          <Sheet open={open} onOpenChange={setOpen}>
           <SheetTrigger
-            className="md:hidden"
             render={<Button variant="ghost" size="icon" />}
           >
             <Menu className="h-5 w-5" />
@@ -75,15 +77,15 @@ export function Navbar() {
                   {link.label}
                 </Link>
               ))}
-              <Link href="/admin/dashboard" onClick={() => setOpen(false)}>
+              <Link href="/contacto" onClick={() => setOpen(false)}>
                 <button className="w-full mt-4 shimmer-btn rounded-xl px-4 py-3 text-sm font-semibold text-white flex items-center justify-center gap-2">
-                  <Rocket className="h-4 w-4" />
-                  Panel Admin
+                  Reservar demo
                 </button>
               </Link>
             </nav>
           </SheetContent>
         </Sheet>
+        </div>
       </div>
     </header>
   );
