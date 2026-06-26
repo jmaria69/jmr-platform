@@ -9,7 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { getDashboardStats } from "@/lib/repositories/dashboard.repository";
+import { getRealDashboardStats } from "@/lib/repositories/dashboard.repository";
 import { findAllProjects } from "@/lib/repositories/projects.repository";
 
 export const metadata: Metadata = {
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 
 export default async function AnalyticsPage() {
   const [dashboardStats, projects] = await Promise.all([
-    getDashboardStats(),
+    getRealDashboardStats(),
     findAllProjects(),
   ]);
 

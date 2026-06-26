@@ -57,7 +57,9 @@ export function StatsCards({ stats }: StatsCardsProps) {
     },
     {
       title: "Sesión Media",
-      value: `${Math.floor(stats.avgSessionDuration / 60)}m ${stats.avgSessionDuration % 60}s`,
+      value: stats.avgSessionDuration > 0
+        ? `${Math.floor(stats.avgSessionDuration / 60)}m ${stats.avgSessionDuration % 60}s`
+        : "—",
       change: "+30s",
       icon: Clock,
       gradient: "from-amber-500/20 to-amber-600/5",
@@ -66,7 +68,7 @@ export function StatsCards({ stats }: StatsCardsProps) {
     },
     {
       title: "Rebote",
-      value: `${stats.bounceRate}%`,
+      value: stats.bounceRate > 0 ? `${stats.bounceRate}%` : "—",
       change: "-2.1%",
       icon: MousePointerClick,
       gradient: "from-red-500/20 to-red-600/5",

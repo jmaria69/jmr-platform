@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { getGAMetrics } from "@/lib/services/google-analytics";
+import { getGAMetrics, getGAAggregateStats } from "@/lib/services/google-analytics";
 
 export interface DashboardStats {
   visitorsToday: number;
@@ -23,9 +23,15 @@ export async function getRealDashboardStats(): Promise<DashboardStats> {
   console.log("📍 Iniciando getRealDashboardStats");
 
   try {
-    // Obtener métricas de GA4
-    console.log("📍 getGAMetrics iniciado");
-    const gaData = await getGAMetrics();
+    // Obtener métricas de GA4 en paralelo
+    console.log("📍 getGAMetrics + getGAAggregateStats iniciados");
+    const [gaData, gaAggregate] = await Promise.all([
+      getGAMetrics(),
+      getGAAggregateStats().catch(err => {
+        console.warn("⚠️ getGAAggregateStats falló, usando fallback:", err);
+        return null;
+      }),
+    ]);
 
     let totalActiveUsers = 0;
     let totalPageViews = 0;
@@ -174,28 +180,37 @@ export async function getRealDashboardStats(): Promise<DashboardStats> {
       )
       .sort((a, b) => b.count - a.count) || [];
 
+    // Métricas reales de GA4 aggregate (con fallback numérico si la llamada falla)
+    const avgSessionDuration = gaAggregate?.avgSessionDuration ?? 0;
+    const bounceRate         = gaAggregate?.bounceRate         ?? 0;
+    const visitorsWeek       = gaAggregate?.visitorsWeek       ?? Math.round(totalActiveUsers * 1.4);
+    const visitorsToday      = gaAggregate?.visitorsToday      ?? totalActiveUsers;
+    const trafficByCountry   = gaAggregate?.trafficByCountry?.length
+      ? gaAggregate.trafficByCountry
+      : [
+          { country: "España",    visitors: Math.round(totalPageViews * 0.45) },
+          { country: "México",    visitors: Math.round(totalPageViews * 0.15) },
+          { country: "Argentina", visitors: Math.round(totalPageViews * 0.12) },
+          { country: "Colombia",  visitors: Math.round(totalPageViews * 0.08) },
+          { country: "EE.UU.",    visitors: Math.round(totalPageViews * 0.07) },
+        ];
+
     return {
-      visitorsToday: totalActiveUsers,
-      visitorsWeek: Math.round(totalActiveUsers * 1.2),
+      visitorsToday,
+      visitorsWeek,
       visitorsMonth: totalPageViews,
       activeNow: Math.round(totalActiveUsers * 0.15),
       revenueTotal: crmStats.wonValue,
       revenueMonth: Math.round(crmStats.wonValue / 6),
       conversionRate: crmStats.conversionRate,
-      avgSessionDuration: Math.floor(Math.random() * 600) + 60,
-      bounceRate: Math.floor(Math.random() * 50) + 10,
+      avgSessionDuration,
+      bounceRate,
       trafficByDay,
       trafficByMonth,
       trafficByYear,
       deviceData,
       osData,
-      trafficByCountry: [
-        { country: "España", visitors: Math.round(totalPageViews * 0.45) },
-        { country: "México", visitors: Math.round(totalPageViews * 0.15) },
-        { country: "Argentina", visitors: Math.round(totalPageViews * 0.12) },
-        { country: "Colombia", visitors: Math.round(totalPageViews * 0.08) },
-        { country: "EE.UU.", visitors: Math.round(totalPageViews * 0.07) },
-      ],
+      trafficByCountry,
     };
   } catch (error) {
     console.error("❌ Error en getRealDashboardStats:", error);
@@ -212,8 +227,8 @@ export function getDashboardStats(): DashboardStats {
     revenueTotal: 25000,
     revenueMonth: 4167,
     conversionRate: 16.67,
-    avgSessionDuration: Math.floor(Math.random() * 600) + 60,
-    bounceRate: Math.floor(Math.random() * 50) + 10,
+    avgSessionDuration: 0,
+    bounceRate: 0,
     trafficByDay: [
       { label: "2026-05-28", visitors: 45 },
       { label: "2026-05-29", visitors: 52 },
