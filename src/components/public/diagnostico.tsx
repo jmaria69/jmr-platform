@@ -52,7 +52,7 @@ export function DiagnosticoWidget() {
   }
 
   return (
-    <div className="relative rounded-2xl border border-purple-500/25 bg-[#0d0d2b]/80 backdrop-blur-sm overflow-hidden">
+    <div className="relative rounded-2xl border border-purple-300 dark:border-purple-500/25 bg-white dark:bg-[#0d0d2b]/80 backdrop-blur-sm overflow-hidden">
       {/* Header */}
       <div className="px-6 pt-6 pb-4 border-b border-white/5">
         <div className="flex items-center gap-2 mb-1">

@@ -218,7 +218,7 @@ export default async function Home() {
             {CASOS.map(caso => (
               <div
                 key={caso.tag}
-                className="relative rounded-2xl border border-white/8 bg-[#0d0d2b]/60 p-6 flex flex-col"
+                className="relative rounded-2xl border border-white/8 bg-white dark:bg-[#0d0d2b]/60 p-6 flex flex-col"
               >
                 <div className="h-0.5 rounded-full mb-5" style={{ background: `linear-gradient(90deg, ${caso.color}, ${caso.color}30, transparent)` }} />
                 <div className="flex items-center justify-between mb-4">
