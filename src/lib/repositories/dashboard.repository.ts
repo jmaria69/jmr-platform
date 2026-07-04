@@ -220,54 +220,21 @@ export async function getRealDashboardStats(): Promise<DashboardStats> {
 
 export function getDashboardStats(): DashboardStats {
   return {
-    visitorsToday: 42,
-    visitorsWeek: 287,
-    visitorsMonth: 1234,
-    activeNow: 6,
+    visitorsToday: 0,
+    visitorsWeek: 0,
+    visitorsMonth: 0,
+    activeNow: 0,
     revenueTotal: 0,
     revenueMonth: 0,
     conversionRate: 0,
     avgSessionDuration: 0,
     bounceRate: 0,
-    trafficByDay: [
-      { label: "2026-05-28", visitors: 45 },
-      { label: "2026-05-29", visitors: 52 },
-      { label: "2026-05-30", visitors: 48 },
-      { label: "2026-05-31", visitors: 61 },
-      { label: "2026-06-01", visitors: 55 },
-      { label: "2026-06-02", visitors: 67 },
-      { label: "2026-06-03", visitors: 72 },
-      { label: "2026-06-04", visitors: 58 },
-      { label: "2026-06-05", visitors: 81 },
-      { label: "2026-06-06", visitors: 76 },
-      { label: "2026-06-07", visitors: 65 },
-      { label: "2026-06-08", visitors: 70 },
-    ],
-    trafficByMonth: [
-      { label: "202605", visitors: 1234 },
-      { label: "202606", visitors: 1890 },
-    ],
-    trafficByYear: [
-      { label: "2025", visitors: 45000 },
-      { label: "2026", visitors: 8923 },
-    ],
-    deviceData: [
-      { device: "mobile", count: 450 },
-      { device: "desktop", count: 680 },
-      { device: "tablet", count: 220 },
-    ],
-    osData: [
-      { os: "Windows", count: 520 },
-      { os: "macOS", count: 180 },
-      { os: "iOS", count: 340 },
-      { os: "Android", count: 310 },
-    ],
-    trafficByCountry: [
-      { country: "España", visitors: 620 },
-      { country: "México", visitors: 180 },
-      { country: "Argentina", visitors: 145 },
-      { country: "Colombia", visitors: 98 },
-      { country: "EE.UU.", visitors: 85 },
-    ],
+    // Fallback honesto: sin GA no inventamos tráfico → todo vacío ("sin datos").
+    trafficByDay: [],
+    trafficByMonth: [],
+    trafficByYear: [],
+    deviceData: [],
+    osData: [],
+    trafficByCountry: [],
   };
 }
