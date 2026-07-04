@@ -69,34 +69,21 @@ export async function getRealDashboardStats(): Promise<DashboardStats> {
 
     console.log("✅ CRM Stats:", crmStats);
 
-    // Procesar datos de tráfico por día
-    const trafficByDay = gaData.rows
-      ?.map((row) => ({
-        label: row.dimensionValues?.[0]?.value || "Unknown",
-        visitors: parseInt(row.metricValues?.[0]?.value || "0", 10),
-      }))
-      .sort((a, b) => {
-        try {
-          const dateA = new Date(
-            a.label.slice(0, 4) +
-            "-" +
-            a.label.slice(4, 6) +
-            "-" +
-            a.label.slice(6, 8)
-          );
-          const dateB = new Date(
-            b.label.slice(0, 4) +
-            "-" +
-            b.label.slice(4, 6) +
-            "-" +
-            b.label.slice(6, 8)
-          );
-          return dateA.getTime() - dateB.getTime();
-        } catch {
-          return 0;
-        }
-      })
-      .slice(0, 30) || [];
+    // Procesar tráfico por día: las filas de GA se repiten por dispositivo/SO,
+    // así que agregamos visitantes por fecha y nos quedamos con los ÚLTIMOS 30
+    // días (antes se cogían los 30 primeros → el gráfico no llegaba a hoy).
+    const visitorsByDate = new Map<string, number>();
+    for (const row of gaData.rows ?? []) {
+      const raw = row.dimensionValues?.[0]?.value || "";
+      if (!/^\d{8}$/.test(raw)) continue;
+      const date = `${raw.slice(0, 4)}-${raw.slice(4, 6)}-${raw.slice(6, 8)}`;
+      const visitors = parseInt(row.metricValues?.[0]?.value || "0", 10);
+      visitorsByDate.set(date, (visitorsByDate.get(date) || 0) + visitors);
+    }
+    const trafficByDay = [...visitorsByDate.entries()]
+      .map(([label, visitors]) => ({ label, visitors }))
+      .sort((a, b) => a.label.localeCompare(b.label))
+      .slice(-30);
 
     // Procesar datos de tráfico por mes
     const trafficByMonth = gaData.rows
