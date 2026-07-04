@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { MessageSquare, Bot, Zap, ArrowRight, ExternalLink, Clock, Package, Timer, TrendingUp, Shield } from 'lucide-react';
+import { MessageSquare, Bot, Zap, ArrowRight, ExternalLink, Package, Timer, TrendingUp, Shield } from 'lucide-react';
 import { findAllProjects } from '@/lib/repositories/projects.repository';
 import { PraxiaLabLogo } from "@/components/praxia-lab-logo";
 import { AgentFlowWidget } from "@/components/public/agent-flow";
@@ -58,34 +58,34 @@ const CASOS = [
   {
     icon: Bot,
     color: "#7c3aed",
-    cliente: "Gestora de comunidades",
+    cliente: "Gestión de comunidades",
     agente: "VERA + QUENTIN",
-    problema: "Procesaban 200+ facturas al mes a mano. 3 días para cerrar contabilidad mensual.",
-    solucion: "Agente VERA clasifica, valida y registra cada factura automáticamente. QUENTIN predice averías antes de que ocurran.",
-    resultado: "De 3 días a 4 horas. 96% de facturas procesadas sin intervención humana.",
-    saving: "52h/mes",
+    problema: "Las gestoras de fincas acumulan cientos de facturas y tareas administrativas al mes, casi todo a mano.",
+    solucion: "El agente VERA clasifica, valida y registra cada factura automáticamente. QUENTIN anticipa averías en ascensores e infraestructura.",
+    resultado: "Demo funcional propia: procesa y clasifica facturas sin intervención, con módulo financiero y avisos predictivos.",
+    saving: "Demo",
     tag: "AdminApp Maestro",
   },
   {
     icon: MessageSquare,
     color: "#00d4ff",
-    cliente: "Startup de operaciones",
+    cliente: "Operaciones y back-office",
     agente: "OLGA.ai",
-    problema: "El equipo pasaba 2h diarias respondiendo emails y coordinando tareas entre departamentos.",
-    solucion: "OLGA categoriza correos, redacta respuestas, crea tareas en Notion y sincroniza Google Workspace sin supervisión.",
-    resultado: "40 horas/mes recuperadas. Tiempo de respuesta a clientes: de 6h a 18 minutos.",
-    saving: "40h/mes",
+    problema: "Coordinar email, tareas y Google Workspace entre departamentos consume horas cada día.",
+    solucion: "OLGA categoriza correos, redacta respuestas, crea tareas y sincroniza Google Workspace desde un bot de Telegram.",
+    resultado: "Sistema propio en producción 24/7, con panel en vivo de contenedores, tokens y escudo de seguridad.",
+    saving: "En vivo",
     tag: "OLGA.ai",
   },
   {
     icon: Shield,
     color: "#dc2626",
-    cliente: "Empresa de servicios IT",
+    cliente: "Seguridad IT",
     agente: "SIAM",
-    problema: "Incidentes de seguridad detectados manualmente, con retrasos de hasta 4 horas en respuesta.",
-    solucion: "SIAM monitoriza tráfico en tiempo real, clasifica amenazas por severidad y genera alertas automáticas con protocolo de acción.",
-    resultado: "Tiempo de detección: de 4h a 3 minutos. Zero falsos negativos en primer trimestre.",
-    saving: "28h/mes",
+    problema: "Detectar y clasificar amenazas de red a mano deja huecos y respuestas lentas.",
+    solucion: "SIAM monitoriza el tráfico en tiempo real, clasifica cada evento por severidad y genera alertas con protocolo de acción.",
+    resultado: "Demo funcional propia: detección en tiempo real, panel de incidentes y exportación de logs.",
+    saving: "Beta",
     tag: "SIAM · Beta",
   },
 ];
@@ -103,9 +103,9 @@ export default async function Home() {
     .filter(Boolean);
 
   const STATS = [
-    { value: `${productionCount}`, label: "Proyectos en producción", icon: Package, color: "text-cyan-400" },
-    { value: "40h+", label: "Ahorro mensual por cliente", icon: Clock, color: "text-purple-400" },
+    { value: `${productionCount}`, label: "Sistemas propios en producción", icon: Package, color: "text-cyan-400" },
     { value: "< 48h", label: "De idea a agente operativo", icon: Timer, color: "text-cyan-400" },
+    { value: "A medida", label: "Sin plantillas, sin humo", icon: TrendingUp, color: "text-purple-400" },
   ];
 
   return (
@@ -178,7 +178,7 @@ export default async function Home() {
             </p>
             <div className="flex items-center gap-3 text-sm text-gray-500">
               <span className="h-px flex-1 bg-white/5" />
-              <span>Calculado sobre datos reales de implantaciones en producción</span>
+              <span>Estimación orientativa según tu sector, proceso y tamaño de equipo</span>
               <span className="h-px flex-1 bg-white/5" />
             </div>
           </div>
@@ -209,9 +209,9 @@ export default async function Home() {
       <section className="py-24 px-6 border-t border-purple-500/20">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-14">
-            <h2 className="font-display text-4xl text-white mb-4">Resultados reales</h2>
+            <h2 className="font-display text-4xl text-white mb-4">Lo que construimos</h2>
             <p className="text-gray-400 max-w-xl mx-auto">
-              No decimos "podría ahorrar X horas". Decimos cuántas hemos ahorrado ya, en qué empresa, con qué agente.
+              Sistemas propios que ya funcionan. Te los enseñamos en vivo y adaptamos el mismo enfoque a tu proceso.
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -228,7 +228,7 @@ export default async function Home() {
                   </span>
                   <span className="font-display text-xl font-black" style={{ color: caso.color }}>{caso.saving}</span>
                 </div>
-                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Cliente</p>
+                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Caso de uso</p>
                 <p className="text-sm text-white font-semibold mb-4">{caso.cliente}</p>
                 <div className="space-y-3 flex-1">
                   <div>
@@ -240,7 +240,7 @@ export default async function Home() {
                     <p className="text-xs text-gray-400 leading-relaxed">{caso.solucion}</p>
                   </div>
                   <div className="rounded-lg p-3" style={{ background: `${caso.color}10`, border: `1px solid ${caso.color}20` }}>
-                    <p className="text-[10px] uppercase tracking-widest font-bold mb-0.5" style={{ color: caso.color }}>Resultado</p>
+                    <p className="text-[10px] uppercase tracking-widest font-bold mb-0.5" style={{ color: caso.color }}>Qué demuestra</p>
                     <p className="text-xs text-white font-semibold leading-relaxed">{caso.resultado}</p>
                   </div>
                 </div>
@@ -248,7 +248,7 @@ export default async function Home() {
             ))}
           </div>
           <p className="text-center text-xs text-gray-600 mt-8">
-            * Datos de clientes reales. Nombres omitidos por confidencialidad.
+            * Sistemas desarrollados por Praxia Labs. Demos disponibles bajo petición.
           </p>
         </div>
       </section>
@@ -306,7 +306,7 @@ export default async function Home() {
           <div className="text-center mb-16">
             <h2 className="font-display text-4xl text-white mb-4">Agentes en producción</h2>
             <p className="text-gray-400 max-w-2xl mx-auto">
-              No demos ni prototipos — sistemas reales corriendo para clientes reales.
+              Sistemas reales que hemos construido y mantenemos en producción.
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

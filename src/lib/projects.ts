@@ -14,7 +14,6 @@ export const projects: Project[] = [
     videoUrl: "/videos/olga-ai.mp4",
     image: "/projects/gws.svg",
     color: "#8b5cf6",
-    metrics: { users: 95, revenue: 3200, rating: 4.7 },
   },
   {
     id: "admin-app",
@@ -29,7 +28,6 @@ export const projects: Project[] = [
     videoUrl: "/videos/admin-app.mp4",
     image: "/projects/admin-app.svg",
     color: "#6366f1",
-    metrics: { users: 150, revenue: 2400, rating: 4.8 },
   },
   {
     id: "crm-it",
@@ -44,7 +42,6 @@ export const projects: Project[] = [
     videoUrl: "/videos/core-ops.mp4",
     image: "/projects/crm-it.svg",
     color: "#06b6d4",
-    metrics: { users: 85, revenue: 1800, rating: 4.6 },
   },
   {
     id: "generador-ideas",
@@ -58,7 +55,6 @@ export const projects: Project[] = [
     url: "https://generador-ideas.vercel.app",
     image: "/projects/generador-ideas.svg",
     color: "#f59e0b",
-    metrics: { users: 340, rating: 4.7 },
   },
   {
     id: "campo-abierto",
@@ -71,7 +67,6 @@ export const projects: Project[] = [
     category: "web",
     image: "/projects/campo-abierto.svg",
     color: "#10b981",
-    metrics: { users: 210, rating: 4.6 },
   },
   {
     id: "cf-jaramal",
@@ -85,7 +80,6 @@ export const projects: Project[] = [
     url: "https://cf-rivas-2016b.vercel.app",
     image: "/projects/cf-jaramal.svg",
     color: "#ef4444",
-    metrics: { users: 40, rating: 4.8 },
   },
   {
     id: "cd-rivas-jarama",
@@ -99,7 +93,6 @@ export const projects: Project[] = [
     url: "https://cd-rivas-jarama.vercel.app",
     image: "/projects/cd-rivas-jarama.svg",
     color: "#1A3464",
-    metrics: { users: 200, rating: 4.9 },
   },
   {
     id: "frajamo",
@@ -113,7 +106,6 @@ export const projects: Project[] = [
     url: "https://frajamo-madrid.vercel.app",
     image: "/projects/frajamo.svg",
     color: "#c9a84c",
-    metrics: { users: 180, rating: 4.9 },
   },
   {
     id: "landing-inmobiliaria",
@@ -127,7 +119,6 @@ export const projects: Project[] = [
     url: "https://landing-inmobiliaria-tau.vercel.app/",
     image: "/projects/inmobiliaria.svg",
     color: "#10b981",
-    metrics: { users: 320, revenue: 950, rating: 4.5 },
   },
   {
     id: "app-voz",
@@ -140,7 +131,6 @@ export const projects: Project[] = [
     category: "mobile",
     image: "/projects/app-voz.svg",
     color: "#f59e0b",
-    metrics: { users: 45, rating: 4.3 },
   },
   {
     id: "app-mejores-productos",
@@ -153,7 +143,6 @@ export const projects: Project[] = [
     category: "ai",
     image: "/projects/mejores-productos.svg",
     color: "#ef4444",
-    metrics: { users: 200, revenue: 600, rating: 4.4 },
   },
   {
     id: "siam",
@@ -166,7 +155,6 @@ export const projects: Project[] = [
     category: "ai",
     image: "/projects/siam.svg",
     color: "#dc2626",
-    metrics: { users: 12, rating: 4.5 },
   },
   {
     id: "saludapp",
@@ -179,7 +167,6 @@ export const projects: Project[] = [
     category: "ai",
     image: "/projects/saludapp.svg",
     color: "#06b6d4",
-    metrics: { users: 8, rating: 4.6 },
   },
 ];
 

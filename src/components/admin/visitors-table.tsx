@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Monitor, Smartphone, Tablet } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -13,7 +13,6 @@ import {
 } from "@/components/ui/table";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Visitor } from "@/types";
-import { generateVisitors } from "@/lib/mock-data";
 
 const deviceIcon = {
   desktop: Monitor,
@@ -22,18 +21,9 @@ const deviceIcon = {
 };
 
 export function VisitorsTable() {
-  const [visitors, setVisitors] = useState<Visitor[]>([]);
-
-  useEffect(() => {
-    setVisitors(generateVisitors(20));
-    const interval = setInterval(() => {
-      setVisitors((prev) => {
-        const newVisitor = generateVisitors(1)[0];
-        return [newVisitor, ...prev.slice(0, 29)];
-      });
-    }, 5000);
-    return () => clearInterval(interval);
-  }, []);
+  // Sin datos simulados: la tabla se poblará cuando se conecte el stream real
+  // de visitantes (Google Analytics realtime). De momento, estado vacío honesto.
+  const [visitors] = useState<Visitor[]>([]);
 
   return (
     <div className="rounded-2xl glass border-gradient p-6 glow-hover transition-all">
@@ -64,6 +54,13 @@ export function VisitorsTable() {
             </TableRow>
           </TableHeader>
           <TableBody>
+            {visitors.length === 0 && (
+              <TableRow className="border-white/5 hover:bg-transparent">
+                <TableCell colSpan={6} className="text-center text-sm text-muted-foreground py-12">
+                  Sin visitantes en tiempo real todavía. Se activará al conectar el stream de Analytics.
+                </TableCell>
+              </TableRow>
+            )}
             {visitors.map((v) => {
               const Icon = deviceIcon[v.device];
               return (

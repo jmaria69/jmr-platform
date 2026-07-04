@@ -54,9 +54,6 @@ async function main() {
             url: "https://olga.praxialabs.com/dashboard/",
             image: "/projects/gws.svg",
             color: "#8b5cf6",
-            metricsUsers: 95,
-            metricsRevenue: 3200,
-            metricsRating: 4.7,
         },
         {
             id: "admin-app",
@@ -70,9 +67,6 @@ async function main() {
             url: "https://adminapp-maestro.vercel.app/presentation",
             image: "/projects/admin-app.svg",
             color: "#6366f1",
-            metricsUsers: 150,
-            metricsRevenue: 2400,
-            metricsRating: 4.8,
         },
         {
             id: "crm-it",
@@ -86,9 +80,6 @@ async function main() {
             url: "https://core-ops-eight.vercel.app/",
             image: "/projects/crm-it.svg",
             color: "#06b6d4",
-            metricsUsers: 85,
-            metricsRevenue: 1800,
-            metricsRating: 4.6,
         },
         {
             id: "generador-ideas",
@@ -102,8 +93,6 @@ async function main() {
             url: "https://generador-ideas.vercel.app",
             image: "/projects/generador-ideas.svg",
             color: "#f59e0b",
-            metricsUsers: 340,
-            metricsRating: 4.7,
         },
         {
             id: "campo-abierto",
@@ -116,8 +105,6 @@ async function main() {
             category: "web",
             image: "/projects/campo-abierto.svg",
             color: "#10b981",
-            metricsUsers: 210,
-            metricsRating: 4.6,
         },
         {
             id: "cf-jaramal",
@@ -131,8 +118,6 @@ async function main() {
             url: "https://cf-rivas-2016b.vercel.app",
             image: "/projects/cf-jaramal.svg",
             color: "#ef4444",
-            metricsUsers: 40,
-            metricsRating: 4.8,
         },
         {
             id: "cd-rivas-jarama",
@@ -146,8 +131,6 @@ async function main() {
             url: "https://cd-rivas-jarama.vercel.app",
             image: "/projects/cd-rivas-jarama.svg",
             color: "#1A3464",
-            metricsUsers: 200,
-            metricsRating: 4.9,
         },
         {
             id: "frajamo",
@@ -161,8 +144,6 @@ async function main() {
             url: "https://frajamo-madrid.vercel.app",
             image: "/projects/frajamo.svg",
             color: "#c9a84c",
-            metricsUsers: 180,
-            metricsRating: 4.9,
         },
         {
             id: "landing-inmobiliaria",
@@ -176,9 +157,6 @@ async function main() {
             url: "https://landing-inmobiliaria-tau.vercel.app/",
             image: "/projects/inmobiliaria.svg",
             color: "#10b981",
-            metricsUsers: 320,
-            metricsRevenue: 950,
-            metricsRating: 4.5,
         },
         {
             id: "app-voz",
@@ -191,8 +169,6 @@ async function main() {
             category: "mobile",
             image: "/projects/app-voz.svg",
             color: "#f59e0b",
-            metricsUsers: 45,
-            metricsRating: 4.3,
         },
         {
             id: "app-mejores-productos",
@@ -205,9 +181,6 @@ async function main() {
             category: "ai",
             image: "/projects/mejores-productos.svg",
             color: "#ef4444",
-            metricsUsers: 200,
-            metricsRevenue: 600,
-            metricsRating: 4.4,
         },
         {
             id: "siam",
@@ -220,8 +193,6 @@ async function main() {
             category: "ai",
             image: "/projects/siam.svg",
             color: "#dc2626",
-            metricsUsers: 12,
-            metricsRating: 4.5,
         },
         {
             id: "saludapp",
@@ -234,8 +205,6 @@ async function main() {
             category: "ai",
             image: "/projects/saludapp.svg",
             color: "#06b6d4",
-            metricsUsers: 8,
-            metricsRating: 4.6,
         },
     ];
 
@@ -252,9 +221,9 @@ async function main() {
                 url: project.url || null,
                 image: project.image,
                 color: project.color,
-                metricsUsers: project.metricsUsers || null,
-                metricsRevenue: project.metricsRevenue || null,
-                metricsRating: project.metricsRating || null,
+                metricsUsers: null,
+                metricsRevenue: null,
+                metricsRating: null,
             },
             create: {
                 id: project.id,
@@ -267,197 +236,15 @@ async function main() {
                 url: project.url || null,
                 image: project.image,
                 color: project.color,
-                metricsUsers: project.metricsUsers || null,
-                metricsRevenue: project.metricsRevenue || null,
-                metricsRating: project.metricsRating || null,
+                metricsUsers: null,
+                metricsRevenue: null,
+                metricsRating: null,
             },
         });
     }
 
     console.log("✅ Proyectos sincronizados");
 
-    // ─── CRM Contacts ───
-    const crmContacts = [
-        {
-            id: "contact-1",
-            name: "Ana Martínez",
-            email: "ana@startupslab.com",
-            phone: "+34 666 123 456",
-            company: "StartupLab",
-            source: "linkedin",
-            stage: "lead",
-            value: 3000,
-            notes: "Interesada en soluciones CRM",
-            tags: ["startup", "tech"],
-            lastContact: new Date("2025-12-01"),
-        },
-        {
-            id: "contact-2",
-            name: "Carlos López",
-            email: "carlos@innovatech.com",
-            phone: "+34 666 234 567",
-            company: "InnovaTech",
-            source: "referral",
-            stage: "contacted",
-            value: 8000,
-            notes: "Proyecto de integración",
-            tags: ["referral", "crm"],
-            lastContact: new Date("2025-08-15"),
-        },
-        {
-            id: "contact-3",
-            name: "María García",
-            email: "maria@bigexample.com",
-            phone: "+34 666 345 678",
-            company: "BigExample",
-            source: "website",
-            stage: "qualified",
-            value: 15000,
-            notes: "Enterprise solution",
-            tags: ["enterprise", "high-value"],
-            lastContact: new Date("2025-10-10"),
-        },
-        {
-            id: "contact-4",
-            name: "Pedro Sánchez",
-            email: "pedro@mediumbiz.com",
-            phone: "+34 666 456 789",
-            company: "MediumBiz",
-            source: "contact_form",
-            stage: "negotiation",
-            value: 25000,
-            notes: "Negociando términos",
-            tags: ["enterprise", "high-value"],
-            lastContact: new Date("2025-11-20"),
-        },
-        {
-            id: "contact-5",
-            name: "Laura Fernández",
-            email: "laura@designstudio.com",
-            phone: "+34 666 567 890",
-            company: "Design Studio",
-            source: "event",
-            stage: "closed-won",
-            value: 12000,
-            notes: "Contrato firmado",
-            tags: ["design", "completed"],
-            lastContact: new Date("2025-12-15"),
-        },
-        {
-            id: "contact-6",
-            name: "Roberto Díaz",
-            email: "roberto@oldcorp.com",
-            phone: "+34 666 678 901",
-            company: "OldCorp",
-            source: "cold_call",
-            stage: "closed-lost",
-            value: 5000,
-            notes: "No interesado",
-            tags: ["lost", "budget"],
-            lastContact: new Date("2025-11-05"),
-        },
-    ];
-
-    for (const contact of crmContacts) {
-        await prisma.crmContact.upsert({
-            where: { id: contact.id },
-            update: contact,
-            create: contact,
-        });
-    }
-
-    console.log("✅ CRM Contacts sincronizados");
-
-    // ─── Interactions ───
-    const interactions = [
-        {
-            id: "int-1",
-            contactId: "contact-1",
-            type: "email",
-            date: new Date("2025-11-28"),
-            summary: "Email de presentación enviado",
-        },
-        {
-            id: "int-2",
-            contactId: "contact-1",
-            type: "call",
-            date: new Date("2025-12-01"),
-            summary: "Llamada inicial - muy interesada",
-        },
-        {
-            id: "int-3",
-            contactId: "contact-2",
-            type: "meeting",
-            date: new Date("2025-08-10"),
-            summary: "Reunión de descubrimiento",
-        },
-        {
-            id: "int-4",
-            contactId: "contact-2",
-            type: "demo",
-            date: new Date("2025-08-15"),
-            summary: "Demo del producto",
-        },
-        {
-            id: "int-5",
-            contactId: "contact-3",
-            type: "email",
-            date: new Date("2025-09-20"),
-            summary: "Propuesta comercial enviada",
-        },
-        {
-            id: "int-6",
-            contactId: "contact-3",
-            type: "meeting",
-            date: new Date("2025-10-10"),
-            summary: "Reunión con stakeholders",
-        },
-        {
-            id: "int-7",
-            contactId: "contact-4",
-            type: "call",
-            date: new Date("2025-11-15"),
-            summary: "Negociación de precios",
-        },
-        {
-            id: "int-8",
-            contactId: "contact-4",
-            type: "note",
-            date: new Date("2025-11-20"),
-            summary: "Acuerdo cercano - próxima reunión en 1 semana",
-        },
-        {
-            id: "int-9",
-            contactId: "contact-5",
-            type: "meeting",
-            date: new Date("2025-12-10"),
-            summary: "Firma del contrato",
-        },
-        {
-            id: "int-10",
-            contactId: "contact-5",
-            type: "email",
-            date: new Date("2025-12-15"),
-            summary: "Confirmación de implementación",
-        },
-        {
-            id: "int-11",
-            contactId: "contact-6",
-            type: "call",
-            date: new Date("2025-11-05"),
-            summary: "Cliente no tiene presupuesto este año",
-        },
-    ];
-
-    for (const interaction of interactions) {
-        await prisma.interaction.upsert({
-            where: { id: interaction.id },
-            update: interaction,
-            create: interaction,
-        });
-    }
-
-    console.log("✅ Interactions sincronizadas");
 }
 
 main()

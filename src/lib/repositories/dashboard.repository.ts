@@ -224,9 +224,9 @@ export function getDashboardStats(): DashboardStats {
     visitorsWeek: 287,
     visitorsMonth: 1234,
     activeNow: 6,
-    revenueTotal: 25000,
-    revenueMonth: 4167,
-    conversionRate: 16.67,
+    revenueTotal: 0,
+    revenueMonth: 0,
+    conversionRate: 0,
     avgSessionDuration: 0,
     bounceRate: 0,
     trafficByDay: [
