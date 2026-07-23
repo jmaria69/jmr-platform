@@ -67,6 +67,9 @@ export function Nis2Calculator() {
         </label>
 
         <div
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
           className="rounded-xl p-4 border"
           style={{
             background: resultado.enAmbito ? "#dc262610" : "#6b728010",
