@@ -74,9 +74,12 @@ export const FUENTES_NIS2: readonly Fuente[] = [
   },
 ];
 
+// Obligaciones según la Directiva UE 2022/2555 (NIS2). España aún no la ha
+// transpuesto, por lo que los plazos concretos se enuncian como lo que exigirá
+// la norma, no como una obligación ya vigente y exigible hoy.
 const OBLIGACIONES_BASE = [
-  "Notificar una alerta temprana al CSIRT nacional en menos de 24 h desde la detección.",
-  "Presentar un informe formal del incidente en un plazo de 72 h.",
+  "Notificar una alerta temprana al CSIRT nacional en menos de 24 h desde la detección (según la Directiva UE, pendiente de transposición en España).",
+  "Presentar un informe formal del incidente en un plazo de 72 h (según la Directiva UE, pendiente de transposición en España).",
   "Implantar medidas de gestión de riesgos de ciberseguridad y poder demostrarlas.",
   "Responsabilidad directa de la dirección sobre el cumplimiento.",
 ];
