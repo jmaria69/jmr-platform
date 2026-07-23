@@ -27,6 +27,12 @@ export type Product = {
   color: string;
   /** Solo SIAM lleva campaña activa: determina el peso visual en la home. */
   foco: boolean;
+  /**
+   * Fuentes que respaldan las cifras citadas en `titular`, `bajada` o `promesa`
+   * (las cifras de `dolores` ya llevan su propia `fuente`). Debe ser no vacío
+   * si alguno de esos tres campos contiene una cifra.
+   */
+  fuentes: Fuente[];
 };
 
 const FUENTE_INCIBE: Fuente = {
@@ -37,6 +43,11 @@ const FUENTE_INCIBE: Fuente = {
 const FUENTE_MOROSIDAD: Fuente = {
   titulo: "Morosidad en comunidades de propietarios en 2026 — Guía Administradores de Fincas",
   url: "https://guiaadministradoresfincas.com/noticias/morosidad-en-comunidades-de-propietarios-en-2026-todo-lo-que-el-administrador-de-fincas-debe-saber-tras-la-sentencia-del-tribunal-supremo-y-la-nueva-ley-de-mediacion-obligatoria/",
+};
+
+const FUENTE_NIS2_PLAZO: Fuente = {
+  titulo: "NIS2 España: transposición, entidades esenciales, plazos y sanciones — Legiscope",
+  url: "https://www.legiscope.com/blog/nis2-espana-transposicion.html",
 };
 
 export const PRODUCTS: readonly Product[] = [
@@ -74,6 +85,7 @@ export const PRODUCTS: readonly Product[] = [
     ctaHref: "#calculadora",
     color: "#dc2626",
     foco: true,
+    fuentes: [FUENTE_INCIBE, FUENTE_NIS2_PLAZO],
   },
   {
     slug: "core-ops",
@@ -101,6 +113,7 @@ export const PRODUCTS: readonly Product[] = [
     ctaHref: "/contacto",
     color: "#06b6d4",
     foco: false,
+    fuentes: [],
   },
   {
     slug: "adminapp",
@@ -131,6 +144,7 @@ export const PRODUCTS: readonly Product[] = [
     ctaHref: "/contacto",
     color: "#6366f1",
     foco: false,
+    fuentes: [FUENTE_MOROSIDAD],
   },
 ];
 
