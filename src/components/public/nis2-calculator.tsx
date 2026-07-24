@@ -16,30 +16,30 @@ export function Nis2Calculator() {
   return (
     <div
       id="calculadora"
-      className="rounded-2xl border border-red-500/25 bg-white dark:bg-[#0d0d2b]/80 backdrop-blur-sm overflow-hidden"
+      className="rounded-2xl border border-border bg-card backdrop-blur-sm overflow-hidden"
     >
-      <div className="px-6 pt-6 pb-4 border-b border-gray-200 dark:border-white/10">
+      <div className="px-6 pt-6 pb-4 border-b border-border">
         <div className="flex items-center gap-2 mb-1">
-          <ShieldCheck className="h-4 w-4 text-red-600 dark:text-red-400" />
-          <span className="text-xs font-bold uppercase tracking-widest text-red-600 dark:text-red-400">
+          <ShieldCheck className="h-4 w-4 text-red-400" />
+          <span className="text-xs font-bold uppercase tracking-widest text-red-400">
             Exposición NIS2
           </span>
         </div>
-        <p className="text-sm font-semibold text-gray-900 dark:text-white">
+        <p className="text-sm font-semibold text-foreground">
           Tres datos y sabes si la directiva te aplica.
         </p>
       </div>
 
       <div className="p-6 space-y-5">
         <label className="block">
-          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Sector</span>
+          <span className="text-sm font-medium text-muted-foreground">Sector</span>
           <select
             value={sectorId}
             onChange={(e) => { setSectorId(e.target.value); setEnviado(false); }}
-            className="mt-1.5 w-full rounded-lg border border-gray-300 dark:border-white/15 bg-white dark:bg-[#0d0d2b] px-3 py-2.5 text-sm text-gray-900 dark:text-gray-100"
+            className="mt-1.5 w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm text-foreground"
           >
             {NIS2_SECTORS.map((s) => (
-              <option key={s.id} value={s.id} className="bg-white text-gray-900 dark:bg-[#0d0d2b] dark:text-gray-100">
+              <option key={s.id} value={s.id} className="bg-background text-foreground">
                 {s.label}
               </option>
             ))}
@@ -47,8 +47,8 @@ export function Nis2Calculator() {
         </label>
 
         <label className="block">
-          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-            Empleados: <span className="font-bold text-red-600 dark:text-red-400">{empleados}</span>
+          <span className="text-sm font-medium text-muted-foreground">
+            Empleados: <span className="font-bold text-red-400">{empleados}</span>
           </span>
           <input
             type="range" min={1} max={500} step={1} value={empleados}
@@ -58,8 +58,8 @@ export function Nis2Calculator() {
         </label>
 
         <label className="block">
-          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-            Facturación anual: <span className="font-bold text-red-600 dark:text-red-400">{facturacion} M€</span>
+          <span className="text-sm font-medium text-muted-foreground">
+            Facturación anual: <span className="font-bold text-red-400">{facturacion} M€</span>
           </span>
           <input
             type="range" min={0} max={100} step={1} value={facturacion}
@@ -74,23 +74,17 @@ export function Nis2Calculator() {
           aria-atomic="true"
           className="rounded-xl p-4 border"
           style={{
-            background: resultado.enAmbito ? "#dc262610" : "#6b728010",
-            borderColor: resultado.enAmbito ? "#dc262640" : "#6b728040",
+            background: resultado.enAmbito ? "#dc262610" : "rgba(120,120,140,0.08)",
+            borderColor: resultado.enAmbito ? "#dc262640" : "rgba(120,120,140,0.28)",
           }}
         >
           <div className="flex items-center gap-2 mb-2">
             <AlertTriangle
-              className={`h-4 w-4 ${
-                resultado.enAmbito
-                  ? "text-red-600 dark:text-red-400"
-                  : "text-gray-600 dark:text-gray-300"
-              }`}
+              className={`h-4 w-4 ${resultado.enAmbito ? "text-red-400" : "text-muted-foreground"}`}
             />
             <span
               className={`text-xs uppercase tracking-widest font-bold ${
-                resultado.enAmbito
-                  ? "text-red-600 dark:text-red-400"
-                  : "text-gray-600 dark:text-gray-300"
+                resultado.enAmbito ? "text-red-400" : "text-muted-foreground"
               }`}
             >
               {resultado.categoria === "esencial"
@@ -101,22 +95,22 @@ export function Nis2Calculator() {
             </span>
           </div>
 
-          <p className="text-sm text-gray-700 dark:text-gray-200 leading-relaxed">
+          <p className="text-sm text-foreground leading-relaxed">
             {resultado.motivo}
           </p>
 
           {resultado.enAmbito && (
             <>
               <div className="mt-4 flex items-end gap-2">
-                <span className="font-display text-3xl font-black text-gray-900 dark:text-white">
+                <span className="font-display text-3xl font-black text-foreground">
                   {resultado.exposicionEur.toLocaleString("es-ES")} €
                 </span>
-                <span className="text-sm text-gray-600 dark:text-gray-400 pb-1">exposición estimada</span>
+                <span className="text-sm text-muted-foreground pb-1">exposición estimada</span>
               </div>
 
               <ul className="mt-4 space-y-1.5">
                 {resultado.obligaciones.map((o) => (
-                  <li key={o} className="text-xs text-gray-700 dark:text-gray-300 leading-relaxed">
+                  <li key={o} className="text-xs text-muted-foreground leading-relaxed">
                     · {o}
                   </li>
                 ))}
@@ -135,8 +129,8 @@ export function Nis2Calculator() {
           </Link>
         )}
 
-        <div className="pt-4 border-t border-gray-200 dark:border-white/10 space-y-1">
-          <p className="text-[11px] text-gray-600 dark:text-gray-400 leading-relaxed">
+        <div className="pt-4 border-t border-border space-y-1">
+          <p className="text-[11px] text-muted-foreground leading-relaxed">
             Estimación orientativa. España no ha transpuesto todavía la directiva: no hay plazo
             legal vigente que citar. Cuando se publique en el BOE, llegará de golpe.
           </p>
@@ -146,7 +140,7 @@ export function Nis2Calculator() {
               href={f.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="block text-[11px] text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 underline underline-offset-2"
+              className="block text-[11px] text-muted-foreground hover:text-foreground underline underline-offset-2"
             >
               Fuente: {f.titulo}
             </a>

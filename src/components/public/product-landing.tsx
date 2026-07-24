@@ -22,11 +22,11 @@ export function ProductLanding({
             <span className="text-sm" style={{ color: product.color }}>{product.badge}</span>
           </div>
 
-          <h1 className="font-display text-4xl lg:text-5xl leading-[1.1] text-gray-900 dark:text-white">
+          <h1 className="font-display text-4xl lg:text-5xl leading-[1.1] text-foreground">
             {product.titular}
           </h1>
 
-          <p className="text-xl text-gray-600 dark:text-gray-300 leading-relaxed">
+          <p className="text-xl text-muted-foreground leading-relaxed">
             {product.bajada}
           </p>
 
@@ -38,7 +38,7 @@ export function ProductLanding({
                     href={f.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-[11px] text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 underline underline-offset-2"
+                    className="text-[11px] text-muted-foreground hover:text-foreground underline underline-offset-2"
                   >
                     Fuente: {f.titulo}
                   </a>
@@ -56,24 +56,24 @@ export function ProductLanding({
         </div>
       </section>
 
-      <section className="py-16 px-6 border-t border-purple-500/20">
+      <section className="py-16 px-6 border-t border-border">
         <div className="max-w-4xl mx-auto">
-          <h2 className="font-display text-2xl text-gray-900 dark:text-white mb-8">
+          <h2 className="font-display text-2xl text-foreground mb-8">
             Por qué esto es un problema hoy
           </h2>
           <div className="space-y-4">
             {product.dolores.map((d) => (
               <div
                 key={d.texto}
-                className="rounded-xl border border-gray-200 dark:border-white/8 surface-card p-5"
+                className="rounded-xl border border-border bg-card p-5"
               >
-                <p className="text-gray-700 dark:text-gray-300 leading-relaxed">{d.texto}</p>
+                <p className="text-foreground leading-relaxed">{d.texto}</p>
                 {d.fuente && (
                   <a
                     href={d.fuente.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="mt-2 inline-block text-[11px] text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 underline underline-offset-2"
+                    className="mt-2 inline-block text-[11px] text-muted-foreground hover:text-foreground underline underline-offset-2"
                   >
                     Fuente: {d.fuente.titulo}
                   </a>
@@ -89,7 +89,7 @@ export function ProductLanding({
             <p className="text-xs uppercase tracking-widest font-bold mb-1" style={{ color: product.color }}>
               Qué hace {product.nombre}
             </p>
-            <p className="text-gray-900 dark:text-white font-semibold leading-relaxed">
+            <p className="text-foreground font-semibold leading-relaxed">
               {product.promesa}
             </p>
           </div>
@@ -98,12 +98,12 @@ export function ProductLanding({
 
       {children}
 
-      <section className="py-20 px-6 border-t border-purple-500/20">
+      <section className="py-20 px-6 border-t border-border">
         <div className="max-w-2xl mx-auto text-center space-y-6">
-          <h2 className="font-display text-3xl text-gray-900 dark:text-white">
+          <h2 className="font-display text-3xl text-foreground">
             Hablamos 15 minutos
           </h2>
-          <p className="text-gray-600 dark:text-gray-400">
+          <p className="text-muted-foreground">
             Sin presentación comercial. Me cuentas cómo lo lleváis hoy y te digo si esto os sirve.
           </p>
           <Link
