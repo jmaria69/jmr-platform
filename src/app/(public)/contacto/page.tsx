@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Mail, Phone, MapPin, Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -27,6 +27,19 @@ export default function ContactoPage() {
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [message, setMessage] = useState('');
+  const [proyectos, setProyectos] = useState<{ id: string; name: string }[]>([]);
+
+  // El desplegable se llena desde /api/projects: cualquier proyecto dado de alta
+  // (incluido SIAM y los que subas desde el admin) aparece aquí automáticamente.
+  useEffect(() => {
+    fetch('/api/projects')
+      .then((r) => r.json())
+      .then((j) => {
+        const lista = Array.isArray(j?.data) ? j.data : [];
+        setProyectos(lista.map((p: { id: string; name: string }) => ({ id: p.id, name: p.name })));
+      })
+      .catch(() => setProyectos([]));
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -145,18 +158,9 @@ export default function ContactoPage() {
                           <SelectValue placeholder="Selecciona un proyecto" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="admin-app">AdminApp</SelectItem>
-                          <SelectItem value="crm-it">Core OPS</SelectItem>
-                          <SelectItem value="olga-ai">OLGA.ai</SelectItem>
-                          <SelectItem value="campo-abierto">Campo Abierto</SelectItem>
-                          <SelectItem value="generador-ideas">Generador de Ideas IA</SelectItem>
-                          <SelectItem value="cf-jaramal">Club Fútbol Rivas 2016 B</SelectItem>
-                          <SelectItem value="cd-rivas-jarama">CD Rivas Jarama</SelectItem>
-                          <SelectItem value="vozflow">VozFlow Ultra Pro</SelectItem>
-                          <SelectItem value="frajamo">Frajamo Madrid</SelectItem>
-                          <SelectItem value="landing-inmobiliaria">Portal Inmobiliario</SelectItem>
-                          <SelectItem value="app-voz">AppVoz</SelectItem>
-                          <SelectItem value="mejores-productos">MejoresProductos</SelectItem>
+                          {proyectos.map((p) => (
+                            <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>
+                          ))}
                           <SelectItem value="custom">Proyecto personalizado</SelectItem>
                         </SelectContent>
                       </Select>
