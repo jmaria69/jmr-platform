@@ -3,7 +3,7 @@ import { MessageSquare, Bot, Zap, ArrowRight, ExternalLink, Package, Timer, Tren
 import { findAllProjects } from '@/lib/repositories/projects.repository';
 import { PraxiaLabLogo } from "@/components/praxia-lab-logo";
 import { AgentFlowWidget } from "@/components/public/agent-flow";
-import { DiagnosticoWidget } from "@/components/public/diagnostico";
+import { Nis2Calculator } from "@/components/public/nis2-calculator";
 import { ContactForm } from "@/components/public/contact-form";
 import { PRODUCTS } from '@/content/products';
 
@@ -161,29 +161,29 @@ export default async function Home() {
       <section className="relative py-20 px-6 border-t border-purple-500/20">
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-6">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-cyan-600/15 border border-cyan-500/25">
-              <span className="h-1.5 w-1.5 rounded-full bg-cyan-400 animate-pulse" />
-              <span className="text-xs font-semibold text-cyan-300 uppercase tracking-wider">Nuevo · Solo en Praxia Labs</span>
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-red-600/15 border border-red-500/25">
+              <span className="h-1.5 w-1.5 rounded-full bg-red-400 animate-pulse" />
+              <span className="text-xs font-semibold text-red-300 uppercase tracking-wider">Exposición NIS2</span>
             </div>
             <h2 className="font-display text-4xl text-white leading-tight">
-              Descubre cuánto ahorraría{' '}
-              <span className="bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
-                tu empresa
-              </span>{' '}
-              en 90 segundos.
+              ¿Te aplica la{' '}
+              <span className="bg-gradient-to-r from-red-400 to-purple-400 bg-clip-text text-transparent">
+                directiva NIS2
+              </span>
+              ?
             </h2>
             <p className="text-gray-400 text-lg leading-relaxed">
-              Selecciona tu sector, el proceso que más tiempo te roba y el tamaño de tu equipo.
-              El diagnóstico te dice qué agente aplicar y cuántas horas recuperas — al instante,
-              sin formularios, sin esperar.
+              Indica tu sector, tu plantilla y tu facturación. Te decimos si estás dentro del ámbito
+              de la directiva, qué exposición estimada tienes y qué te exigirá — con las fuentes
+              citadas, sin formularios.
             </p>
             <div className="flex items-center gap-3 text-sm text-gray-500">
               <span className="h-px flex-1 bg-white/5" />
-              <span>Estimación orientativa según tu sector, proceso y tamaño de equipo</span>
+              <span>Estimación orientativa. España aún no ha transpuesto la directiva.</span>
               <span className="h-px flex-1 bg-white/5" />
             </div>
           </div>
-          <DiagnosticoWidget />
+          <Nis2Calculator />
         </div>
       </section>
 
