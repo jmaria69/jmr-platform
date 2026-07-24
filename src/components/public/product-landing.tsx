@@ -38,7 +38,7 @@ export function ProductLanding({
                     href={f.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-[11px] text-gray-500 hover:text-gray-400 underline underline-offset-2"
+                    className="text-[11px] text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 underline underline-offset-2"
                   >
                     Fuente: {f.titulo}
                   </a>
@@ -65,7 +65,7 @@ export function ProductLanding({
             {product.dolores.map((d) => (
               <div
                 key={d.texto}
-                className="rounded-xl border border-white/8 surface-card p-5"
+                className="rounded-xl border border-gray-200 dark:border-white/8 surface-card p-5"
               >
                 <p className="text-gray-700 dark:text-gray-300 leading-relaxed">{d.texto}</p>
                 {d.fuente && (
@@ -73,7 +73,7 @@ export function ProductLanding({
                     href={d.fuente.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="mt-2 inline-block text-[11px] text-gray-500 hover:text-gray-400 underline underline-offset-2"
+                    className="mt-2 inline-block text-[11px] text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 underline underline-offset-2"
                   >
                     Fuente: {d.fuente.titulo}
                   </a>
