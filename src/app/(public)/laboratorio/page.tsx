@@ -35,6 +35,12 @@ export default async function LaboratorioPage() {
           </p>
         </div>
 
+        {proyectos.length === 0 && (
+          <p className="text-gray-500 dark:text-gray-400">
+            Todavía no hay proyectos que mostrar aquí.
+          </p>
+        )}
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {proyectos.map((project) => (
             <div key={project.id} className="project-card-v2 group p-6 rounded-2xl transition-all">
