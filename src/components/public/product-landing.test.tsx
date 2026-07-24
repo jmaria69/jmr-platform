@@ -23,12 +23,13 @@ describe("ProductLanding", () => {
 
   it("muestra un enlace de fuente por cada dolor con cifra", () => {
     render(<ProductLanding product={siam} />);
-    const conFuente = siam.dolores.filter((d) => d.fuente);
     const enlaces = screen.getAllByRole("link", { name: /^Fuente:/ });
-    expect(enlaces).toHaveLength(conFuente.length);
-    for (const e of enlaces) {
-      expect(e).toHaveAttribute("href", expect.stringMatching(/^https:\/\//));
-      expect(e).toHaveAttribute("target", "_blank");
+    for (const d of siam.dolores) {
+      if (!d.fuente) continue;
+      const enlace = enlaces.find((a) => a.getAttribute("href") === d.fuente!.url);
+      expect(enlace, `falta enlace de fuente para el dolor ${d.fuente!.url}`).toBeTruthy();
+      expect(enlace).toHaveAttribute("target", "_blank");
+      expect(enlace).toHaveAttribute("href", expect.stringMatching(/^https:\/\//));
     }
   });
 
@@ -47,6 +48,19 @@ describe("ProductLanding", () => {
       expect(screen.getByRole("heading", { level: 1 }).textContent).not.toMatch(
         /\bIA\b|inteligencia artificial/i
       );
+      unmount();
+    }
+  });
+
+  it("renderiza como enlace visible cada fuente a nivel de producto", () => {
+    for (const p of PRODUCTS) {
+      const { unmount } = render(<ProductLanding product={p} />);
+      const enlaces = screen.queryAllByRole("link", { name: /^Fuente:/ });
+      for (const f of p.fuentes) {
+        const enlace = enlaces.find((a) => a.getAttribute("href") === f.url);
+        expect(enlace, `falta enlace de fuente para ${f.url} en ${p.slug}`).toBeTruthy();
+        expect(enlace).toHaveAttribute("target", "_blank");
+      }
       unmount();
     }
   });

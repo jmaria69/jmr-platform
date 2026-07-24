@@ -30,6 +30,23 @@ export function ProductLanding({
             {product.bajada}
           </p>
 
+          {product.fuentes.length > 0 && (
+            <ul className="flex flex-wrap gap-x-4 gap-y-1">
+              {product.fuentes.map((f) => (
+                <li key={f.url}>
+                  <a
+                    href={f.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[11px] text-gray-500 hover:text-gray-400 underline underline-offset-2"
+                  >
+                    Fuente: {f.titulo}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          )}
+
           <Link
             href={product.ctaHref}
             className="inline-flex items-center gap-2 px-8 py-4 rounded-lg shimmer-btn font-semibold text-white transition-transform hover:scale-105"
