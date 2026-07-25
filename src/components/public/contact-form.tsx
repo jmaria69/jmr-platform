@@ -95,13 +95,13 @@ export function ContactForm() {
           value={form.proyecto}
           onChange={(e) => setForm((f) => ({ ...f, proyecto: e.target.value }))}
           required
-          className="w-full px-4 py-3 rounded-lg bg-white/5 border border-purple-500/30 text-white focus:border-purple-500 focus:outline-none transition"
+          className="w-full px-4 py-3 rounded-lg bg-background text-foreground border border-purple-500/30 focus:border-purple-500 focus:outline-none transition"
         >
-          <option value="Automatizacion de procesos">Automatización de procesos</option>
-          <option value="CRM y seguimiento de clientes">CRM y seguimiento de clientes</option>
-          <option value="Panel de administracion con IA">Panel de administración con IA</option>
-          <option value="Agente IA para operaciones">Agente IA para operaciones</option>
-          <option value="Otro">Otro</option>
+          <option className="bg-background text-foreground" value="Automatizacion de procesos">Automatización de procesos</option>
+          <option className="bg-background text-foreground" value="CRM y seguimiento de clientes">CRM y seguimiento de clientes</option>
+          <option className="bg-background text-foreground" value="Panel de administracion con IA">Panel de administración con IA</option>
+          <option className="bg-background text-foreground" value="Agente IA para operaciones">Agente IA para operaciones</option>
+          <option className="bg-background text-foreground" value="Otro">Otro</option>
         </select>
       </div>
       <div>
