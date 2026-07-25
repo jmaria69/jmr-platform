@@ -8,9 +8,11 @@ import {
   BarChart3,
   FolderKanban,
   KeyRound,
+  Megaphone,
   ArrowLeft,
   LogOut,
   Activity,
+  Gauge,
   Shield,
 } from "lucide-react";
 import {
@@ -32,7 +34,9 @@ const menuItems = [
   { href: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/admin/crm", label: "CRM", icon: Users },
   { href: "/admin/analytics", label: "Analytics", icon: BarChart3 },
+  { href: "/admin/campanas", label: "Campañas", icon: Megaphone },
   { href: "/admin/proyectos", label: "Proyectos", icon: FolderKanban },
+  { href: "/admin/escalabilidad", label: "Escalabilidad", icon: Gauge },
   { href: "/admin/seguridad", label: "Seguridad", icon: Shield },
 ];
 

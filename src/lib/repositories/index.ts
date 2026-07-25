@@ -7,3 +7,4 @@
 
 export * from "./projects.repository";
 export * from "./crm.repository";
+export * from "./campaigns.repository";
