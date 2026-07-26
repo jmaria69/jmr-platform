@@ -2,6 +2,10 @@ import type { Metadata } from "next";
 import { CRMPipeline } from "@/components/crm/pipeline";
 import { findAllContacts } from "@/lib/repositories/crm.repository";
 
+// Consulta la BD (Prisma) en cada request: no prerenderizar en build, donde
+// DATABASE_URL no es accesible y Prisma lanza errores de inicializacion.
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
     title: "Demo — CRM",
 };

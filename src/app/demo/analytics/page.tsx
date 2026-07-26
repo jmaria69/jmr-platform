@@ -12,6 +12,10 @@ import {
 import { getDashboardStats } from "@/lib/repositories/dashboard.repository";
 import { findAllProjects } from "@/lib/repositories/projects.repository";
 
+// Consulta la BD (Prisma) en cada request: no prerenderizar en build, donde
+// DATABASE_URL no es accesible y Prisma lanza errores de inicializacion.
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
     title: "Demo — Analytics",
 };
