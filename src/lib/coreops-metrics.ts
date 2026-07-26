@@ -49,26 +49,33 @@ export interface DashboardSnapshot {
   crm: CrmSnapshot;
 }
 
-async function timedFetch(url: string): Promise<{ ok: boolean; status: number | null; latencyMs: number | null; body: unknown }> {
+async function timedFetch(url: string): Promise<{ ok: boolean; status: number | null; latencyMs: number | null; body: unknown; contentType: string | null }> {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
   const start = performance.now();
   try {
     const res = await fetch(url, { signal: controller.signal, cache: "no-store" });
     const latencyMs = Math.round(performance.now() - start);
+    const contentType = res.headers.get("content-type");
     let body: unknown = null;
     try {
       body = await res.json();
     } catch {
       body = null;
     }
-    return { ok: res.ok, status: res.status, latencyMs, body };
+    return { ok: res.ok, status: res.status, latencyMs, body, contentType };
   } catch {
-    return { ok: false, status: null, latencyMs: null, body: null };
+    return { ok: false, status: null, latencyMs: null, body: null, contentType: null };
   } finally {
     clearTimeout(timer);
   }
 }
+
+const isJson = (ct: string | null) => !!ct && ct.includes("json");
+// Un SPA estático (p.ej. una landing) responde 200-HTML para CUALQUIER ruta,
+// incluida /api/health: eso NO prueba que el backend esté vivo. Por eso un
+// text/html no cuenta ni como servicio sano ni como métricas válidas.
+const isHtml = (ct: string | null) => !!ct && ct.includes("text/html");
 
 function parseInternal(body: unknown): InternalMetrics | null {
   if (!body || typeof body !== "object") return null;
@@ -95,15 +102,18 @@ function parseInternal(body: unknown): InternalMetrics | null {
 async function probeService(svc: MonitoredService): Promise<ServiceSnapshot> {
   const base = { id: svc.id, name: svc.name, url: svc.url };
   // 1) Intenta el endpoint de métricas (da latencia + datos internos de una vez).
+  //    Solo vale si responde JSON: un 200-HTML (landing/SPA fallback) no lo es.
   if (svc.metricsPath) {
     const m = await timedFetch(`${svc.url}${svc.metricsPath}`);
-    if (m.ok) {
+    if (m.ok && isJson(m.contentType)) {
       return { ...base, reachable: true, latencyMs: m.latencyMs, status: m.status, internal: parseInternal(m.body) };
     }
   }
-  // 2) Sin métricas o caído: blackbox contra healthPath.
+  // 2) Sin métricas o caído: blackbox contra healthPath. Reachable solo si la
+  //    respuesta NO es HTML (evita falsos "Online" de sitios estáticos).
   const h = await timedFetch(`${svc.url}${svc.healthPath}`);
-  return { ...base, reachable: h.ok, latencyMs: h.latencyMs, status: h.status, internal: null };
+  const reachable = h.ok && !isHtml(h.contentType);
+  return { ...base, reachable, latencyMs: h.latencyMs, status: h.status, internal: null };
 }
 
 async function readCrm(): Promise<CrmSnapshot> {
