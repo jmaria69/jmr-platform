@@ -26,7 +26,7 @@ export const MONITORED_SERVICES: MonitoredService[] = [
   {
     id: "core-ops",
     name: "CORE OPS",
-    url: strip(process.env.CORE_OPS_URL || "https://demcore.praxialabs.com"),
+    url: strip(process.env.CORE_OPS_URL || "https://coreapi.praxialabs.com"),
     metricsPath: "/api/metrics/scalability",
     healthPath: "/api/health",
   },
