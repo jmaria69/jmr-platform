@@ -112,3 +112,55 @@ export async function getGAAggregateStats(): Promise<GAAggregateStats> {
 
     return { avgSessionDuration, bounceRate, visitorsWeek, visitorsToday, trafficByCountry };
 }
+
+export interface RealtimeVisitor {
+    id: string;
+    device: "mobile" | "tablet" | "desktop";
+    country: string;
+    city: string;
+    page: string;
+    activeUsers: number;
+}
+
+/**
+ * Visitantes en tiempo real (GA4 Realtime API). Devuelve grupos de usuarios
+ * activos por dispositivo/país/ciudad/página. La API realtime NO expone
+ * sistema operativo, origen ni duración de sesión, así que la tabla del
+ * dashboard solo muestra lo que GA sí da en vivo.
+ */
+export async function getRealtimeVisitors(): Promise<RealtimeVisitor[]> {
+    const propertyId = process.env.GA_PROPERTY_ID;
+    if (!propertyId) throw new Error("GA_PROPERTY_ID no configurada");
+
+    const client = getAnalyticsClient();
+    const [response] = await client.runRealtimeReport({
+        property: `properties/${propertyId}`,
+        dimensions: [
+            { name: 'deviceCategory' },
+            { name: 'country' },
+            { name: 'city' },
+            { name: 'unifiedScreenName' },
+        ],
+        metrics: [{ name: 'activeUsers' }],
+        limit: 50,
+    });
+
+    const rows = response.rows ?? [];
+    const visitors = rows.map((row, i) => {
+        const dims = row.dimensionValues ?? [];
+        const raw = (dims[0]?.value ?? '').toLowerCase();
+        const device: RealtimeVisitor["device"] =
+            raw === 'mobile' ? 'mobile' : raw === 'tablet' ? 'tablet' : 'desktop';
+        return {
+            id: `rt-${i}`,
+            device,
+            country: dims[1]?.value || '—',
+            city: dims[2]?.value || '—',
+            page: dims[3]?.value || '—',
+            activeUsers: parseInt(row.metricValues?.[0]?.value ?? '0', 10),
+        };
+    });
+
+    console.log("✅ GA4 realtime:", visitors.length, "grupos activos");
+    return visitors;
+}

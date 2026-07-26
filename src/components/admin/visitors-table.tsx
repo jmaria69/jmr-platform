@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Monitor, Smartphone, Tablet } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -12,7 +12,15 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Visitor } from "@/types";
+
+interface RealtimeVisitor {
+  id: string;
+  device: "mobile" | "tablet" | "desktop";
+  country: string;
+  city: string;
+  page: string;
+  activeUsers: number;
+}
 
 const deviceIcon = {
   desktop: Monitor,
@@ -20,17 +28,46 @@ const deviceIcon = {
   tablet: Tablet,
 };
 
+const REFRESH_MS = 5000;
+
 export function VisitorsTable() {
-  // Sin datos simulados: la tabla se poblará cuando se conecte el stream real
-  // de visitantes (Google Analytics realtime). De momento, estado vacío honesto.
-  const [visitors] = useState<Visitor[]>([]);
+  const [visitors, setVisitors] = useState<RealtimeVisitor[]>([]);
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    let alive = true;
+
+    const load = async () => {
+      try {
+        const res = await fetch("/api/visitors", { cache: "no-store" });
+        if (!res.ok) return;
+        const json = await res.json();
+        if (alive) setVisitors(Array.isArray(json.data) ? json.data : []);
+      } catch {
+        // Mantener el último estado si falla una petición puntual.
+      } finally {
+        if (alive) setLoaded(true);
+      }
+    };
+
+    load();
+    const timer = setInterval(load, REFRESH_MS);
+    return () => {
+      alive = false;
+      clearInterval(timer);
+    };
+  }, []);
+
+  const totalActive = visitors.reduce((sum, v) => sum + v.activeUsers, 0);
 
   return (
     <div className="rounded-2xl glass border-gradient p-6 glow-hover transition-all">
       <div className="flex items-center justify-between mb-4">
         <div>
           <h3 className="text-lg font-semibold">Visitantes en Tiempo Real</h3>
-          <p className="text-sm text-muted-foreground">Actualización cada 5 segundos</p>
+          <p className="text-sm text-muted-foreground">
+            {totalActive} {totalActive === 1 ? "usuario activo" : "usuarios activos"} · actualización cada 5 s
+          </p>
         </div>
         <div className="flex items-center gap-2 glass rounded-full px-3 py-1.5">
           <span className="relative flex h-2.5 w-2.5">
@@ -47,17 +84,18 @@ export function VisitorsTable() {
             <TableRow className="border-white/5 hover:bg-transparent">
               <TableHead className="text-muted-foreground">Dispositivo</TableHead>
               <TableHead className="hidden sm:table-cell text-muted-foreground">País</TableHead>
+              <TableHead className="hidden md:table-cell text-muted-foreground">Ciudad</TableHead>
               <TableHead className="text-muted-foreground">Página</TableHead>
-              <TableHead className="hidden md:table-cell text-muted-foreground">Origen</TableHead>
-              <TableHead className="hidden lg:table-cell text-muted-foreground">OS</TableHead>
-              <TableHead className="text-right text-muted-foreground">Duración</TableHead>
+              <TableHead className="text-right text-muted-foreground">Activos</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {visitors.length === 0 && (
               <TableRow className="border-white/5 hover:bg-transparent">
-                <TableCell colSpan={6} className="text-center text-sm text-muted-foreground py-12">
-                  Sin visitantes en tiempo real todavía. Se activará al conectar el stream de Analytics.
+                <TableCell colSpan={5} className="text-center text-sm text-muted-foreground py-12">
+                  {loaded
+                    ? "Sin visitantes activos ahora mismo."
+                    : "Cargando visitantes en tiempo real…"}
                 </TableCell>
               </TableRow>
             )}
@@ -77,23 +115,18 @@ export function VisitorsTable() {
                   <TableCell className="hidden sm:table-cell">
                     <span className="text-sm">{v.country}</span>
                   </TableCell>
+                  <TableCell className="hidden md:table-cell">
+                    <span className="text-sm text-muted-foreground">{v.city}</span>
+                  </TableCell>
                   <TableCell>
                     <code className="text-xs bg-white/5 px-2 py-0.5 rounded-md border border-white/5 font-mono">
                       {v.page}
                     </code>
                   </TableCell>
-                  <TableCell className="hidden md:table-cell">
-                    <Badge variant="outline" className="text-xs bg-white/5 border-white/10">
-                      {v.referrer}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="hidden lg:table-cell">
-                    <span className="text-xs text-muted-foreground">{v.os}</span>
-                  </TableCell>
                   <TableCell className="text-right">
-                    <span className="text-xs font-mono text-muted-foreground">
-                      {Math.floor(v.duration / 60)}:{(v.duration % 60).toString().padStart(2, "0")}
-                    </span>
+                    <Badge variant="outline" className="text-xs bg-white/5 border-white/10 font-mono">
+                      {v.activeUsers}
+                    </Badge>
                   </TableCell>
                 </TableRow>
               );
