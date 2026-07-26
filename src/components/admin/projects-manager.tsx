@@ -33,6 +33,16 @@ export function ProjectsManager({ isReadOnly = false }: ProjectsManagerProps) {
   const [deleteTarget, setDeleteTarget] = useState<Project | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
+  // Conteo de vistas por proyecto (analítica interna)
+  const [viewCounts, setViewCounts] = useState<Record<string, { total: number; last7d: number; uniques: number }>>({});
+  useEffect(() => {
+    if (isReadOnly) return;
+    fetch("/api/projects/views")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((j) => { if (j?.data) setViewCounts(j.data); })
+      .catch(() => { /* sin métricas de vistas, no pasa nada */ });
+  }, [isReadOnly]);
+
   // ─── Drag & drop state ───
   const [orderedIds, setOrderedIds] = useState<string[]>([]);
   const dragIndexRef = useRef<number | null>(null);
@@ -296,6 +306,14 @@ export function ProjectsManager({ isReadOnly = false }: ProjectsManagerProps) {
                     {project.tech.map((t) => (
                       <span key={t} className="text-xs bg-white/5 border border-white/5 px-2 py-0.5 rounded-md">{t}</span>
                     ))}
+                  </div>
+                  <div className="flex items-center gap-1.5 text-xs text-muted-foreground pt-1">
+                    <Eye className="h-3.5 w-3.5" />
+                    <span className="font-semibold text-foreground">{viewCounts[project.id]?.total ?? 0}</span>
+                    vistas
+                    <span className="opacity-60">
+                      · {viewCounts[project.id]?.uniques ?? 0} únicos · {viewCounts[project.id]?.last7d ?? 0} en 7d
+                    </span>
                   </div>
                 </CardContent>
               </Card>

@@ -41,6 +41,18 @@ model Project {
   @@map("projects")
 }
 
+model ProjectView {
+  id        String   @id @default(uuid())
+  projectId String   @map("project_id")
+  ts        DateTime @default(now())
+  referer   String   @default("")
+  userAgent String   @default("") @map("user_agent")
+  ipHash    String   @default("") @map("ip_hash")
+
+  @@index([projectId, ts])
+  @@map("project_views")
+}
+
 model Contact {
   id        String    @id @default(uuid())
   nombre    String
