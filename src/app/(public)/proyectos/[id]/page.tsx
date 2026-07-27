@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArrowLeft, ExternalLink, Star, Users } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { findProjectById } from "@/lib/repositories/projects.repository";
+import { ProjectViewTracker } from "@/components/public/project-view-tracker";
 
 export const dynamic = "force-dynamic";
 
@@ -33,6 +34,7 @@ export default async function ProjectDetailPage({
 
     return (
         <section className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-12 sm:py-20">
+            <ProjectViewTracker projectId={project.id} />
             <Link href="/proyectos" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-6">
                 <ArrowLeft className="h-4 w-4" />
                 Volver a proyectos

@@ -16,6 +16,7 @@ function dbRowToProject(row: any): Project {
     github: row.github || undefined,
     image: row.image,
     color: row.color,
+    sortOrder: row.sortOrder ?? 9999,
     metrics: {
       users: row.metricsUsers || undefined,
       revenue: row.metricsRevenue || undefined,
@@ -28,7 +29,9 @@ function dbRowToProject(row: any): Project {
 
 export async function findAllProjects(): Promise<Project[]> {
   try {
-    const projects = await prisma.project.findMany();
+    const projects = await prisma.project.findMany({
+      orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
+    });
     // Si la DB está vacía, usar seed
     if (projects.length === 0) {
       return [...seed];
@@ -160,6 +163,16 @@ export async function updateProject(
     console.error("Update project error:", err);
     throw err;
   }
+}
+
+// Persiste el orden manual: la posición en el array define sortOrder.
+// La home pública y /proyectos leen con este orden.
+export async function reorderProjects(ids: string[]): Promise<void> {
+  await prisma.$transaction(
+    ids.map((id, index) =>
+      prisma.project.update({ where: { id }, data: { sortOrder: index } })
+    )
+  );
 }
 
 export async function deleteProject(id: string): Promise<void> {

@@ -3,8 +3,9 @@ import { MessageSquare, Bot, Zap, ArrowRight, ExternalLink, Package, Timer, Tren
 import { findAllProjects } from '@/lib/repositories/projects.repository';
 import { PraxiaLabLogo } from "@/components/praxia-lab-logo";
 import { AgentFlowWidget } from "@/components/public/agent-flow";
-import { DiagnosticoWidget } from "@/components/public/diagnostico";
+import { Nis2Calculator } from "@/components/public/nis2-calculator";
 import { ContactForm } from "@/components/public/contact-form";
+import { PRODUCTS } from '@/content/products';
 
 export const dynamic = "force-dynamic";
 
@@ -123,14 +124,14 @@ export default async function Home() {
                 </span>
               </div>
               <h1 className="font-display text-5xl lg:text-6xl leading-[1.08] text-white">
-                Automatiza tu empresa{' '}
+                El trabajo que hacéis a mano{' '}
                 <span className="bg-gradient-to-r from-purple-400 via-cyan-400 to-purple-400 bg-clip-text text-transparent">
-                  con agentes IA.
+                  ya no hace falta hacerlo.
                 </span>
               </h1>
               <p className="text-xl text-gray-300 leading-relaxed">
-                Facturas, aprobaciones, seguimiento de clientes — en automático, sin código, sin consultor.{' '}
-                <span className="text-cyan-400 font-semibold">Operativo en menos de 48 horas.</span>
+                Construyo sistemas para pymes españolas: seguridad, operaciones y administración.{' '}
+                <span className="text-cyan-400 font-semibold">Uno por uno, hasta que funciona.</span>
               </p>
             </div>
             <div className="flex flex-col sm:flex-row gap-4">
@@ -160,29 +161,29 @@ export default async function Home() {
       <section className="relative py-20 px-6 border-t border-purple-500/20">
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-6">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-cyan-600/15 border border-cyan-500/25">
-              <span className="h-1.5 w-1.5 rounded-full bg-cyan-400 animate-pulse" />
-              <span className="text-xs font-semibold text-cyan-300 uppercase tracking-wider">Nuevo · Solo en Praxia Labs</span>
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-red-600/15 border border-red-500/25">
+              <span className="h-1.5 w-1.5 rounded-full bg-red-400 animate-pulse" />
+              <span className="text-xs font-semibold text-red-300 uppercase tracking-wider">Exposición NIS2</span>
             </div>
             <h2 className="font-display text-4xl text-white leading-tight">
-              Descubre cuánto ahorraría{' '}
-              <span className="bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
-                tu empresa
-              </span>{' '}
-              en 90 segundos.
+              ¿Te aplica la{' '}
+              <span className="bg-gradient-to-r from-red-400 to-purple-400 bg-clip-text text-transparent">
+                directiva NIS2
+              </span>
+              ?
             </h2>
             <p className="text-gray-400 text-lg leading-relaxed">
-              Selecciona tu sector, el proceso que más tiempo te roba y el tamaño de tu equipo.
-              El diagnóstico te dice qué agente aplicar y cuántas horas recuperas — al instante,
-              sin formularios, sin esperar.
+              Indica tu sector, tu plantilla y tu facturación. Te decimos si estás dentro del ámbito
+              de la directiva, qué exposición estimada tienes y qué te exigirá — con las fuentes
+              citadas, sin formularios.
             </p>
             <div className="flex items-center gap-3 text-sm text-gray-500">
               <span className="h-px flex-1 bg-white/5" />
-              <span>Estimación orientativa según tu sector, proceso y tamaño de equipo</span>
+              <span>Estimación orientativa. España aún no ha transpuesto la directiva.</span>
               <span className="h-px flex-1 bg-white/5" />
             </div>
           </div>
-          <DiagnosticoWidget />
+          <Nis2Calculator />
         </div>
       </section>
 
@@ -300,6 +301,46 @@ export default async function Home() {
         </div>
       </section>
 
+      {/* ── PRODUCTOS ── */}
+      <section className="py-24 px-6 border-t border-purple-500/20">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-14">
+            <h2 className="font-display text-4xl text-white mb-4">Tres productos</h2>
+            <p className="text-gray-400 max-w-xl mx-auto">
+              Cada uno resuelve un problema concreto de un tipo concreto de empresa.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {PRODUCTS.map((p) => (
+              <Link
+                key={p.slug}
+                href={`/${p.slug}`}
+                className="group relative rounded-2xl border p-6 flex flex-col transition-all hover:scale-[1.02] surface-card"
+                style={{ borderColor: p.foco ? `${p.color}50` : 'rgba(255,255,255,0.08)' }}
+              >
+                <div
+                  className="h-0.5 rounded-full mb-5"
+                  style={{ background: `linear-gradient(90deg, ${p.color}, ${p.color}30, transparent)` }}
+                />
+                <span
+                  className="self-start text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full mb-4"
+                  style={{ background: `${p.color}18`, color: p.color, border: `1px solid ${p.color}30` }}
+                >
+                  {p.badge}
+                </span>
+                <h3 className="font-display text-lg font-bold text-white mb-3 leading-snug">
+                  {p.titular}
+                </h3>
+                <p className="text-sm text-gray-400 leading-relaxed flex-1">{p.promesa}</p>
+                <span className="mt-5 inline-flex items-center gap-1 text-sm font-semibold" style={{ color: p.color }}>
+                  {p.nombre} <ArrowRight className="h-3.5 w-3.5" />
+                </span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ── PROYECTOS DESTACADOS ── */}
       <section id="proyectos" className="relative py-24 px-6 border-t border-purple-500/20">
         <div className="max-w-6xl mx-auto">
@@ -351,7 +392,7 @@ export default async function Home() {
             ))}
           </div>
           <div className="mt-12 text-center">
-            <Link href="/proyectos" className="inline-flex items-center gap-2 px-6 py-3 rounded-lg border border-purple-500/30 text-purple-400 hover:bg-purple-500/10 transition font-semibold">
+            <Link href="/laboratorio" className="inline-flex items-center gap-2 px-6 py-3 rounded-lg border border-purple-500/30 text-purple-400 hover:bg-purple-500/10 transition font-semibold">
               Ver todos los proyectos <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
@@ -396,7 +437,7 @@ export default async function Home() {
               <div className="space-y-3">
                 <p className="text-xs uppercase tracking-widest font-semibold text-gray-500">Producto</p>
                 <nav className="flex flex-col gap-2 text-gray-400">
-                  <Link href="/proyectos" className="hover:text-white transition">Proyectos</Link>
+                  <Link href="/laboratorio" className="hover:text-white transition">Laboratorio</Link>
                   <Link href="/precios" className="hover:text-white transition">Precios</Link>
                   <Link href="/#como-funciona" className="hover:text-white transition">Cómo funciona</Link>
                   <Link href="/acerca-de" className="hover:text-white transition">Acerca de</Link>

@@ -1,6 +1,6 @@
 "use client";
 
-import { Trash2, Users, Star, DollarSign, AlertCircle, Loader2, GripVertical } from "lucide-react";
+import { Trash2, Users, Star, DollarSign, AlertCircle, Loader2, GripVertical, Eye } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -33,19 +33,44 @@ export function ProjectsManager({ isReadOnly = false }: ProjectsManagerProps) {
   const [deleteTarget, setDeleteTarget] = useState<Project | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
+  // Conteo de vistas por proyecto (analítica interna)
+  const [viewCounts, setViewCounts] = useState<Record<string, { total: number; last7d: number; uniques: number }>>({});
+  useEffect(() => {
+    if (isReadOnly) return;
+    fetch("/api/projects/views")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((j) => { if (j?.data) setViewCounts(j.data); })
+      .catch(() => { /* sin métricas de vistas, no pasa nada */ });
+  }, [isReadOnly]);
+
   // ─── Drag & drop state ───
   const [orderedIds, setOrderedIds] = useState<string[]>([]);
   const dragIndexRef = useRef<number | null>(null);
   const [overIndex, setOverIndex] = useState<number | null>(null);
   const [isDragging, setIsDragging] = useState(false);
 
-  // Cargar orden guardado en localStorage
+  // Migración única: si hay un orden antiguo en localStorage (de cuando el
+  // orden no se persistía en BD), súbelo a la BD y elimínalo. A partir de ahí
+  // la fuente de verdad es el servidor (la home y /proyectos leen de ahí).
   useEffect(() => {
+    if (isReadOnly) return;
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) setOrderedIds(JSON.parse(saved));
+      if (saved) {
+        const ids = JSON.parse(saved);
+        if (Array.isArray(ids) && ids.length > 0) {
+          setOrderedIds(ids);
+          fetch("/api/projects/reorder", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ ids }),
+          })
+            .then((r) => { if (r.ok) localStorage.removeItem(STORAGE_KEY); })
+            .catch(() => { /* reintentará en la próxima visita */ });
+        }
+      }
     } catch { /* ignorar */ }
-  }, []);
+  }, [isReadOnly]);
 
   // Proyectos en el orden del usuario; los nuevos (no guardados) van al final
   const orderedProjects = useMemo(() => {
@@ -60,7 +85,13 @@ export function ProjectsManager({ isReadOnly = false }: ProjectsManagerProps) {
   function saveOrder(ordered: Project[]) {
     const ids = ordered.map(p => p.id);
     setOrderedIds(ids);
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(ids)); } catch { /* ignorar */ }
+    // Persistir en BD: este orden es el que ven la home pública y /proyectos.
+    // (Ya no se guarda en localStorage: la BD es la única fuente de verdad.)
+    fetch("/api/projects/reorder", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ids }),
+    }).catch((err) => console.error("No se pudo persistir el orden:", err));
   }
 
   // ─── Handlers de drag ───
@@ -166,9 +197,14 @@ export function ProjectsManager({ isReadOnly = false }: ProjectsManagerProps) {
               : "Arrastra las tarjetas para reordenar."}
           </p>
         </div>
-        {!isReadOnly && (
-          <AddProjectDialog onAdd={(p) => addProject(p).catch((err) => console.error("[AddProject] failed:", err instanceof Error ? err.message : String(err)))} />
-        )}
+        <div className="flex flex-wrap items-center gap-2">
+          <Button variant="outline" onClick={() => window.open("/proyectos", "_blank", "noopener")}>
+            <Eye className="mr-2 h-4 w-4" /> Ver en la web
+          </Button>
+          {!isReadOnly && (
+            <AddProjectDialog onAdd={(p) => addProject(p).catch((err) => console.error("[AddProject] failed:", err instanceof Error ? err.message : String(err)))} />
+          )}
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -270,6 +306,14 @@ export function ProjectsManager({ isReadOnly = false }: ProjectsManagerProps) {
                     {project.tech.map((t) => (
                       <span key={t} className="text-xs bg-white/5 border border-white/5 px-2 py-0.5 rounded-md">{t}</span>
                     ))}
+                  </div>
+                  <div className="flex items-center gap-1.5 text-xs text-muted-foreground pt-1">
+                    <Eye className="h-3.5 w-3.5" />
+                    <span className="font-semibold text-foreground">{viewCounts[project.id]?.total ?? 0}</span>
+                    vistas
+                    <span className="opacity-60">
+                      · {viewCounts[project.id]?.uniques ?? 0} únicos · {viewCounts[project.id]?.last7d ?? 0} en 7d
+                    </span>
                   </div>
                 </CardContent>
               </Card>

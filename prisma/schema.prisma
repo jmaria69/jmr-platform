@@ -34,10 +34,23 @@ model Project {
   metricsUsers     Int?
   metricsRevenue   Float?
   metricsRating    Float?
+  sortOrder        Int       @default(9999) @map("sort_order")
   createdAt        DateTime  @default(now()) @map("created_at")
   updatedAt        DateTime  @updatedAt @map("updated_at")
 
   @@map("projects")
+}
+
+model ProjectView {
+  id        String   @id @default(uuid())
+  projectId String   @map("project_id")
+  ts        DateTime @default(now())
+  referer   String   @default("")
+  userAgent String   @default("") @map("user_agent")
+  ipHash    String   @default("") @map("ip_hash")
+
+  @@index([projectId, ts])
+  @@map("project_views")
 }
 
 model Contact {
@@ -80,4 +93,36 @@ model Interaction {
   summary   String    @default("")
 
   @@map("interactions")
+}
+model Campaign {
+  id          String          @id @default(uuid())
+  slug        String          @unique
+  name        String
+  description String          @default("")
+  channel     String          @default("linkedin")
+  status      String          @default("activa")
+  targetUrl   String          @map("target_url")
+  utmSource   String          @default("") @map("utm_source")
+  utmMedium   String          @default("") @map("utm_medium")
+  utmCampaign String          @default("") @map("utm_campaign")
+  startDate   DateTime        @default(now()) @map("start_date")
+  endDate     DateTime?       @map("end_date")
+  createdAt   DateTime        @default(now()) @map("created_at")
+  updatedAt   DateTime        @updatedAt @map("updated_at")
+  clicks      CampaignClick[]
+
+  @@map("campaigns")
+}
+
+model CampaignClick {
+  id         String   @id @default(uuid())
+  campaignId String   @map("campaign_id")
+  campaign   Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  ts         DateTime @default(now())
+  referer    String   @default("")
+  userAgent  String   @default("") @map("user_agent")
+  ipHash     String   @default("") @map("ip_hash")
+
+  @@index([campaignId, ts])
+  @@map("campaign_clicks")
 }

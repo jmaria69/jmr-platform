@@ -11,6 +11,7 @@ export interface Project {
   videoUrl?: string;
   image: string;
   color: string;
+  sortOrder?: number;
   metrics?: {
     users?: number;
     revenue?: number;

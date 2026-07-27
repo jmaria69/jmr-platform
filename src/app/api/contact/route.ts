@@ -30,6 +30,44 @@ export async function POST(request: NextRequest) {
             },
         });
 
+        // Conectar con el CRM del admin: cada formulario entra como lead en el
+        // pipeline (o suma una interacción si el contacto ya existía). Si el CRM
+        // falla, el formulario sigue funcionando: nunca perdemos el mensaje.
+        try {
+            const summary = `Formulario web (${data.proyecto}): ${data.mensaje.slice(0, 300)}`;
+            const existing = await prisma.crmContact.findFirst({ where: { email: data.email } });
+            if (existing) {
+                await prisma.interaction.create({
+                    data: { contactId: existing.id, type: 'email', summary },
+                });
+                await prisma.crmContact.update({
+                    where: { id: existing.id },
+                    data: {
+                        lastContact: new Date(),
+                        tags: existing.tags.includes(data.proyecto) ? existing.tags : [...existing.tags, data.proyecto],
+                    },
+                });
+            } else {
+                await prisma.crmContact.create({
+                    data: {
+                        id: `c-${Date.now()}`,
+                        name: data.nombre,
+                        email: data.email,
+                        company: data.empresa || null,
+                        source: 'web',
+                        stage: 'lead',
+                        value: 0,
+                        notes: '',
+                        tags: [data.proyecto],
+                        lastContact: new Date(),
+                        interactions: { create: { type: 'email', summary } },
+                    },
+                });
+            }
+        } catch (crmErr) {
+            console.error('CRM sync error (contacto guardado igualmente):', crmErr);
+        }
+
         // Enviar emails
         await resend.emails.send({
             from: 'noreply@praxialabs.com',

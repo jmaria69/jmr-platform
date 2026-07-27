@@ -11,9 +11,10 @@ import { ThemeToggle } from "@/components/public/theme-toggle";
 
 const links = [
   { href: "/", label: "Inicio" },
-  { href: "/proyectos", label: "Proyectos" },
+  { href: "/siam", label: "SIAM" },
+  { href: "/core-ops", label: "Core OPS" },
+  { href: "/laboratorio", label: "Laboratorio" },
   { href: "/precios", label: "Precios" },
-  { href: "/acerca-de", label: "Acerca de" },
 ];
 
 export function Navbar() {

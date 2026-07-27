@@ -105,7 +105,7 @@ export default function PreciosPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white dark:bg-transparent">
+    <div className="min-h-screen bg-transparent">
 
       {/* ── HEADER ── */}
       <section className="pt-28 pb-16 px-6 text-center">
@@ -114,30 +114,30 @@ export default function PreciosPage() {
             <span className="h-1.5 w-1.5 rounded-full bg-green-400 animate-pulse" />
             <span className="text-sm text-purple-300">Sin permanencia · Sin código · Operativo en &lt;48h</span>
           </div>
-          <h1 className="font-display text-5xl font-black text-gray-900 dark:text-white mb-5 leading-tight">
+          <h1 className="font-display text-5xl font-black text-foreground mb-5 leading-tight">
             Precios claros,<br />
             <span className="bg-gradient-to-r from-purple-400 via-cyan-400 to-purple-400 bg-clip-text text-transparent">
               resultados medibles.
             </span>
           </h1>
-          <p className="text-gray-500 dark:text-gray-600 dark:text-gray-400 text-xl leading-relaxed">
+          <p className="text-muted-foreground text-xl leading-relaxed">
             Cada plan incluye desarrollo, despliegue y soporte.
             No pagas por horas de consultoría — pagas por un agente que trabaja.
           </p>
 
           {/* Toggle anual/mensual */}
           <div className="flex items-center justify-center gap-4 mt-10">
-            <span className={`text-sm font-semibold transition ${!anual ? "text-gray-900 dark:text-white" : "text-gray-500 dark:text-gray-500"}`}>Mensual</span>
+            <span className={`text-sm font-semibold transition ${!anual ? "text-foreground" : "text-muted-foreground"}`}>Mensual</span>
             <button
               onClick={() => setAnual(a => !a)}
-              className={`relative w-12 h-6 rounded-full transition-colors ${anual ? "bg-purple-600" : "bg-gray-200 dark:bg-white/15"}`}
+              className={`relative w-12 h-6 rounded-full transition-colors ${anual ? "bg-purple-600" : "bg-muted"}`}
             >
               <span
                 className={`absolute top-0.5 w-5 h-5 rounded-full bg-white transition-all ${anual ? "left-6.5" : "left-0.5"}`}
                 style={{ left: anual ? "26px" : "2px" }}
               />
             </button>
-            <span className={`text-sm font-semibold transition ${anual ? "text-gray-900 dark:text-white" : "text-gray-500 dark:text-gray-500"}`}>
+            <span className={`text-sm font-semibold transition ${anual ? "text-foreground" : "text-muted-foreground"}`}>
               Anual
               <span className="ml-2 text-xs text-green-400 font-bold">−20%</span>
             </span>
@@ -153,13 +153,13 @@ export default function PreciosPage() {
               key={plan.id}
               className={`relative rounded-2xl border p-8 flex flex-col transition-all ${
                 plan.highlight
-                  ? "border-cyan-500/50 bg-white dark:bg-[#0d1a2b] shadow-[0_0_40px_rgba(0,212,255,0.12)]"
-                  : "border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#0d0d2b]/60"
+                  ? "border-cyan-500/50 bg-card shadow-[0_0_40px_rgba(0,212,255,0.12)]"
+                  : "border-border bg-card"
               }`}
             >
               {plan.highlight && (
                 <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
-                  <span className="bg-gradient-to-r from-cyan-500 to-purple-500 text-gray-900 dark:text-white text-xs font-bold px-4 py-1.5 rounded-full">
+                  <span className="bg-gradient-to-r from-cyan-500 to-purple-500 text-xs font-bold px-4 py-1.5 rounded-full" style={{ color: "#fff" }}>
                     Más popular
                   </span>
                 </div>
@@ -176,23 +176,23 @@ export default function PreciosPage() {
                   {plan.name}
                 </p>
                 <div className="flex items-end gap-1 mb-3">
-                  <span className="font-display text-5xl font-black text-gray-900 dark:text-white">
+                  <span className="font-display text-5xl font-black text-foreground">
                     {precio(plan.price).toLocaleString("es-ES")}€
                   </span>
-                  <span className="text-gray-500 dark:text-gray-500 text-sm pb-2">/mes</span>
+                  <span className="text-muted-foreground text-sm pb-2">/mes</span>
                 </div>
                 {anual && (
                   <p className="text-xs text-green-400 font-semibold mb-3">
                     Ahorras {((plan.price - precio(plan.price)) * 12).toLocaleString("es-ES")}€ al año
                   </p>
                 )}
-                <p className="text-sm text-gray-500 dark:text-gray-600 dark:text-gray-400 leading-relaxed">{plan.desc}</p>
+                <p className="text-sm text-muted-foreground leading-relaxed">{plan.desc}</p>
               </div>
 
               {/* Features */}
               <ul className="space-y-2.5 mb-8 flex-1">
                 {plan.features.map(f => (
-                  <li key={f} className="flex items-start gap-2 text-sm text-gray-700 dark:text-gray-300">
+                  <li key={f} className="flex items-start gap-2 text-sm text-foreground">
                     <CheckCircle className="h-4 w-4 shrink-0 mt-0.5" style={{ color: plan.color }} />
                     {f}
                   </li>
@@ -211,7 +211,7 @@ export default function PreciosPage() {
                 >
                   {plan.cta} <ArrowRight className="h-4 w-4" />
                 </Link>
-                <p className="text-center text-xs text-gray-500 dark:text-gray-600">{plan.ideal}</p>
+                <p className="text-center text-xs text-muted-foreground">{plan.ideal}</p>
               </div>
             </div>
           ))}
@@ -220,7 +220,7 @@ export default function PreciosPage() {
         {/* Nota PYME + Kit Digital */}
         <div className="max-w-3xl mx-auto mt-10 p-5 rounded-xl border border-green-500/20 bg-green-500/5 flex items-start gap-3">
           <Zap className="h-5 w-5 text-green-400 shrink-0 mt-0.5" />
-          <p className="text-sm text-gray-700 dark:text-gray-300">
+          <p className="text-sm text-foreground">
             <span className="font-semibold text-green-400">Kit Digital disponible.</span>{" "}
             Si tu empresa tiene entre 0 y 49 empleados, puedes financiar la implantación de agentes IA con el bono del Kit Digital (hasta 12.000€). Pregúntanos cómo tramitarlo sin burocracia.
           </p>
@@ -230,25 +230,25 @@ export default function PreciosPage() {
       {/* ── FAQ ── */}
       <section className="py-20 px-6 border-t border-white/5">
         <div className="max-w-2xl mx-auto">
-          <h2 className="font-display text-3xl font-bold text-gray-900 dark:text-white text-center mb-12">
+          <h2 className="font-display text-3xl font-bold text-foreground text-center mb-12">
             Preguntas frecuentes
           </h2>
           <div className="space-y-3">
             {FAQS.map((faq, i) => (
               <div
                 key={i}
-                className="rounded-xl border border-gray-200 dark:border-white/8 bg-gray-100 dark:bg-white/3 overflow-hidden"
+                className="rounded-xl border border-border bg-muted overflow-hidden"
               >
                 <button
                   onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                  className="w-full flex items-center justify-between px-5 py-4 text-left text-sm font-semibold text-gray-900 dark:text-white hover:text-purple-300 transition"
+                  className="w-full flex items-center justify-between px-5 py-4 text-left text-sm font-semibold text-foreground hover:text-purple-300 transition"
                 >
                   {faq.q}
-                  <span className={`text-lg text-gray-500 dark:text-gray-500 transition-transform ${openFaq === i ? "rotate-45" : ""}`}>+</span>
+                  <span className={`text-lg text-muted-foreground transition-transform ${openFaq === i ? "rotate-45" : ""}`}>+</span>
                 </button>
                 {openFaq === i && (
                   <div className="px-5 pb-4">
-                    <p className="text-sm text-gray-500 dark:text-gray-600 dark:text-gray-400 leading-relaxed">{faq.a}</p>
+                    <p className="text-sm text-muted-foreground leading-relaxed">{faq.a}</p>
                   </div>
                 )}
               </div>
@@ -260,20 +260,20 @@ export default function PreciosPage() {
       {/* ── CTA FINAL ── */}
       <section className="py-20 px-6 border-t border-purple-500/15">
         <div className="max-w-xl mx-auto text-center">
-          <h2 className="font-display text-3xl font-bold text-gray-900 dark:text-white mb-4">
+          <h2 className="font-display text-3xl font-bold text-foreground mb-4">
             ¿No sabes qué plan necesitas?
           </h2>
-          <p className="text-gray-500 dark:text-gray-600 dark:text-gray-400 mb-8">
+          <p className="text-muted-foreground mb-8">
             En 15 minutos te decimos qué proceso automatizar primero, qué agente le aplica y cuánto ahorrarías. Sin compromiso.
           </p>
           <Link
             href="/contacto"
-            className="inline-flex items-center gap-2 px-8 py-4 rounded-xl shimmer-btn font-semibold text-gray-900 dark:text-white transition-transform hover:scale-105"
+            className="inline-flex items-center gap-2 px-8 py-4 rounded-xl shimmer-btn font-semibold text-white transition-transform hover:scale-105"
           >
             <MessageSquare className="h-5 w-5" />
             Reservar diagnóstico gratuito
           </Link>
-          <p className="mt-4 text-xs text-gray-500 dark:text-gray-600">Respuesta en menos de 2 horas · Sin tarjeta</p>
+          <p className="mt-4 text-xs text-muted-foreground">Respuesta en menos de 2 horas · Sin tarjeta</p>
         </div>
       </section>
 
