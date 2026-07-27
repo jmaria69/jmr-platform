@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, ExternalLink } from "lucide-react";
 import { findAllProjects } from "@/lib/repositories/projects.repository";
-import { filtrarLaboratorio } from "@/lib/laboratorio";
 
 export const dynamic = "force-dynamic";
 
@@ -18,8 +17,10 @@ const ETIQUETA_ESTADO: Record<string, string> = {
 };
 
 export default async function LaboratorioPage() {
-  const allProjects = await findAllProjects();
-  const proyectos = filtrarLaboratorio(allProjects);
+  // Muestra TODOS los proyectos de admin/proyectos (mismo orden por sortOrder).
+  // Antes se excluían los que tienen landing propia (siam/crm-it/admin-app);
+  // ahora el laboratorio refleja 1:1 lo que hay en admin.
+  const proyectos = await findAllProjects();
 
   return (
     <div className="min-h-screen bg-transparent pt-32 pb-24 px-6">
