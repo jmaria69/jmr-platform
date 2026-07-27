@@ -49,4 +49,13 @@ export const MONITORED_SERVICES: MonitoredService[] = [
     metricsPath: "",
     healthPath: "/api/backend/status",
   },
+  {
+    // La propia web pública de Praxia Labs (Vercel). Blackbox up/down + latencia
+    // contra /api/health (endpoint ligero). No expone métricas internas.
+    id: "praxia-web",
+    name: "Praxia Labs Web",
+    url: strip(process.env.PRAXIA_WEB_URL || "https://praxialabs.com"),
+    metricsPath: "",
+    healthPath: "/api/health",
+  },
 ];

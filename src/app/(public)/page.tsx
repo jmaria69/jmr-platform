@@ -9,13 +9,6 @@ import { PRODUCTS } from '@/content/products';
 
 export const dynamic = "force-dynamic";
 
-const FEATURED_IDS = ['olga-ai', 'admin-app', 'crm-it', 'generador-ideas'];
-
-const PUBLIC_PROJECT_IDS = new Set([
-  "olga-ai", "admin-app", "crm-it", "generador-ideas",
-  "app-voz", "app-mejores-productos", "siam", "saludapp",
-]);
-
 const STEPS = [
   {
     icon: MessageSquare,
@@ -95,13 +88,13 @@ export default async function Home() {
   // Fuente única de verdad: DB (con fallback al seed si la DB falla)
   const allProjects = await findAllProjects();
 
-  const productionCount = allProjects.filter(
-    (p) => PUBLIC_PROJECT_IDS.has(p.id) || p.category === "ai" || p.category === "automation"
-  ).filter(p => p.status === 'production').length;
-
-  const featuredProjects = FEATURED_IDS
-    .map(id => allProjects.find(p => p.id === id))
-    .filter(Boolean);
+  // Home dirigida por admin (sin campos extra): se muestran los proyectos en
+  // estado "production", ordenados por sortOrder (findAllProjects ya viene
+  // ordenado). Los primeros N son los destacados. Así, cambiar el estado o el
+  // orden desde /admin/proyectos se refleja aquí (páginas force-dynamic).
+  const productionProjects = allProjects.filter(p => p.status === 'production');
+  const productionCount = productionProjects.length;
+  const featuredProjects = productionProjects.slice(0, 4);
 
   const STATS = [
     { value: `${productionCount}`, label: "Sistemas propios en producción", icon: Package, color: "text-cyan-400" },
