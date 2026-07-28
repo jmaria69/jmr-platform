@@ -17,10 +17,10 @@ const ETIQUETA_ESTADO: Record<string, string> = {
 };
 
 export default async function LaboratorioPage() {
-  // Muestra TODOS los proyectos de admin/proyectos (mismo orden por sortOrder).
-  // Antes se excluían los que tienen landing propia (siam/crm-it/admin-app);
-  // ahora el laboratorio refleja 1:1 lo que hay en admin.
-  const proyectos = await findAllProjects();
+  // Muestra los proyectos con el flag "mostrar en laboratorio" activado
+  // (toggle en /admin/proyectos). force-dynamic → refleja admin al instante.
+  const allProjects = await findAllProjects();
+  const proyectos = allProjects.filter((p) => p.showInLab);
 
   return (
     <div className="min-h-screen bg-transparent pt-32 pb-24 px-6">

@@ -22,6 +22,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
 import { Project } from "@/types";
 
 const COLORS = [
@@ -79,6 +80,8 @@ export function EditProjectDialog({ project, onSave }: EditProjectDialogProps) {
         status: form.status,
         category: form.category,
         color: form.color,
+        showOnHome: form.showOnHome,
+        showInLab: form.showInLab,
         url: form.url.trim() || undefined,
         github: form.github.trim() || undefined,
         metrics: {
@@ -190,6 +193,30 @@ export function EditProjectDialog({ project, onSave }: EditProjectDialogProps) {
                   <SelectItem value="automation">Automatización</SelectItem>
                 </SelectContent>
               </Select>
+            </div>
+          </div>
+
+          {/* Visibilidad (controla dónde aparece el proyecto) */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="flex items-center justify-between rounded-lg border p-3">
+              <div>
+                <Label>Mostrar en Home</Label>
+                <p className="text-xs text-muted-foreground">Destacado en la portada</p>
+              </div>
+              <Switch
+                checked={form.showOnHome}
+                onCheckedChange={(v) => setForm((p) => ({ ...p, showOnHome: v }))}
+              />
+            </div>
+            <div className="flex items-center justify-between rounded-lg border p-3">
+              <div>
+                <Label>Mostrar en Laboratorio</Label>
+                <p className="text-xs text-muted-foreground">Aparece en /laboratorio</p>
+              </div>
+              <Switch
+                checked={form.showInLab}
+                onCheckedChange={(v) => setForm((p) => ({ ...p, showInLab: v }))}
+              />
             </div>
           </div>
 
@@ -380,6 +407,8 @@ function projectToForm(p: Project) {
     status: p.status,
     category: p.category,
     color: p.color,
+    showOnHome: p.showOnHome ?? false,
+    showInLab: p.showInLab ?? true,
     tech: [...p.tech],
     url: p.url || "",
     github: p.github || "",

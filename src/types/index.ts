@@ -12,6 +12,8 @@ export interface Project {
   image: string;
   color: string;
   sortOrder?: number;
+  showOnHome?: boolean;
+  showInLab?: boolean;
   metrics?: {
     users?: number;
     revenue?: number;

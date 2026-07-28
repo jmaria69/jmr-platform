@@ -35,6 +35,8 @@ model Project {
   metricsRevenue   Float?
   metricsRating    Float?
   sortOrder        Int       @default(9999) @map("sort_order")
+  showOnHome       Boolean   @default(false) @map("show_on_home")
+  showInLab        Boolean   @default(true)  @map("show_in_lab")
   createdAt        DateTime  @default(now()) @map("created_at")
   updatedAt        DateTime  @updatedAt @map("updated_at")
 

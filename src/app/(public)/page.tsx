@@ -88,13 +88,12 @@ export default async function Home() {
   // Fuente única de verdad: DB (con fallback al seed si la DB falla)
   const allProjects = await findAllProjects();
 
-  // Home dirigida por admin (sin campos extra): se muestran los proyectos en
-  // estado "production", ordenados por sortOrder (findAllProjects ya viene
-  // ordenado). Los primeros N son los destacados. Así, cambiar el estado o el
-  // orden desde /admin/proyectos se refleja aquí (páginas force-dynamic).
-  const productionProjects = allProjects.filter(p => p.status === 'production');
-  const productionCount = productionProjects.length;
-  const featuredProjects = productionProjects.slice(0, 4);
+  // Home dirigida por admin: se muestran los proyectos con el flag "mostrar en
+  // home" activado (toggle en /admin/proyectos), ordenados por sortOrder
+  // (findAllProjects ya viene ordenado). Página force-dynamic → refleja al
+  // instante los cambios de admin.
+  const productionCount = allProjects.filter(p => p.status === 'production').length;
+  const featuredProjects = allProjects.filter(p => p.showOnHome);
 
   const STATS = [
     { value: `${productionCount}`, label: "Sistemas propios en producción", icon: Package, color: "text-cyan-400" },

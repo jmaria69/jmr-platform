@@ -17,6 +17,8 @@ function dbRowToProject(row: any): Project {
     image: row.image,
     color: row.color,
     sortOrder: row.sortOrder ?? 9999,
+    showOnHome: row.showOnHome ?? false,
+    showInLab: row.showInLab ?? true,
     metrics: {
       users: row.metricsUsers || undefined,
       revenue: row.metricsRevenue || undefined,
@@ -115,6 +117,8 @@ export async function createProject(
         github: data.github || null,
         image: data.image,
         color: data.color,
+        showOnHome: data.showOnHome ?? false,
+        showInLab: data.showInLab ?? true,
         metricsUsers: data.metrics?.users || null,
         metricsRevenue: data.metrics?.revenue || null,
         metricsRating: data.metrics?.rating || null,
@@ -147,6 +151,8 @@ export async function updateProject(
     if (data.github !== undefined) updateData.github = data.github;
     if (data.image !== undefined) updateData.image = data.image;
     if (data.color !== undefined) updateData.color = data.color;
+    if (data.showOnHome !== undefined) updateData.showOnHome = data.showOnHome;
+    if (data.showInLab !== undefined) updateData.showInLab = data.showInLab;
     if (data.metrics?.users !== undefined)
       updateData.metricsUsers = data.metrics.users;
     if (data.metrics?.revenue !== undefined)
