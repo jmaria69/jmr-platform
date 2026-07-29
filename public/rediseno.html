@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Praxia Labs — Rediseño (preview)</title></head>
+<body style="margin:0;background:#0b0d12">
+<style>
+  .px * { box-sizing: border-box; }
+  .px {
+    /* Fusión Control (instrumental) + Señal (vivo) — mundo oscuro deliberado */
+    --bg: #0b0d12;
+    --bg2: #0e1118;
+    --panel: #141924;
+    --panel2: #181e2a;
+    --line: #232b38;
+    --fg: #eef1f6;
+    --muted: #8a94a4;
+    --dim: #5a6373;
+    --coral: #ff5d3b;
+    --coral-ink: #1c0803;
+    --mint: #4fd6bd;
+    --amber: #eab04a;
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    color: var(--fg);
+    background: var(--bg);
+    line-height: 1.5;
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+  }
+  .px .mono { font-family: ui-monospace, "SF Mono", "Cascadia Code", Menlo, monospace; }
+  .px .cond {
+    font-family: "Arial Narrow", "Helvetica Neue Condensed", "Roboto Condensed", ui-sans-serif, sans-serif;
+    font-stretch: condensed;
+    letter-spacing: -.02em;
+  }
+  .px .wrap { max-width: 1180px; margin: 0 auto; padding: 0 clamp(20px, 4vw, 40px); }
+  .px a { text-decoration: none; color: inherit; }
+
+  /* ── Nav ── */
+  .px .nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 22px 0; border-bottom: 1px solid var(--line);
+  }
+  .px .brand { display: flex; align-items: center; gap: 11px; font-weight: 680; letter-spacing: .01em; }
+  .px .brand .mark { width: 14px; height: 14px; background: var(--coral); transform: rotate(45deg); border-radius: 2px; }
+  .px .nav .links { display: flex; gap: 28px; font-size: 14px; color: var(--muted); }
+  .px .nav .links a:hover { color: var(--fg); }
+  .px .nav .cta-sm {
+    font-size: 13.5px; font-weight: 600; color: var(--fg);
+    border: 1px solid var(--line); border-radius: 8px; padding: 9px 16px;
+  }
+  .px .nav .cta-sm:hover { border-color: var(--coral); }
+
+  /* ── Hero ── */
+  .px .hero { position: relative; overflow: hidden; }
+  .px .hero canvas.net { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; opacity: .55; }
+  .px .hero .wrap { position: relative; z-index: 1; }
+  .px .hero-grid {
+    display: grid; grid-template-columns: 1.02fr .98fr; gap: clamp(28px, 5vw, 64px);
+    align-items: center; padding: clamp(48px, 8vw, 92px) 0 clamp(40px, 6vw, 72px);
+  }
+  .px .eyebrow {
+    font-size: 12px; letter-spacing: .22em; text-transform: uppercase; color: var(--mint);
+    display: inline-flex; align-items: center; gap: 11px; margin: 0 0 22px;
+  }
+  .px .eyebrow::before { content: ""; width: 26px; height: 1px; background: var(--mint); }
+  .px h1 {
+    font-size: clamp(42px, 7vw, 84px); line-height: .95; font-weight: 800;
+    margin: 0 0 22px; text-wrap: balance; max-width: 13ch;
+  }
+  .px h1 em { font-style: normal; color: var(--coral); }
+  .px .sub { font-size: clamp(17px, 1.5vw, 19px); color: var(--muted); max-width: 44ch; margin: 0 0 30px; }
+  .px .sub b { color: var(--fg); font-weight: 600; }
+  .px .cta-row { display: flex; gap: 13px; flex-wrap: wrap; align-items: center; }
+  .px .btn { font-size: 15px; font-weight: 680; border-radius: 10px; padding: 15px 24px; cursor: pointer; border: 1px solid transparent; }
+  .px .btn.pri { background: var(--coral); color: var(--coral-ink); }
+  .px .btn.pri:hover { filter: brightness(1.06); }
+  .px .btn.sec { color: var(--fg); border-color: var(--line); background: rgba(255,255,255,.02); }
+  .px .btn.sec:hover { border-color: var(--dim); }
+  .px .microproof { margin-top: 22px; font-size: 13px; color: var(--dim); display: flex; align-items: center; gap: 9px; }
+  .px .microproof b { width: 6px; height: 6px; border-radius: 50%; background: var(--mint); box-shadow: 0 0 0 3px rgba(79,214,189,.18); }
+
+  /* ── Readout (outcomes, not tech) ── */
+  .px .readout {
+    background: linear-gradient(180deg, var(--panel), var(--panel2));
+    border: 1px solid var(--line); border-radius: 16px; overflow: hidden;
+    box-shadow: 0 30px 70px -34px rgba(0,0,0,.75);
+  }
+  .px .ro-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 18px; border-bottom: 1px solid var(--line);
+    font-size: 11.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted);
+  }
+  .px .ro-head .live { color: var(--mint); display: inline-flex; align-items: center; gap: 8px; }
+  .px .ro-head .live b { width: 6px; height: 6px; border-radius: 50%; background: var(--mint); animation: px-pulse 1.9s infinite; }
+  @keyframes px-pulse { 0%,100% { opacity: 1; } 50% { opacity: .25; } }
+  .px .ro-row {
+    display: grid; grid-template-columns: 1fr auto; gap: 6px 14px; align-items: center;
+    padding: 16px 18px; border-bottom: 1px solid var(--line);
+  }
+  .px .ro-row .task { font-size: 14.5px; font-weight: 560; }
+  .px .ro-row .was { font-size: 12px; color: var(--dim); }
+  .px .ro-row .was s { color: var(--dim); }
+  .px .ro-row .num { font-size: 22px; font-weight: 720; font-variant-numeric: tabular-nums; text-align: right; }
+  .px .ro-row .done {
+    font-family: ui-monospace, monospace; font-size: 10.5px; letter-spacing: .06em;
+    color: var(--mint); text-align: right; margin-top: 3px;
+  }
+  .px .ro-row .done.watch { color: var(--amber); }
+  .px .ro-foot {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--line);
+  }
+  .px .ro-foot div { background: var(--panel); padding: 15px 18px; }
+  .px .ro-foot .k { font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+  .px .ro-foot .v { font-size: 26px; font-weight: 760; margin-top: 3px; font-variant-numeric: tabular-nums; }
+  .px .ro-foot .v span { color: var(--coral); }
+
+  /* ── Problem strip ── */
+  .px .problem { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); background: var(--bg2); }
+  .px .problem .wrap { padding: clamp(48px, 7vw, 80px) clamp(20px,4vw,40px); }
+  .px .prob-head { font-size: clamp(26px, 3.4vw, 40px); font-weight: 780; letter-spacing: -.02em; margin: 0 0 6px; }
+  .px .prob-head em { font-style: normal; color: var(--coral); }
+  .px .prob-lede { color: var(--muted); font-size: 16px; margin: 0 0 40px; max-width: 52ch; }
+  .px .quotes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .px .quote {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 24px 22px;
+    position: relative;
+  }
+  .px .quote .qm { color: var(--coral); font-size: 40px; line-height: 1; font-weight: 800; font-family: Georgia, serif; }
+  .px .quote p { font-size: 15.5px; margin: 8px 0 0; color: var(--fg); }
+  .px .quote .who { margin-top: 16px; font-size: 12px; color: var(--dim); font-family: ui-monospace, monospace; }
+  .px .resolve {
+    margin-top: 36px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+    font-size: clamp(18px, 2.2vw, 24px); font-weight: 680;
+  }
+  .px .resolve .arrow { color: var(--mint); }
+  .px .resolve b { color: var(--coral); }
+
+  /* ── How it works ── */
+  .px .how .wrap { padding: clamp(48px, 7vw, 84px) clamp(20px,4vw,40px); }
+  .px .how .lbl { font-family: ui-monospace, monospace; font-size: 12px; letter-spacing: .2em; text-transform: uppercase; color: var(--mint); margin: 0 0 12px; }
+  .px .how h2 { font-size: clamp(28px, 3.6vw, 42px); font-weight: 780; letter-spacing: -.02em; margin: 0 0 44px; max-width: 20ch; text-wrap: balance; }
+  .px .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; }
+  .px .step { border-top: 2px solid var(--coral); padding-top: 20px; }
+  .px .step .no { font-family: ui-monospace, monospace; font-size: 13px; color: var(--coral); letter-spacing: .1em; }
+  .px .step h3 { font-size: 19px; font-weight: 680; margin: 10px 0 8px; }
+  .px .step p { font-size: 14.5px; color: var(--muted); margin: 0; }
+
+  /* ── Final CTA ── */
+  .px .final { border-top: 1px solid var(--line); }
+  .px .final .wrap { padding: clamp(56px, 8vw, 96px) clamp(20px,4vw,40px); text-align: center; }
+  .px .final h2 { font-size: clamp(30px, 5vw, 56px); font-weight: 800; letter-spacing: -.025em; margin: 0 0 16px; text-wrap: balance; }
+  .px .final h2 em { font-style: normal; color: var(--coral); }
+  .px .final p { color: var(--muted); font-size: 17px; margin: 0 0 30px; }
+  .px .final .btn.pri { padding: 17px 32px; font-size: 16px; }
+  .px .foot { border-top: 1px solid var(--line); }
+  .px .foot .wrap { padding: 26px clamp(20px,4vw,40px); display: flex; justify-content: space-between; color: var(--dim); font-size: 13px; flex-wrap: wrap; gap: 10px; }
+
+  @media (max-width: 860px) {
+    .px .hero-grid { grid-template-columns: 1fr; }
+    .px .quotes, .px .steps { grid-template-columns: 1fr; }
+    .px .nav .links { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .px .ro-head .live b { animation: none; }
+  }
+</style>
+
+<div class="px">
+  <!-- NAV -->
+  <div class="wrap">
+    <nav class="nav">
+      <div class="brand"><span class="mark"></span> Praxia&nbsp;Labs</div>
+      <div class="links">
+        <a href="#">Qué resolvemos</a>
+        <a href="#">Casos reales</a>
+        <a href="#">Laboratorio</a>
+        <a href="#">Precios</a>
+      </div>
+      <a href="#" class="cta-sm">Reservar diagnóstico</a>
+    </nav>
+  </div>
+
+  <!-- HERO -->
+  <section class="hero">
+    <canvas class="net" aria-hidden="true"></canvas>
+    <div class="wrap">
+      <div class="hero-grid">
+        <div>
+          <p class="eyebrow">Para negocios que hacen demasiado a mano</p>
+          <h1 class="cond">Dejas de crecer por <em>hacerlo todo a mano</em>.</h1>
+          <p class="sub">Facturas, seguimiento de clientes, informes, aprobaciones. Horas cada semana en tareas que no deberían tocarte. <b>Ponemos un sistema a hacerlas por ti</b> — conectado a tus herramientas y funcionando en 48&nbsp;horas.</p>
+          <div class="cta-row">
+            <a href="#" class="btn pri">Reservar diagnóstico gratuito</a>
+            <a href="#" class="btn sec">Ver casos reales →</a>
+          </div>
+          <div class="microproof"><b></b>Diagnóstico de 15 min · sin compromiso · en marcha el lunes</div>
+        </div>
+
+        <div class="readout" role="img" aria-label="Panel de tareas que Praxia automatiza, con resultados en vivo">
+          <div class="ro-head"><span class="mono">Trabajo que ya no tocas</span><span class="live"><b></b>En vivo</span></div>
+          <div class="ro-row">
+            <div><div class="task">Facturas clasificadas y registradas</div><div class="was">Antes: <s>a mano, 2 días/mes</s></div></div>
+            <div><div class="num">318</div><div class="done">HECHO SOLO · HOY</div></div>
+          </div>
+          <div class="ro-row">
+            <div><div class="task">Correos categorizados y respondidos</div><div class="was">Antes: <s>bandeja siempre llena</s></div></div>
+            <div><div class="num">1.240</div><div class="done">HECHO SOLO · MES</div></div>
+          </div>
+          <div class="ro-row">
+            <div><div class="task">Amenazas de red vigiladas 24/7</div><div class="was">Antes: <s>revisión manual, con huecos</s></div></div>
+            <div><div class="num">0</div><div class="done watch">VIGILANDO · SIN INCIDENTES</div></div>
+          </div>
+          <div class="ro-foot">
+            <div><div class="k">Horas recuperadas</div><div class="v">26<span>/sem</span></div></div>
+            <div><div class="k">De idea a funcionar</div><div class="v">&lt;48<span> h</span></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROBLEM -->
+  <section class="problem">
+    <div class="wrap">
+      <h2 class="prob-head">¿Te suena? <em>No estás solo.</em></h2>
+      <p class="prob-lede">Lo oímos cada semana. No es falta de gente — es que el trabajo repetitivo se lo come todo.</p>
+      <div class="quotes">
+        <div class="quote">
+          <div class="qm">“</div>
+          <p>Reviso y clasifico cientos de facturas a mano cada mes. Es un agujero de tiempo.</p>
+          <div class="who">GESTORA DE FINCAS · 4 personas</div>
+        </div>
+        <div class="quote">
+          <div class="qm">“</div>
+          <p>Los correos importantes se me acumulan sin responder. Algo siempre se escapa.</p>
+          <div class="who">OPERACIONES · pyme de servicios</div>
+        </div>
+        <div class="quote">
+          <div class="qm">“</div>
+          <p>Detectar incidentes de red a mano deja huecos y respuestas lentas.</p>
+          <div class="who">IT · infraestructura crítica</div>
+        </div>
+      </div>
+      <div class="resolve">
+        <span class="arrow">→</span>
+        <span>No necesitas contratar más. Necesitas que <b>eso se haga solo</b>.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW -->
+  <section class="how">
+    <div class="wrap">
+      <p class="lbl">Cómo lo hacemos</p>
+      <h2 class="cond">De "lo hago a mano" a "ya está hecho", en tres pasos.</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="no">PASO 01</div>
+          <h3>Diagnóstico de 15 min</h3>
+          <p>Nos cuentas qué haces a mano hoy: aprobaciones, informes, seguimiento. Sin tecnicismos.</p>
+        </div>
+        <div class="step">
+          <div class="no">PASO 02</div>
+          <h3>Lo montamos por ti</h3>
+          <p>Conectamos el sistema a tus herramientas actuales — ERP, email, Google Workspace. Tú lo apruebas antes de encenderlo.</p>
+        </div>
+        <div class="step">
+          <div class="no">PASO 03</div>
+          <h3>Funciona el lunes</h3>
+          <p>Operativo en menos de 48 h. Si algo falla, lo sabemos antes que tú. Soporte real en menos de 2 h.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="final">
+    <div class="wrap">
+      <h2 class="cond">Cuéntanos qué te come el día. <em>Del resto nos encargamos.</em></h2>
+      <p>15 minutos. Sin compromiso. Te decimos exactamente qué se puede automatizar y cuánto tiempo recuperas.</p>
+      <a href="#" class="btn pri">Reservar diagnóstico gratuito</a>
+    </div>
+  </section>
+  <div class="foot">
+    <div class="wrap"><span>Praxia Labs · Automatización a medida, desde España</span><span class="mono">hola@praxialabs.com</span></div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var c = document.querySelector('.px .hero canvas.net');
+    if (!c) return;
+    var ctx = c.getContext('2d');
+    var nodes = [], W = 0, H = 0, dpr = Math.min(window.devicePixelRatio || 1, 2), raf;
+    function size() {
+      var r = c.getBoundingClientRect();
+      W = r.width; H = r.height;
+      c.width = Math.max(1, W * dpr); c.height = Math.max(1, H * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    function init() {
+      size();
+      var n = Math.max(16, Math.min(52, Math.floor(W * H / 15000)));
+      nodes = [];
+      for (var i = 0; i < n; i++) {
+        nodes.push({ x: Math.random() * W, y: Math.random() * H,
+          vx: (Math.random() - .5) * .24, vy: (Math.random() - .5) * .24,
+          r: Math.random() * 1.5 + 1, hot: Math.random() < .16 });
+      }
+    }
+    function draw() {
+      ctx.clearRect(0, 0, W, H);
+      for (var i = 0; i < nodes.length; i++) {
+        var a = nodes[i];
+        a.x += a.vx; a.y += a.vy;
+        if (a.x < 0 || a.x > W) a.vx *= -1;
+        if (a.y < 0 || a.y > H) a.vy *= -1;
+        for (var j = i + 1; j < nodes.length; j++) {
+          var b = nodes[j], dx = a.x - b.x, dy = a.y - b.y, d = Math.hypot(dx, dy);
+          if (d < 132) {
+            ctx.strokeStyle = 'rgba(255,93,59,' + (0.14 * (1 - d / 132)) + ')';
+            ctx.lineWidth = 1;
+            ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+          }
+        }
+      }
+      for (var k = 0; k < nodes.length; k++) {
+        var p = nodes[k];
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 6.2832);
+        ctx.fillStyle = p.hot ? 'rgba(79,214,189,.85)' : 'rgba(238,241,246,.4)';
+        ctx.fill();
+      }
+      if (!reduce) raf = requestAnimationFrame(draw);
+    }
+    init(); draw();
+    var t;
+    window.addEventListener('resize', function () { clearTimeout(t); t = setTimeout(function () { cancelAnimationFrame(raf); init(); draw(); }, 200); });
+  })();
+</script>
+</body></html>
