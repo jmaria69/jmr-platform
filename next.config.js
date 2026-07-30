@@ -30,9 +30,6 @@ const securityHeaders = [
 ];
 
 const nextConfig = {
-  turbopack: {
-    root: __dirname,
-  },
   poweredByHeader: false,
   async headers() {
     return [
