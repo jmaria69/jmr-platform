@@ -3,8 +3,8 @@
 import { useEffect } from "react";
 
 /**
- * Efectos de la home rediseñada: reveals al hacer scroll + red de nodos viva
- * en el hero. Se ejecuta en cliente sobre el markup .lx renderizado en el
+ * Efectos de la home rediseñada (estilo loofidev): reveals al hacer scroll +
+ * starfield sutil con twinkle en el hero. Cliente, sobre el markup .lx del
  * servidor. Respeta prefers-reduced-motion.
  */
 export function HomeFx() {
@@ -35,14 +35,15 @@ export function HomeFx() {
       root.querySelectorAll(".rev").forEach((el) => el.classList.add("in"));
     }
 
-    // Red de nodos
+    // Starfield
     const c = root.querySelector<HTMLCanvasElement>(".hero canvas");
     let raf = 0;
     let onResize: (() => void) | null = null;
     if (c) {
       const ctx = c.getContext("2d")!;
-      let nodes: { x: number; y: number; vx: number; vy: number; r: number; hot: boolean }[] = [];
-      let W = 0, H = 0;
+      type Star = { x: number; y: number; vx: number; vy: number; r: number; hot: boolean; ph: number };
+      let stars: Star[] = [];
+      let W = 0, H = 0, t = 0;
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
       const size = () => {
         const r = c.getBoundingClientRect();
@@ -52,37 +53,32 @@ export function HomeFx() {
       };
       const init = () => {
         size();
-        const n = Math.max(14, Math.min(46, Math.floor((W * H) / 16000)));
-        nodes = [];
+        const n = Math.max(40, Math.min(140, Math.floor((W * H) / 7000)));
+        stars = [];
         for (let i = 0; i < n; i++)
-          nodes.push({ x: Math.random() * W, y: Math.random() * H, vx: (Math.random() - .5) * .22, vy: (Math.random() - .5) * .22, r: Math.random() * 1.5 + 1, hot: Math.random() < .15 });
+          stars.push({
+            x: Math.random() * W, y: Math.random() * H,
+            vx: (Math.random() - .5) * .08, vy: (Math.random() - .5) * .08,
+            r: Math.random() * 1.3 + .4, hot: Math.random() < .12, ph: Math.random() * 6.283,
+          });
       };
       const draw = () => {
+        t += 0.016;
         ctx.clearRect(0, 0, W, H);
-        for (let i = 0; i < nodes.length; i++) {
-          const a = nodes[i];
-          a.x += a.vx; a.y += a.vy;
-          if (a.x < 0 || a.x > W) a.vx *= -1;
-          if (a.y < 0 || a.y > H) a.vy *= -1;
-          for (let j = i + 1; j < nodes.length; j++) {
-            const b = nodes[j], dx = a.x - b.x, dy = a.y - b.y, d = Math.hypot(dx, dy);
-            if (d < 130) {
-              ctx.strokeStyle = `rgba(255,90,54,${0.13 * (1 - d / 130)})`;
-              ctx.lineWidth = 1;
-              ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
-            }
-          }
-        }
-        for (const p of nodes) {
+        for (const p of stars) {
+          p.x += p.vx; p.y += p.vy;
+          if (p.x < 0) p.x = W; else if (p.x > W) p.x = 0;
+          if (p.y < 0) p.y = H; else if (p.y > H) p.y = 0;
+          const tw = 0.4 + 0.6 * Math.abs(Math.sin(t * 0.6 + p.ph));
           ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 6.2832);
-          ctx.fillStyle = p.hot ? "rgba(79,224,196,.85)" : "rgba(242,244,247,.35)";
+          ctx.fillStyle = p.hot ? `rgba(0,242,255,${0.55 * tw})` : `rgba(220,235,245,${0.32 * tw})`;
           ctx.fill();
         }
         if (!reduce) raf = requestAnimationFrame(draw);
       };
       init(); draw();
-      let t: ReturnType<typeof setTimeout>;
-      onResize = () => { clearTimeout(t); t = setTimeout(() => { cancelAnimationFrame(raf); init(); draw(); }, 200); };
+      let to: ReturnType<typeof setTimeout>;
+      onResize = () => { clearTimeout(to); to = setTimeout(() => { cancelAnimationFrame(raf); init(); draw(); }, 200); };
       window.addEventListener("resize", onResize);
     }
 

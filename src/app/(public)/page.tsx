@@ -68,22 +68,11 @@ export default async function Home() {
           <span class="file mono">praxia.config.ts</span>
         </div>
         <div class="code mono"><pre><span class="kw">import</span> { Agente } <span class="kw">from</span> <span class="str">'@praxia/core'</span>
-
-<span class="kw">export const</span> <span class="fn">olga</span> = <span class="kw">new</span> <span class="fn">Agente</span>({
-  tarea: <span class="str">'operaciones'</span>,
-  conecta: [<span class="str">'email'</span>, <span class="str">'workspace'</span>, <span class="str">'erp'</span>],
-})
-<span class="cm">// &#10003; <span class="num">1.240</span> tareas/mes &middot; hecho solo</span>
-
-<span class="kw">export const</span> <span class="fn">vera</span> = <span class="kw">new</span> <span class="fn">Agente</span>({
-  tarea: <span class="str">'facturas'</span>,
-  activo: <span class="num">true</span>,
-})
-<span class="cm">// &#10003; <span class="num">318</span> hoy &middot; <span class="num">0</span> errores</span></pre></div>
-        <div class="ed-out">
-          <div><div class="k">Horas/sem</div><div class="v">26<span> &uarr;</span></div></div>
-          <div><div class="k">A funcionar</div><div class="v">&lt;48<span> h</span></div></div>
-          <div><div class="k">Errores</div><div class="v">0</div></div>
+<span class="cm">// inicializando agentes en producción...</span></pre></div>
+        <div class="ed-rows">
+          <div class="ed-row"><span class="lab">OLGA.ai<small>operaciones &middot; back-office</small></span><span class="pill green">&#9679; EN VIVO</span></div>
+          <div class="ed-row"><span class="lab">Facturas procesadas hoy<small>AdminApp &middot; VERA</small></span><span class="pill cyan">318 &middot; 0 err</span></div>
+          <div class="ed-row"><span class="lab">Horas recuperadas<small>por semana, en todos los agentes</small></span><span class="pill blue">26 h &uarr;</span></div>
         </div>
       </div>
     </div></div>
