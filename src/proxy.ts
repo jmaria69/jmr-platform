@@ -11,7 +11,7 @@ function getClientIP(req: NextRequest): string {
   );
 }
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const ip = getClientIP(request);
   const ua = request.headers.get("user-agent") || "";
@@ -28,7 +28,7 @@ export async function middleware(request: NextRequest) {
           details: `Bot malicioso bloqueado: ${ua.slice(0, 100)}`,
         });
       } catch (err) {
-        console.error("[middleware:after]", err instanceof Error ? err.message : String(err));
+        console.error("[proxy:after]", err instanceof Error ? err.message : String(err));
       }
     });
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
@@ -50,7 +50,7 @@ export async function middleware(request: NextRequest) {
             details: `Rate limit excedido: ${count} peticiones/min (${kind})`,
           });
         } catch (err) {
-          console.error("[middleware:after]", err instanceof Error ? err.message : String(err));
+          console.error("[proxy:after]", err instanceof Error ? err.message : String(err));
         }
       });
       return NextResponse.json(
@@ -80,7 +80,7 @@ export async function middleware(request: NextRequest) {
             details: "Token JWT inválido, expirado o manipulado",
           });
         } catch (err) {
-          console.error("[middleware:after]", err instanceof Error ? err.message : String(err));
+          console.error("[proxy:after]", err instanceof Error ? err.message : String(err));
         }
       });
       return NextResponse.redirect(new URL("/login", request.url));
