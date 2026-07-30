@@ -1,4 +1,5 @@
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { verifyToken, SESSION_COOKIE } from "@/lib/auth/session";
 import {
   findAllProjects,
   findProjectsByCategory,
@@ -12,6 +13,12 @@ import {
   apiBadRequest,
   apiServerError,
 } from "@/lib/api-response";
+
+async function requireSession(request: NextRequest) {
+  const token = request.cookies.get(SESSION_COOKIE)?.value;
+  if (!token) return null;
+  return verifyToken(token);
+}
 
 /**
  * GET /api/projects
@@ -36,10 +43,12 @@ export async function GET(request: NextRequest) {
 
 /**
  * POST /api/projects
- * Creates a new project
+ * Creates a new project (requiere sesión admin)
  */
 export async function POST(request: NextRequest) {
   try {
+    const session = await requireSession(request);
+    if (!session) return NextResponse.json({ error: "No autenticado" }, { status: 401 });
     const body = await request.json();
 
     // Validation

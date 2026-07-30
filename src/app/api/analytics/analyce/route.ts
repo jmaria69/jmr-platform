@@ -1,7 +1,21 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { verifyToken, SESSION_COOKIE } from "@/lib/auth/session";
 
 export async function POST(request: Request) {
     try {
+        const cookieHeader = request.headers.get("cookie") || "";
+        const cookies = Object.fromEntries(
+            cookieHeader.split("; ").map((c) => {
+                const [k, ...v] = c.split("=");
+                return [k, v.join("=")];
+            })
+        );
+        const token = cookies[SESSION_COOKIE];
+        const session = token ? await verifyToken(token) : null;
+        if (!session) {
+            return Response.json({ error: "No autenticado" }, { status: 401 });
+        }
+
         const { analyticsData } = await request.json();
 
         if (!process.env.GEMINI_API_KEY) {

@@ -1,4 +1,5 @@
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { verifyToken, SESSION_COOKIE } from "@/lib/auth/session";
 import {
   findAllContacts,
   searchContacts,
@@ -12,12 +13,21 @@ import {
   apiServerError,
 } from "@/lib/api-response";
 
+async function requireSession(request: NextRequest) {
+  const token = request.cookies.get(SESSION_COOKIE)?.value;
+  if (!token) return null;
+  return verifyToken(token);
+}
+
 /**
  * GET /api/crm
- * Returns all contacts with optional search
+ * Returns all contacts with optional search (requiere sesión admin)
  */
 export async function GET(request: NextRequest) {
   try {
+    const session = await requireSession(request);
+    if (!session) return NextResponse.json({ error: "No autenticado" }, { status: 401 });
+
     const { searchParams } = request.nextUrl;
     const query = searchParams.get("q");
     const includeStats = searchParams.get("stats") === "true";
@@ -35,10 +45,12 @@ export async function GET(request: NextRequest) {
 
 /**
  * POST /api/crm
- * Creates a new contact
+ * Creates a new contact (requiere sesión admin)
  */
 export async function POST(request: NextRequest) {
   try {
+    const session = await requireSession(request);
+    if (!session) return NextResponse.json({ error: "No autenticado" }, { status: 401 });
     const body = await request.json();
 
     const errors: string[] = [];

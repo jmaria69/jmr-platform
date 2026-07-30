@@ -1,4 +1,5 @@
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { verifyToken, SESSION_COOKIE } from "@/lib/auth/session";
 import {
   findProjectById,
   updateProject,
@@ -10,10 +11,15 @@ import {
   apiNotFound,
   apiServerError,
 } from "@/lib/api-response";
-import { NextResponse } from "next/server";
 
 interface RouteParams {
   params: Promise<{ id: string }>;
+}
+
+async function requireSession(request: NextRequest) {
+  const token = request.cookies.get(SESSION_COOKIE)?.value;
+  if (!token) return null;
+  return verifyToken(token);
 }
 
 /**
@@ -31,10 +37,13 @@ export async function GET(_request: NextRequest, { params }: RouteParams) {
 }
 
 /**
- * PATCH /api/projects/:id
+ * PATCH /api/projects/:id (requiere sesión admin)
  */
 export async function PATCH(request: NextRequest, { params }: RouteParams) {
   try {
+    const session = await requireSession(request);
+    if (!session) return NextResponse.json({ error: "No autenticado" }, { status: 401 });
+
     const { id } = await params;
     const body = await request.json();
     const updated = await updateProject(id, body);
@@ -46,10 +55,12 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
 }
 
 /**
- * DELETE /api/projects/:id
+ * DELETE /api/projects/:id (requiere sesión admin)
  */
-export async function DELETE(_request: NextRequest, { params }: RouteParams) {
+export async function DELETE(request: NextRequest, { params }: RouteParams) {
   try {
+    const session = await requireSession(request);
+    if (!session) return NextResponse.json({ error: "No autenticado" }, { status: 401 });
     const { id } = await params;
     await deleteProject(id);
     return new NextResponse(null, { status: 204 });
