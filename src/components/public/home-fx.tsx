@@ -84,7 +84,7 @@ export function HomeFx() {
       type Spark = { x: number; y: number; vx: number; vy: number; life: number; max: number; col: string };
       const trail: Pt[] = [];
       const sparks: Spark[] = [];
-      let last: Pt | null = null, lastMove = 0, raf = 0;
+      let last: Pt | null = null, lastMove = 0, raf = 0, frame = 0;
 
       const onMove = (e: PointerEvent) => {
         const nx = e.clientX, ny = e.clientY;
@@ -94,35 +94,43 @@ export function HomeFx() {
           for (let i = 0; i < n; i++) sparks.push({ x: nx, y: ny, vx: (Math.random() - .5) * 2.4, vy: (Math.random() - .5) * 2.4 - .4, life: 0, max: 22 + Math.random() * 22, col: pal.sparks[(Math.random() * pal.sparks.length) | 0] });
         }
         trail.push({ x: nx, y: ny });
-        if (trail.length > 12) trail.shift();
+        if (trail.length > 22) trail.shift(); // más larga
         last = { x: nx, y: ny }; lastMove = performance.now();
       };
       window.addEventListener("pointermove", onMove, { passive: true });
 
       const loop = () => {
+        frame++;
         cx.clearRect(0, 0, w, h);
-        if (performance.now() - lastMove > 30 && trail.length) trail.shift();
+        // se retrae más despacio (dura más) al parar
+        if (performance.now() - lastMove > 40 && trail.length && frame % 3 === 0) trail.shift();
+        // chispas continuas: crepita desde que el cursor está en pantalla
+        if (last && sparks.length < 260) {
+          const cnt = frame % 2 === 0 ? 2 : 1;
+          for (let k = 0; k < cnt; k++)
+            sparks.push({ x: last.x + (Math.random() - .5) * 6, y: last.y + (Math.random() - .5) * 6, vx: (Math.random() - .5) * 2.2, vy: (Math.random() - .5) * 2.2 - .25, life: 0, max: 22 + Math.random() * 24, col: pal.sparks[(Math.random() * pal.sparks.length) | 0] });
+        }
         if (trail.length > 1) {
           for (const [color, width] of pal.layers) {
-            cx.lineWidth = width * 1.7; cx.strokeStyle = color; cx.lineCap = "round"; cx.lineJoin = "round";
+            cx.lineWidth = width * 2.3; cx.strokeStyle = color; cx.lineCap = "round"; cx.lineJoin = "round";
             cx.beginPath(); cx.moveTo(trail[0].x, trail[0].y);
             for (let i = 0; i < trail.length - 1; i++) {
               const a = trail[i], b = trail[i + 1];
               const mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2, dx = b.x - a.x, dy = b.y - a.y, len = Math.hypot(dx, dy) || 1;
-              const off = (Math.random() - .5) * (i > trail.length - 4 ? 12 : 7);
+              const off = (Math.random() - .5) * (i > trail.length - 5 ? 16 : 10);
               cx.lineTo(mx - (dy / len) * off, my + (dx / len) * off); cx.lineTo(b.x, b.y);
             }
             cx.stroke();
           }
           const tip = trail[trail.length - 1];
-          const g = cx.createRadialGradient(tip.x, tip.y, 0, tip.x, tip.y, 34);
-          g.addColorStop(0, "rgba(255,255,255,.92)"); g.addColorStop(.4, `rgba(${pal.tip},.5)`); g.addColorStop(1, `rgba(${pal.tip},0)`);
-          cx.fillStyle = g; cx.beginPath(); cx.arc(tip.x, tip.y, 34, 0, 6.2832); cx.fill();
+          const g = cx.createRadialGradient(tip.x, tip.y, 0, tip.x, tip.y, 44);
+          g.addColorStop(0, "rgba(255,255,255,.95)"); g.addColorStop(.4, `rgba(${pal.tip},.5)`); g.addColorStop(1, `rgba(${pal.tip},0)`);
+          cx.fillStyle = g; cx.beginPath(); cx.arc(tip.x, tip.y, 44, 0, 6.2832); cx.fill();
         }
         for (let i = sparks.length - 1; i >= 0; i--) {
           const p = sparks[i]; p.life++; p.x += p.vx; p.y += p.vy; p.vy += .03; p.vx *= .99;
           const t = 1 - p.life / p.max; if (t <= 0) { sparks.splice(i, 1); continue; }
-          cx.globalAlpha = t; cx.fillStyle = p.col; cx.beginPath(); cx.arc(p.x, p.y, 2.4 * t + .5, 0, 6.2832); cx.fill();
+          cx.globalAlpha = t; cx.fillStyle = p.col; cx.beginPath(); cx.arc(p.x, p.y, 3 * t + .6, 0, 6.2832); cx.fill();
         }
         cx.globalAlpha = 1; raf = requestAnimationFrame(loop);
       };
