@@ -111,26 +111,27 @@ export function HomeFx() {
             sparks.push({ x: last.x + (Math.random() - .5) * 6, y: last.y + (Math.random() - .5) * 6, vx: (Math.random() - .5) * 2.2, vy: (Math.random() - .5) * 2.2 - .25, life: 0, max: 22 + Math.random() * 24, col: pal.sparks[(Math.random() * pal.sparks.length) | 0] });
         }
         if (trail.length > 1) {
-          for (const [color, width] of pal.layers) {
-            cx.lineWidth = width * 2.3; cx.strokeStyle = color; cx.lineCap = "round"; cx.lineJoin = "round";
+          // haz fino y nítido, sin halo difuso (glow estrecho + mid + núcleo)
+          pal.layers.forEach(([color, width], li) => {
+            const scale = li === 0 ? 0.6 : li === 1 ? 0.85 : 0.8;
+            cx.lineWidth = width * scale; cx.strokeStyle = color; cx.lineCap = "round"; cx.lineJoin = "round";
             cx.beginPath(); cx.moveTo(trail[0].x, trail[0].y);
             for (let i = 0; i < trail.length - 1; i++) {
               const a = trail[i], b = trail[i + 1];
               const mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2, dx = b.x - a.x, dy = b.y - a.y, len = Math.hypot(dx, dy) || 1;
-              const off = (Math.random() - .5) * (i > trail.length - 5 ? 16 : 10);
+              const off = (Math.random() - .5) * (i > trail.length - 5 ? 12 : 7);
               cx.lineTo(mx - (dy / len) * off, my + (dx / len) * off); cx.lineTo(b.x, b.y);
             }
             cx.stroke();
-          }
+          });
+          // punta pequeña y nítida (sin resplandor grande)
           const tip = trail[trail.length - 1];
-          const g = cx.createRadialGradient(tip.x, tip.y, 0, tip.x, tip.y, 44);
-          g.addColorStop(0, "rgba(255,255,255,.95)"); g.addColorStop(.4, `rgba(${pal.tip},.5)`); g.addColorStop(1, `rgba(${pal.tip},0)`);
-          cx.fillStyle = g; cx.beginPath(); cx.arc(tip.x, tip.y, 44, 0, 6.2832); cx.fill();
+          cx.fillStyle = "rgba(255,255,255,.95)"; cx.beginPath(); cx.arc(tip.x, tip.y, 2, 0, 6.2832); cx.fill();
         }
         for (let i = sparks.length - 1; i >= 0; i--) {
           const p = sparks[i]; p.life++; p.x += p.vx; p.y += p.vy; p.vy += .03; p.vx *= .99;
           const t = 1 - p.life / p.max; if (t <= 0) { sparks.splice(i, 1); continue; }
-          cx.globalAlpha = t; cx.fillStyle = p.col; cx.beginPath(); cx.arc(p.x, p.y, 3 * t + .6, 0, 6.2832); cx.fill();
+          cx.globalAlpha = t; cx.fillStyle = p.col; cx.beginPath(); cx.arc(p.x, p.y, 1.5 * t + .35, 0, 6.2832); cx.fill();
         }
         cx.globalAlpha = 1; raf = requestAnimationFrame(loop);
       };
