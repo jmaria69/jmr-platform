@@ -50,7 +50,7 @@ export function HomeFx() {
 
     // ── Cursor rayo + selector de color ──
     if (!reduce && finePointer) {
-      let pal = PALETTES.find((p) => p.id === localStorage.getItem("praxia-bolt")) ?? PALETTES[0];
+      const pal = PALETTES.find((p) => p.id === "azul") ?? PALETTES[0];
 
       const cv = document.createElement("canvas");
       Object.assign(cv.style, { position: "fixed", inset: "0", width: "100%", height: "100%", pointerEvents: "none", zIndex: "60", mixBlendMode: "screen" } as CSSStyleDeclaration);
@@ -61,24 +61,6 @@ export function HomeFx() {
       const fit = () => { w = window.innerWidth; h = window.innerHeight; cv.width = w * dpr; cv.height = h * dpr; cx.setTransform(dpr, 0, 0, dpr, 0, 0); };
       fit();
 
-      // Selector de paleta (ayuda temporal de ajuste)
-      const picker = document.createElement("div");
-      Object.assign(picker.style, { position: "fixed", left: "16px", bottom: "16px", zIndex: "70", display: "flex", gap: "7px", alignItems: "center", padding: "8px 10px", borderRadius: "999px", background: "rgba(16,18,22,.8)", border: "1px solid rgba(255,255,255,.12)", backdropFilter: "blur(8px)" } as CSSStyleDeclaration);
-      const lbl = document.createElement("span");
-      Object.assign(lbl.style, { font: "11px ui-monospace,monospace", color: "#9aa1ad", marginRight: "3px" } as CSSStyleDeclaration);
-      lbl.textContent = "⚡";
-      picker.appendChild(lbl);
-      PALETTES.forEach((p) => {
-        const b = document.createElement("button");
-        b.title = p.label;
-        Object.assign(b.style, { width: "18px", height: "18px", borderRadius: "50%", cursor: "pointer", background: p.swatch, border: p.id === pal.id ? "2px solid #fff" : "2px solid transparent", padding: "0", boxShadow: "0 0 0 1px rgba(255,255,255,.15)" } as CSSStyleDeclaration);
-        b.addEventListener("click", () => {
-          pal = p; localStorage.setItem("praxia-bolt", p.id);
-          picker.querySelectorAll("button").forEach((x, i) => (x as HTMLElement).style.border = PALETTES[i].id === p.id ? "2px solid #fff" : "2px solid transparent");
-        });
-        picker.appendChild(b);
-      });
-      root.appendChild(picker);
 
       type Pt = { x: number; y: number };
       type Spark = { x: number; y: number; vx: number; vy: number; life: number; max: number; col: string };
@@ -140,7 +122,7 @@ export function HomeFx() {
 
       const onResize = () => fit();
       window.addEventListener("resize", onResize);
-      cleanups.push(() => { window.removeEventListener("pointermove", onMove); window.removeEventListener("resize", onResize); if (raf) cancelAnimationFrame(raf); cv.remove(); picker.remove(); });
+      cleanups.push(() => { window.removeEventListener("pointermove", onMove); window.removeEventListener("resize", onResize); if (raf) cancelAnimationFrame(raf); cv.remove(); });
     }
 
     // ── Hero: constelación viva + pulsos (más visible) ──
