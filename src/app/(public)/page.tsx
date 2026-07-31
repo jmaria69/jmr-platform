@@ -50,6 +50,7 @@ export default async function Home() {
 
   const html = `
   <header class="hero">
+    <div class="grid-bg"></div>
     <div class="glow"></div>
     <canvas aria-hidden="true"></canvas>
     <div class="wrap"><div class="hero-grid">

@@ -19,8 +19,14 @@
 /* hero */
 .lx .hero { position: relative; overflow: hidden; }
 .lx .hero canvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; }
-.lx .hero .glow { position: absolute; z-index: 0; top: 40px; left: -140px; width: 720px; height: 720px;
-  background: radial-gradient(circle, rgba(0,230,170,.14), rgba(0,180,220,.06) 38%, transparent 64%);
+/* rejilla técnica sutil (profundidad, sin copiar ilustraciones de terceros) */
+.lx .hero .grid-bg { position: absolute; inset: 0; z-index: 0; pointer-events: none; opacity: .5;
+  background-image: linear-gradient(rgba(0,242,255,.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0,242,255,.05) 1px, transparent 1px);
+  background-size: 48px 48px;
+  -webkit-mask-image: radial-gradient(120% 90% at 20% 30%, #000 0%, transparent 65%);
+  mask-image: radial-gradient(120% 90% at 20% 30%, #000 0%, transparent 65%); }
+.lx .hero .glow { position: absolute; z-index: 0; top: 40px; left: -140px; width: 760px; height: 760px;
+  background: radial-gradient(circle, rgba(0,230,170,.16), rgba(0,180,220,.07) 38%, transparent 64%);
   filter: blur(10px); pointer-events: none; }
 .lx .hero .wrap { position: relative; z-index: 1; }
 .lx .hero-grid { display: grid; grid-template-columns: 1.02fr .98fr; gap: clamp(28px, 4.5vw, 64px);
