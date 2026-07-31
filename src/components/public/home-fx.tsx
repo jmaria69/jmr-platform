@@ -51,6 +51,8 @@ export function HomeFx() {
     // ── Cursor rayo + selector de color ──
     if (!reduce && finePointer) {
       const pal = PALETTES.find((p) => p.id === "azul") ?? PALETTES[0];
+      // Partículas: violeta metálico con toques anaranjados (independiente del haz azul)
+      const SPARK_COLS = ["#a88cff", "#c9b8e8", "#8f6dff", "#b9a6e6", "#ff8a3c", "#ff6a1e"];
 
       const cv = document.createElement("canvas");
       Object.assign(cv.style, { position: "fixed", inset: "0", width: "100%", height: "100%", pointerEvents: "none", zIndex: "60", mixBlendMode: "screen" } as CSSStyleDeclaration);
@@ -73,7 +75,7 @@ export function HomeFx() {
         if (last) {
           const d = Math.hypot(nx - last.x, ny - last.y);
           const n = Math.min(7, Math.floor(d / 5));
-          for (let i = 0; i < n; i++) { const ang = Math.random() * 6.283, spd = 2 + Math.random() * 4.5; sparks.push({ x: nx, y: ny, vx: Math.cos(ang) * spd, vy: Math.sin(ang) * spd - .3, life: 0, max: 22 + Math.random() * 22, col: pal.sparks[(Math.random() * pal.sparks.length) | 0] }); }
+          for (let i = 0; i < n; i++) { const ang = Math.random() * 6.283, spd = 2 + Math.random() * 4.5; sparks.push({ x: nx, y: ny, vx: Math.cos(ang) * spd, vy: Math.sin(ang) * spd - .3, life: 0, max: 22 + Math.random() * 22, col: SPARK_COLS[(Math.random() * SPARK_COLS.length) | 0] }); }
         }
         trail.push({ x: nx, y: ny });
         if (trail.length > 22) trail.shift(); // más larga
@@ -90,7 +92,7 @@ export function HomeFx() {
         const moving = performance.now() - lastMove < 90;
         if (last && moving && sparks.length < 260) {
           const cnt = frame % 2 === 0 ? 2 : 1;
-          for (let k = 0; k < cnt; k++) { const ang = Math.random() * 6.283, spd = 1.8 + Math.random() * 4; sparks.push({ x: last.x, y: last.y, vx: Math.cos(ang) * spd, vy: Math.sin(ang) * spd - .2, life: 0, max: 22 + Math.random() * 24, col: pal.sparks[(Math.random() * pal.sparks.length) | 0] }); }
+          for (let k = 0; k < cnt; k++) { const ang = Math.random() * 6.283, spd = 1.8 + Math.random() * 4; sparks.push({ x: last.x, y: last.y, vx: Math.cos(ang) * spd, vy: Math.sin(ang) * spd - .2, life: 0, max: 22 + Math.random() * 24, col: SPARK_COLS[(Math.random() * SPARK_COLS.length) | 0] }); }
         }
         if (trail.length > 1) {
           // haz fino y nítido, sin halo difuso (glow estrecho + mid + núcleo)
