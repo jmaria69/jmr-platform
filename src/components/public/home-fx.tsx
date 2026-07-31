@@ -90,11 +90,11 @@ export function HomeFx() {
         const nx = e.clientX, ny = e.clientY;
         if (last) {
           const d = Math.hypot(nx - last.x, ny - last.y);
-          const n = Math.min(4, Math.floor(d / 6));
-          for (let i = 0; i < n; i++) sparks.push({ x: nx, y: ny, vx: (Math.random() - .5) * 1.7, vy: (Math.random() - .5) * 1.7 - .3, life: 0, max: 18 + Math.random() * 18, col: pal.sparks[(Math.random() * pal.sparks.length) | 0] });
+          const n = Math.min(7, Math.floor(d / 5));
+          for (let i = 0; i < n; i++) sparks.push({ x: nx, y: ny, vx: (Math.random() - .5) * 2.4, vy: (Math.random() - .5) * 2.4 - .4, life: 0, max: 22 + Math.random() * 22, col: pal.sparks[(Math.random() * pal.sparks.length) | 0] });
         }
         trail.push({ x: nx, y: ny });
-        if (trail.length > 9) trail.shift(); // estela CORTA
+        if (trail.length > 12) trail.shift();
         last = { x: nx, y: ny }; lastMove = performance.now();
       };
       window.addEventListener("pointermove", onMove, { passive: true });
@@ -104,25 +104,25 @@ export function HomeFx() {
         if (performance.now() - lastMove > 30 && trail.length) trail.shift();
         if (trail.length > 1) {
           for (const [color, width] of pal.layers) {
-            cx.lineWidth = width; cx.strokeStyle = color; cx.lineCap = "round"; cx.lineJoin = "round";
+            cx.lineWidth = width * 1.7; cx.strokeStyle = color; cx.lineCap = "round"; cx.lineJoin = "round";
             cx.beginPath(); cx.moveTo(trail[0].x, trail[0].y);
             for (let i = 0; i < trail.length - 1; i++) {
               const a = trail[i], b = trail[i + 1];
               const mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2, dx = b.x - a.x, dy = b.y - a.y, len = Math.hypot(dx, dy) || 1;
-              const off = (Math.random() - .5) * (i > trail.length - 4 ? 7 : 4);
+              const off = (Math.random() - .5) * (i > trail.length - 4 ? 12 : 7);
               cx.lineTo(mx - (dy / len) * off, my + (dx / len) * off); cx.lineTo(b.x, b.y);
             }
             cx.stroke();
           }
           const tip = trail[trail.length - 1];
-          const g = cx.createRadialGradient(tip.x, tip.y, 0, tip.x, tip.y, 20);
-          g.addColorStop(0, "rgba(255,255,255,.9)"); g.addColorStop(.4, `rgba(${pal.tip},.5)`); g.addColorStop(1, `rgba(${pal.tip},0)`);
-          cx.fillStyle = g; cx.beginPath(); cx.arc(tip.x, tip.y, 20, 0, 6.2832); cx.fill();
+          const g = cx.createRadialGradient(tip.x, tip.y, 0, tip.x, tip.y, 34);
+          g.addColorStop(0, "rgba(255,255,255,.92)"); g.addColorStop(.4, `rgba(${pal.tip},.5)`); g.addColorStop(1, `rgba(${pal.tip},0)`);
+          cx.fillStyle = g; cx.beginPath(); cx.arc(tip.x, tip.y, 34, 0, 6.2832); cx.fill();
         }
         for (let i = sparks.length - 1; i >= 0; i--) {
           const p = sparks[i]; p.life++; p.x += p.vx; p.y += p.vy; p.vy += .03; p.vx *= .99;
           const t = 1 - p.life / p.max; if (t <= 0) { sparks.splice(i, 1); continue; }
-          cx.globalAlpha = t; cx.fillStyle = p.col; cx.beginPath(); cx.arc(p.x, p.y, 1.7 * t + .4, 0, 6.2832); cx.fill();
+          cx.globalAlpha = t; cx.fillStyle = p.col; cx.beginPath(); cx.arc(p.x, p.y, 2.4 * t + .5, 0, 6.2832); cx.fill();
         }
         cx.globalAlpha = 1; raf = requestAnimationFrame(loop);
       };

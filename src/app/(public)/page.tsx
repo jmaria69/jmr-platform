@@ -31,19 +31,24 @@ export default async function Home() {
   const featured = chosen.length ? chosen : all.slice(0, 4);
 
   const prods = featured
-    .map((p, i) => {
-      const accent = ACCENTS[i % ACCENTS.length];
+    .map((p) => {
       const status = STATUS[p.status] || "EN PRODUCCIÓN";
-      const cta = p.url
-        ? `<a class="stat" href="${esc(p.url)}" target="_blank" rel="noopener noreferrer"><b></b>Ver ${esc(p.name)} &rarr;</a>`
-        : `<span class="stat"><b></b>${status}</span>`;
+      const img = p.image
+        ? `<div class="nimg"><img src="${esc(p.image)}" alt="${esc(p.name)}" loading="lazy" onerror="this.parentElement.style.display='none'"></div>`
+        : "";
+      const link = p.url ? `<a class="nlink" href="${esc(p.url)}" target="_blank" rel="noopener noreferrer">Ver proyecto &rarr;</a>` : "";
       return `
-        <div class="prod rev" style="--accent:${accent}">
-          <span class="st">&#9679; ${status}</span>
-          <div class="tag mono">${esc(p.category)}</div>
-          <h3>${esc(p.name)}</h3>
-          <p>${esc(p.description)}</p>
-          ${cta}
+        <div class="nrow rev">
+          <div class="nnode"></div>
+          <div class="ncard">
+            ${img}
+            <div>
+              <div class="ntag">${esc(p.category)}<span class="nst">&#9679; ${status}</span></div>
+              <h3>${esc(p.name)}</h3>
+              <p>${esc(p.description)}</p>
+              ${link}
+            </div>
+          </div>
         </div>`;
     })
     .join("");
@@ -126,7 +131,7 @@ export default async function Home() {
     <p class="lbl rev">Casos reales</p>
     <h2 class="rev">Sistemas propios, <em>funcionando ahora</em>.</h2>
     <p class="sec-lede rev">No son demos: son productos en producción. La prueba de que lo que prometemos, se entrega.</p>
-    <div class="prods">${prods}</div>
+    <div class="neural">${prods}</div>
   </div></section>
 
   <section class="blk final" id="contacto"><div class="wrap">
