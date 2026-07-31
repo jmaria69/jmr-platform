@@ -104,8 +104,9 @@ export function HomeFx() {
         cx.clearRect(0, 0, w, h);
         // se retrae más despacio (dura más) al parar
         if (performance.now() - lastMove > 40 && trail.length && frame % 3 === 0) trail.shift();
-        // chispas continuas: crepita desde que el cursor está en pantalla
-        if (last && sparks.length < 260) {
+        // chispas solo mientras el cursor se mueve; al parar, se detiene
+        const moving = performance.now() - lastMove < 90;
+        if (last && moving && sparks.length < 260) {
           const cnt = frame % 2 === 0 ? 2 : 1;
           for (let k = 0; k < cnt; k++)
             sparks.push({ x: last.x + (Math.random() - .5) * 6, y: last.y + (Math.random() - .5) * 6, vx: (Math.random() - .5) * 2.2, vy: (Math.random() - .5) * 2.2 - .25, life: 0, max: 22 + Math.random() * 24, col: pal.sparks[(Math.random() * pal.sparks.length) | 0] });
