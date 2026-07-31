@@ -19,6 +19,14 @@ model AdminUser {
   @@map("admin_users")
 }
 
+model HomeConfig {
+  id        Int      @id @default(1)
+  data      Json     @default("{}")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("home_config")
+}
+
 model Project {
   id               String    @id
   name             String

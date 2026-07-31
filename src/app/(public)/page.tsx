@@ -1,6 +1,7 @@
 import "./home-redesign.css";
 import type { Metadata } from "next";
 import { findAllProjects } from "@/lib/repositories/projects.repository";
+import { getHomeConfig } from "@/lib/home-config";
 import { HomeFx } from "@/components/public/home-fx";
 
 export const dynamic = "force-dynamic";
@@ -16,7 +17,6 @@ const STATUS: Record<string, string> = {
   beta: "BETA",
   development: "EN DESARROLLO",
 };
-const ACCENTS = ["#00d4ff", "#ff5a36", "#f0b64a", "#4fe0c4"];
 
 function esc(s: string): string {
   return (s || "").replace(
@@ -26,9 +26,9 @@ function esc(s: string): string {
 }
 
 export default async function Home() {
-  const all = await findAllProjects();
-  const chosen = all.filter((p) => p.showOnHome).slice(0, 4);
-  const featured = chosen.length ? chosen : all.slice(0, 4);
+  const [all, cfg] = await Promise.all([findAllProjects(), getHomeConfig()]);
+  const chosen = all.filter((p) => p.showOnHome).slice(0, 8);
+  const featured = chosen.length ? chosen : all.slice(0, 6);
 
   const prods = featured
     .map((p) => {
@@ -53,16 +53,19 @@ export default async function Home() {
     })
     .join("");
 
-  const html = `
+  const H = cfg.hero;
+  const S = cfg.sections;
+
+  const hero = `
   <header class="hero">
     <div class="grid-bg"></div>
     <div class="glow"></div>
     <canvas aria-hidden="true"></canvas>
     <div class="wrap"><div class="hero-grid">
       <div>
-        <span class="tagline"><b></b>Automatización a medida &middot; desde España</span>
-        <h1>El trabajo que haces a mano, <em>hecho solo</em>.</h1>
-        <p class="lede">No vendemos "IA". Nos sentamos 15 minutos contigo, encontramos qué te come el día &mdash; facturas, seguimiento, informes &mdash; y <b>montamos un sistema que lo hace por ti</b>. En producción, no en diapositivas.</p>
+        <span class="tagline"><b></b>${esc(H.tagline)}</span>
+        <h1>${esc(H.h1)} <em>${esc(H.h1em)}</em>.</h1>
+        <p class="lede">${esc(H.lede)}</p>
         <div class="cta-row">
           <a href="/contacto" class="btn pri">Reservar diagnóstico gratuito</a>
           <a href="#productos" class="btn sec">Ver casos reales &rarr;</a>
@@ -89,8 +92,9 @@ export default async function Home() {
     <span class="item">De idea a agente en <span class="mono">&lt;48 h</span></span>
     <span class="item">Soporte real en <span class="mono">&lt;2 h</span></span>
     <span class="item">Cumplimiento <span class="mono">NIS2</span> incluido</span>
-  </div></div></div>
+  </div></div></div>`;
 
+  const problema = !S.problema ? "" : `
   <section class="blk" id="problema"><div class="wrap">
     <p class="lbl rev">El problema</p>
     <h2 class="rev">Lo repetitivo te está <em>frenando el negocio</em>.</h2>
@@ -101,8 +105,9 @@ export default async function Home() {
       <div class="quote rev"><div class="qm">&ldquo;</div><p>Detectar incidentes de red a mano deja huecos y respuestas lentas.</p><div class="who mono">IT &middot; INFRAESTRUCTURA</div></div>
     </div>
     <p class="resolve rev"><span class="ar">&rarr;</span>No necesitas contratar más. Necesitas que <b>eso se haga solo</b>.</p>
-  </div></section>
+  </div></section>`;
 
+  const servicios = !S.servicios ? "" : `
   <section class="blk" id="servicios" style="padding-top:0"><div class="wrap">
     <p class="lbl rev">Qué automatizamos</p>
     <h2 class="rev">Menos tareas tuyas. <em>Más negocio.</em></h2>
@@ -115,8 +120,9 @@ export default async function Home() {
       <div class="cell rev"><div class="ic">&#8596;</div><h3>Integraciones</h3><p>Conectamos el agente a tus sistemas actuales &mdash; ERP, email, Google Workspace, Telegram.</p><div class="was">sin migrar nada</div></div>
       <div class="cell rev"><div class="ic">&#9671;</div><h3>Software a medida</h3><p>Cuando no hay herramienta que sirva, la construimos. En producción, no en beta eterna.</p><div class="was">a tu problema exacto</div></div>
     </div>
-  </div></section>
+  </div></section>`;
 
+  const como = !S.como ? "" : `
   <section class="blk" id="como" style="padding-top:0"><div class="wrap">
     <p class="lbl rev">Por qué nosotros</p>
     <h2 class="rev">Ingeniería de verdad, <em>trato de cofundador</em>.</h2>
@@ -125,32 +131,38 @@ export default async function Home() {
       <div class="pillar rev"><div class="no">02</div><h3>En producción, no en slides</h3><p>Todo lo que ves ya corre 24/7. Sin plantillas genéricas: rigor técnico sobre tu caso real.</p></div>
       <div class="pillar rev"><div class="no">03</div><h3>Del diagnóstico al lunes</h3><p>Hablas directamente con quien lo construye. Operativo en 48 h y soporte real en menos de 2 h.</p></div>
     </div>
-  </div></section>
+  </div></section>`;
 
+  const productos = !S.productos ? "" : `
   <section class="blk" id="productos" style="padding-top:0"><div class="wrap">
     <p class="lbl rev">Casos reales</p>
     <h2 class="rev">Sistemas propios, <em>funcionando ahora</em>.</h2>
     <p class="sec-lede rev">No son demos: son productos en producción. La prueba de que lo que prometemos, se entrega.</p>
     <div class="neural">${prods}</div>
-  </div></section>
+  </div></section>`;
 
-  <section class="blk final" id="contacto"><div class="wrap">
+  const contacto = !S.contacto ? "" : `
+  <section class="blk final" id="contacto"><div class="glow2"></div><div class="wrap">
     <p class="lbl rev" style="justify-content:center">Empieza aquí</p>
     <h2 class="rev">Cuéntanos qué te come el día. <em>Del resto nos encargamos.</em></h2>
     <p class="rev">15 minutos, sin compromiso. Te decimos exactamente qué se puede automatizar y cuánto tiempo recuperas.</p>
     <div class="rev"><a href="/contacto" class="btn pri" style="padding:17px 34px;font-size:16px">Reservar diagnóstico gratuito</a></div>
-  </div></section>
+  </div></section>`;
 
+  const foot = `
   <div class="foot"><div class="wrap"><div class="row">
     <span>Praxia Labs &middot; Automatización con agentes, desde España</span>
     <span class="mono">hola@praxialabs.com</span>
-  </div></div></div>
-  `;
+  </div></div></div>`;
+
+  const html = hero + problema + servicios + como + productos + contacto + foot;
+
+  const styleVars = { "--cyan": cfg.accent, "--blue": cfg.accentBlue } as React.CSSProperties;
 
   return (
     <>
-      <HomeFx />
-      <div className="lx" dangerouslySetInnerHTML={{ __html: html }} />
+      <HomeFx fx={{ enabled: cfg.effectsEnabled, bolt: cfg.bolt, thickness: cfg.thickness, length: cfg.length, sparkDensity: cfg.sparkDensity, sparkColors: cfg.sparkColors, starfield: cfg.starfield }} />
+      <div className="lx" style={styleVars} dangerouslySetInnerHTML={{ __html: html }} />
     </>
   );
 }

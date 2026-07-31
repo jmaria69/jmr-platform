@@ -14,6 +14,7 @@ import {
   Activity,
   Gauge,
   Shield,
+  Palette,
 } from "lucide-react";
 import {
   Sidebar,
@@ -36,6 +37,7 @@ const menuItems = [
   { href: "/admin/analytics", label: "Analytics", icon: BarChart3 },
   { href: "/admin/campanas", label: "Campañas", icon: Megaphone },
   { href: "/admin/proyectos", label: "Proyectos", icon: FolderKanban },
+  { href: "/admin/apariencia", label: "Apariencia", icon: Palette },
   { href: "/admin/escalabilidad", label: "Escalabilidad", icon: Gauge },
   { href: "/admin/seguridad", label: "Seguridad", icon: Shield },
 ];

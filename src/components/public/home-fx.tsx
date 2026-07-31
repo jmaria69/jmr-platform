@@ -3,33 +3,42 @@
 import { useEffect } from "react";
 
 /**
- * Efectos de la home (originales):
+ * Efectos de la home (originales), configurables desde /admin/apariencia:
  *  - Reveals al hacer scroll.
- *  - Cursor "rayo": estela eléctrica corta + partículas que sigue al puntero.
- *    Paleta elegible en vivo (selector abajo-izquierda), por defecto Cian+Fuego.
- *  - Hero: constelación viva (nodos + pulsos de señal) como ilustración propia.
+ *  - Cursor "rayo" azul (por defecto) + partículas violeta/naranja, solo al
+ *    moverse. Color/grosor/longitud/densidad vienen por props.
+ *  - Hero: constelación viva (nodos + pulsos de señal).
  * Respeta prefers-reduced-motion y punteros táctiles.
  */
 
-type Palette = { id: string; label: string; swatch: string; layers: [string, number][]; tip: string; sparks: string[] };
+type Palette = { id: string; layers: [string, number][]; tip: string };
+const PALETTES: Record<string, Palette> = {
+  fuego: { id: "fuego", layers: [["rgba(0,230,255,.20)", 10], ["rgba(255,110,30,.60)", 4.5], ["rgba(255,245,220,.95)", 1.6]], tip: "255,140,40" },
+  azul: { id: "azul", layers: [["rgba(91,124,250,.20)", 10], ["rgba(130,160,255,.60)", 4.5], ["rgba(240,245,255,.95)", 1.6]], tip: "120,150,255" },
+  lima: { id: "lima", layers: [["rgba(124,255,107,.18)", 10], ["rgba(160,255,120,.58)", 4.5], ["rgba(240,255,220,.95)", 1.6]], tip: "150,255,110" },
+  oro: { id: "oro", layers: [["rgba(255,170,40,.20)", 10], ["rgba(255,210,74,.60)", 4.5], ["rgba(255,248,220,.95)", 1.6]], tip: "255,160,50" },
+  magenta: { id: "magenta", layers: [["rgba(168,85,247,.18)", 10], ["rgba(232,121,249,.58)", 4.5], ["rgba(255,240,255,.95)", 1.6]], tip: "232,121,249" },
+  hielo: { id: "hielo", layers: [["rgba(120,200,255,.18)", 10], ["rgba(190,233,255,.58)", 4.5], ["rgba(255,255,255,.95)", 1.6]], tip: "150,215,255" },
+};
 
-const PALETTES: Palette[] = [
-  { id: "fuego", label: "Cian + Fuego", swatch: "linear-gradient(135deg,#00f2ff,#ff6a1e)",
-    layers: [["rgba(0,230,255,.20)", 10], ["rgba(255,110,30,.60)", 4.5], ["rgba(255,245,220,.95)", 1.6]], tip: "255,140,40", sparks: ["#00f2ff", "#ff7a1e", "#ffd24a"] },
-  { id: "azul", label: "Azul eléctrico", swatch: "#5b7cfa",
-    layers: [["rgba(91,124,250,.20)", 10], ["rgba(130,160,255,.60)", 4.5], ["rgba(240,245,255,.95)", 1.6]], tip: "120,150,255", sparks: ["#5b7cfa", "#9db4ff", "#ffffff"] },
-  { id: "lima", label: "Verde-lima", swatch: "#7cff6b",
-    layers: [["rgba(124,255,107,.18)", 10], ["rgba(160,255,120,.58)", 4.5], ["rgba(240,255,220,.95)", 1.6]], tip: "150,255,110", sparks: ["#7cff6b", "#c6ff9e", "#ffffff"] },
-  { id: "oro", label: "Dorado", swatch: "#ffd24a",
-    layers: [["rgba(255,170,40,.20)", 10], ["rgba(255,210,74,.60)", 4.5], ["rgba(255,248,220,.95)", 1.6]], tip: "255,160,50", sparks: ["#ffd24a", "#ff9a3c", "#fff2c0"] },
-  { id: "magenta", label: "Magenta", swatch: "#e879f9",
-    layers: [["rgba(168,85,247,.18)", 10], ["rgba(232,121,249,.58)", 4.5], ["rgba(255,240,255,.95)", 1.6]], tip: "232,121,249", sparks: ["#e879f9", "#c084fc", "#ffffff"] },
-  { id: "hielo", label: "Hielo", swatch: "#bfe9ff",
-    layers: [["rgba(120,200,255,.18)", 10], ["rgba(190,233,255,.58)", 4.5], ["rgba(255,255,255,.95)", 1.6]], tip: "150,215,255", sparks: ["#bfe9ff", "#ffffff", "#8fd0ff"] },
-];
+export type FxProps = {
+  enabled?: boolean;
+  bolt?: string;
+  thickness?: number;
+  length?: number;
+  sparkDensity?: number;
+  sparkColors?: string[];
+  starfield?: boolean;
+};
 
-export function HomeFx() {
+const FX_DEFAULT: Required<FxProps> = {
+  enabled: true, bolt: "azul", thickness: 1, length: 22, sparkDensity: 1,
+  sparkColors: ["#a88cff", "#c9b8e8", "#8f6dff", "#b9a6e6", "#ff8a3c", "#ff6a1e"], starfield: true,
+};
+
+export function HomeFx({ fx }: { fx?: FxProps }) {
   useEffect(() => {
+    const cfg = { ...FX_DEFAULT, ...(fx ?? {}) };
     const root = document.querySelector<HTMLElement>(".lx");
     if (!root) return;
     const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
@@ -48,11 +57,12 @@ export function HomeFx() {
       root.querySelectorAll(".rev").forEach((el) => el.classList.add("in"));
     }
 
-    // ── Cursor rayo + selector de color ──
-    if (!reduce && finePointer) {
-      const pal = PALETTES.find((p) => p.id === "azul") ?? PALETTES[0];
-      // Partículas: violeta metálico con toques anaranjados (independiente del haz azul)
-      const SPARK_COLS = ["#a88cff", "#c9b8e8", "#8f6dff", "#b9a6e6", "#ff8a3c", "#ff6a1e"];
+    // ── Cursor rayo + partículas ──
+    if (!reduce && finePointer && cfg.enabled) {
+      const pal = PALETTES[cfg.bolt] ?? PALETTES.azul;
+      const SPARK_COLS = cfg.sparkColors.length ? cfg.sparkColors : FX_DEFAULT.sparkColors;
+      const dens = Math.max(0, cfg.sparkDensity);
+      const cap = Math.max(6, Math.min(40, Math.round(cfg.length)));
 
       const cv = document.createElement("canvas");
       Object.assign(cv.style, { position: "fixed", inset: "0", width: "100%", height: "100%", pointerEvents: "none", zIndex: "60", mixBlendMode: "screen" } as CSSStyleDeclaration);
@@ -63,22 +73,22 @@ export function HomeFx() {
       const fit = () => { w = window.innerWidth; h = window.innerHeight; cv.width = w * dpr; cv.height = h * dpr; cx.setTransform(dpr, 0, 0, dpr, 0, 0); };
       fit();
 
-
       type Pt = { x: number; y: number };
       type Spark = { x: number; y: number; vx: number; vy: number; life: number; max: number; col: string };
       const trail: Pt[] = [];
       const sparks: Spark[] = [];
       let last: Pt | null = null, lastMove = 0, raf = 0, frame = 0;
+      const pick = () => SPARK_COLS[(Math.random() * SPARK_COLS.length) | 0];
 
       const onMove = (e: PointerEvent) => {
         const nx = e.clientX, ny = e.clientY;
         if (last) {
           const d = Math.hypot(nx - last.x, ny - last.y);
-          const n = Math.min(7, Math.floor(d / 5));
-          for (let i = 0; i < n; i++) { const ang = Math.random() * 6.283, spd = 2 + Math.random() * 4.5; sparks.push({ x: nx, y: ny, vx: Math.cos(ang) * spd, vy: Math.sin(ang) * spd - .3, life: 0, max: 22 + Math.random() * 22, col: SPARK_COLS[(Math.random() * SPARK_COLS.length) | 0] }); }
+          const n = Math.min(9, Math.floor((d / 5) * dens));
+          for (let i = 0; i < n; i++) { const ang = Math.random() * 6.283, spd = 2 + Math.random() * 4.5; sparks.push({ x: nx, y: ny, vx: Math.cos(ang) * spd, vy: Math.sin(ang) * spd - .3, life: 0, max: 22 + Math.random() * 22, col: pick() }); }
         }
         trail.push({ x: nx, y: ny });
-        if (trail.length > 22) trail.shift(); // más larga
+        if (trail.length > cap) trail.shift();
         last = { x: nx, y: ny }; lastMove = performance.now();
       };
       window.addEventListener("pointermove", onMove, { passive: true });
@@ -86,18 +96,15 @@ export function HomeFx() {
       const loop = () => {
         frame++;
         cx.clearRect(0, 0, w, h);
-        // se retrae más despacio (dura más) al parar
         if (performance.now() - lastMove > 40 && trail.length && frame % 3 === 0) trail.shift();
-        // chispas solo mientras el cursor se mueve; al parar, se detiene
         const moving = performance.now() - lastMove < 90;
-        if (last && moving && sparks.length < 260) {
-          const cnt = frame % 2 === 0 ? 2 : 1;
-          for (let k = 0; k < cnt; k++) { const ang = Math.random() * 6.283, spd = 1.8 + Math.random() * 4; sparks.push({ x: last.x, y: last.y, vx: Math.cos(ang) * spd, vy: Math.sin(ang) * spd - .2, life: 0, max: 22 + Math.random() * 24, col: SPARK_COLS[(Math.random() * SPARK_COLS.length) | 0] }); }
+        if (last && moving && sparks.length < 300) {
+          const cnt = Math.round((frame % 2 === 0 ? 2 : 1) * dens);
+          for (let k = 0; k < cnt; k++) { const ang = Math.random() * 6.283, spd = 1.8 + Math.random() * 4; sparks.push({ x: last.x, y: last.y, vx: Math.cos(ang) * spd, vy: Math.sin(ang) * spd - .2, life: 0, max: 22 + Math.random() * 24, col: pick() }); }
         }
         if (trail.length > 1) {
-          // haz fino y nítido, sin halo difuso (glow estrecho + mid + núcleo)
           pal.layers.forEach(([color, width], li) => {
-            const scale = li === 0 ? 0.6 : li === 1 ? 0.85 : 0.8;
+            const scale = (li === 0 ? 0.6 : li === 1 ? 0.85 : 0.8) * cfg.thickness;
             cx.lineWidth = width * scale; cx.strokeStyle = color; cx.lineCap = "round"; cx.lineJoin = "round";
             cx.beginPath(); cx.moveTo(trail[0].x, trail[0].y);
             for (let i = 0; i < trail.length - 1; i++) {
@@ -108,9 +115,8 @@ export function HomeFx() {
             }
             cx.stroke();
           });
-          // punta pequeña y nítida (sin resplandor grande)
           const tip = trail[trail.length - 1];
-          cx.fillStyle = "rgba(255,255,255,.95)"; cx.beginPath(); cx.arc(tip.x, tip.y, 2, 0, 6.2832); cx.fill();
+          cx.fillStyle = "rgba(255,255,255,.95)"; cx.beginPath(); cx.arc(tip.x, tip.y, 2 * cfg.thickness, 0, 6.2832); cx.fill();
         }
         for (let i = sparks.length - 1; i >= 0; i--) {
           const p = sparks[i]; p.life++; p.x += p.vx; p.y += p.vy; p.vy += .03; p.vx *= .99;
@@ -126,9 +132,9 @@ export function HomeFx() {
       cleanups.push(() => { window.removeEventListener("pointermove", onMove); window.removeEventListener("resize", onResize); if (raf) cancelAnimationFrame(raf); cv.remove(); });
     }
 
-    // ── Hero: constelación viva + pulsos (más visible) ──
+    // ── Hero: constelación viva + pulsos ──
     const c = root.querySelector<HTMLCanvasElement>(".hero canvas");
-    if (c) {
+    if (c && cfg.starfield) {
       const ctx = c.getContext("2d")!;
       type Star = { x: number; y: number; vx: number; vy: number; r: number; hot: boolean; ph: number };
       type Pulse = { a: number; b: number; t: number; sp: number };
@@ -179,7 +185,7 @@ export function HomeFx() {
     }
 
     return () => cleanups.forEach((fn) => fn());
-  }, []);
+  }, [fx]);
 
   return null;
 }
