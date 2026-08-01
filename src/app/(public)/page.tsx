@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { findAllProjects } from "@/lib/repositories/projects.repository";
 import { getHomeConfig } from "@/lib/home-config";
 import { HomeFx } from "@/components/public/home-fx";
+import { ContactForm } from "@/components/public/contact-form";
 
 export const dynamic = "force-dynamic";
 
@@ -141,31 +142,65 @@ export default async function Home() {
     <div class="neural">${prods}</div>
   </div></section>`;
 
-  const contacto = !S.contacto ? "" : `
-  <section class="blk final" id="contacto"><div class="glow2"></div><div class="wrap">
-    <p class="lbl rev" style="justify-content:center">Empieza aquí</p>
-    <h2 class="rev">Cuéntanos qué te come el día. <em>Del resto nos encargamos.</em></h2>
-    <p class="rev">15 minutos, sin compromiso. Te decimos exactamente qué se puede automatizar y cuánto tiempo recuperas.</p>
-    <div class="rev"><a href="/contacto" class="btn pri" style="padding:17px 34px;font-size:16px">Reservar diagnóstico gratuito</a></div>
-  </div></section>`;
-
   const foot = `
-  <div class="foot"><div class="wrap"><div class="row">
-    <span>Praxia Labs &middot; Automatización con agentes, desde España</span>
-    <span class="mono">hola@praxialabs.com</span>
-  </div></div></div>`;
+  <div class="foot"><div class="wrap">
+    <div class="fcols">
+      <div class="fbrand">
+        <div class="brand"><span class="mk"></span> Praxia&nbsp;Labs</div>
+        <p>Automatización con agentes de IA, a medida. Sistemas propios en producción — desde España.</p>
+      </div>
+      <div class="fcol">
+        <h4>Producto</h4>
+        <a href="/siam">SIAM</a><a href="/core-ops">Core OPS</a><a href="/adminapp">AdminApp</a><a href="/laboratorio">Laboratorio</a>
+      </div>
+      <div class="fcol">
+        <h4>Praxia</h4>
+        <a href="#servicios">Qué automatizamos</a><a href="#como">Por qué nosotros</a><a href="/precios">Precios</a><a href="/contacto">Contacto</a>
+      </div>
+      <div class="fcol">
+        <h4>Contacto</h4>
+        <a href="mailto:hola@praxialabs.com">hola@praxialabs.com</a><span>Diagnóstico de 15 min, gratis</span><span>Operativo desde el lunes</span>
+      </div>
+    </div>
+    <div class="fbot"><span>&copy; ${new Date().getFullYear()} Praxia Labs</span><span class="mono">Hecho en España</span></div>
+  </div></div>`;
 
-  // Secciones en el orden configurado desde admin (cada una ya es "" si está oculta)
-  const secMap: Record<string, string> = { problema, servicios, como, productos, contacto };
-  const body = cfg.sectionOrder.map((k) => secMap[k] ?? "").join("");
-  const html = hero + body + foot;
-
+  // Secciones HTML (contacto se renderiza como componente React con el formulario)
+  const secMap: Record<string, string> = { problema, servicios, como, productos };
   const styleVars = { "--cyan": cfg.accent, "--blue": cfg.accentBlue } as React.CSSProperties;
 
   return (
     <>
       <HomeFx fx={{ enabled: cfg.effectsEnabled, bolt: cfg.bolt, thickness: cfg.thickness, length: cfg.length, sparkDensity: cfg.sparkDensity, sparkColors: cfg.sparkColors, starfield: cfg.starfield }} />
-      <div className="lx" style={styleVars} dangerouslySetInnerHTML={{ __html: html }} />
+      <div className="lx" style={styleVars}>
+        <div dangerouslySetInnerHTML={{ __html: hero }} />
+        {cfg.sectionOrder.map((k) =>
+          k === "contacto"
+            ? (cfg.sections.contacto ? <ContactSection key="contacto" /> : null)
+            : (secMap[k] ? <div key={k} dangerouslySetInnerHTML={{ __html: secMap[k] }} /> : null),
+        )}
+        <div dangerouslySetInnerHTML={{ __html: foot }} />
+      </div>
     </>
+  );
+}
+
+function ContactSection() {
+  return (
+    <section className="blk final" id="contacto">
+      <div className="glow2" />
+      <div className="wrap">
+        <p className="lbl rev" style={{ justifyContent: "center" }}>Empieza aquí</p>
+        <h2 className="rev">
+          Cuéntanos qué te come el día. <em>Del resto nos encargamos.</em>
+        </h2>
+        <p className="rev" style={{ marginBottom: "24px" }}>
+          15 minutos, sin compromiso. Te decimos exactamente qué se puede automatizar y cuánto tiempo recuperas.
+        </p>
+        <div className="contact-card rev">
+          <ContactForm />
+        </div>
+      </div>
+    </section>
   );
 }

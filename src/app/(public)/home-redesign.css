@@ -176,8 +176,20 @@
 .lx .final .wrap { position: relative; z-index: 1; }
 .lx .final h2 { margin: 0 auto 16px; max-width: 22ch; }
 .lx .final p { color: var(--muted); font-size: 18px; margin: 0 0 32px; }
+/* formulario de contacto en tarjeta */
+.lx .contact-card { max-width: 640px; margin: 10px auto 0; text-align: left; background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 30px clamp(20px, 4vw, 34px); }
+
+/* footer 4 columnas */
 .lx .foot { border-top: 1px solid var(--line); }
-.lx .foot .row { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 28px 0; color: var(--dim); font-size: 13px; }
+.lx .foot .fcols { display: grid; grid-template-columns: 1.6fr 1fr 1fr 1.2fr; gap: 32px; padding: 52px 0 34px; }
+.lx .foot .fbrand .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; margin-bottom: 12px; }
+.lx .foot .fbrand .mk { width: 22px; height: 22px; border-radius: 6px; background: linear-gradient(135deg, var(--cyan), var(--aqua)); box-shadow: 0 0 14px rgba(0,242,255,.35); }
+.lx .foot .fbrand p { color: var(--muted); font-size: 14px; max-width: 34ch; margin: 0; }
+.lx .foot .fcol h4 { font-family: ui-monospace, monospace; font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--cyan); margin: 0 0 14px; }
+.lx .foot .fcol a, .lx .foot .fcol span { display: block; color: var(--muted); font-size: 14px; margin-bottom: 9px; transition: color .15s; }
+.lx .foot .fcol a:hover { color: var(--fg); }
+.lx .foot .fbot { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 20px 0 30px; border-top: 1px solid var(--line); color: var(--dim); font-size: 13px; }
+@media (max-width: 760px) { .lx .foot .fcols { grid-template-columns: 1fr 1fr; } }
 
 @media (max-width: 900px) {
   .lx .hero-grid { grid-template-columns: 1fr; }
