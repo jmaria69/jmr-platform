@@ -13,7 +13,20 @@ export type HomeConfig = {
   starfield: boolean;   // constelación viva del hero
   hero: { tagline: string; h1: string; h1em: string; lede: string };
   sections: { problema: boolean; servicios: boolean; como: boolean; productos: boolean; contacto: boolean };
+  sectionOrder: string[]; // orden de aparición de las secciones en la home
 };
+
+export const SECTION_KEYS = ["problema", "servicios", "como", "productos", "contacto"] as const;
+
+/** Devuelve un orden válido: solo claves conocidas, sin duplicados y con todas presentes. */
+export function sanitizeOrder(order: unknown): string[] {
+  const arr = Array.isArray(order) ? order.filter((k): k is string => typeof k === "string") : [];
+  const seen = new Set<string>();
+  const out: string[] = [];
+  for (const k of arr) if ((SECTION_KEYS as readonly string[]).includes(k) && !seen.has(k)) { seen.add(k); out.push(k); }
+  for (const k of SECTION_KEYS) if (!seen.has(k)) out.push(k);
+  return out;
+}
 
 export const HOME_DEFAULTS: HomeConfig = {
   accent: "#00f2ff",
@@ -33,6 +46,7 @@ export const HOME_DEFAULTS: HomeConfig = {
       'No vendemos "IA". Nos sentamos 15 minutos contigo, encontramos qué te come el día — facturas, seguimiento, informes — y montamos un sistema que lo hace por ti. En producción, no en diapositivas.',
   },
   sections: { problema: true, servicios: true, como: true, productos: true, contacto: true },
+  sectionOrder: ["problema", "servicios", "como", "productos", "contacto"],
 };
 
 /** Mezcla defaults + lo guardado, tolerante a campos ausentes o BD caída. */
@@ -44,6 +58,7 @@ export function mergeHomeConfig(data: Partial<HomeConfig> | null | undefined): H
     hero: { ...HOME_DEFAULTS.hero, ...(d.hero ?? {}) },
     sections: { ...HOME_DEFAULTS.sections, ...(d.sections ?? {}) },
     sparkColors: Array.isArray(d.sparkColors) && d.sparkColors.length ? d.sparkColors : HOME_DEFAULTS.sparkColors,
+    sectionOrder: sanitizeOrder(d.sectionOrder),
   };
 }
 

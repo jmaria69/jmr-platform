@@ -13,6 +13,7 @@ type Cfg = {
   sparkColors: string[]; starfield: boolean;
   hero: { tagline: string; h1: string; h1em: string; lede: string };
   sections: { problema: boolean; servicios: boolean; como: boolean; productos: boolean; contacto: boolean };
+  sectionOrder: string[];
 };
 
 const BOLTS = [
@@ -46,6 +47,7 @@ function Slider({ label, value, min, max, step, onChange, fmt }: { label: string
 export function HomeConfigForm() {
   const [cfg, setCfg] = useState<Cfg | null>(null);
   const [status, setStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const [dragIdx, setDragIdx] = useState<number | null>(null);
 
   useEffect(() => {
     fetch("/api/home-config")
@@ -60,6 +62,14 @@ export function HomeConfigForm() {
   const setHero = (k: keyof Cfg["hero"], v: string) => setCfg({ ...cfg, hero: { ...cfg.hero, [k]: v } });
   const setSec = (k: keyof Cfg["sections"], v: boolean) => setCfg({ ...cfg, sections: { ...cfg.sections, [k]: v } });
   const setSpark = (i: number, v: string) => { const s = [...cfg.sparkColors]; s[i] = v; set("sparkColors", s); };
+  const reorder = (from: number, to: number) => {
+    if (from === to || from < 0 || to < 0) return;
+    const o = [...cfg.sectionOrder];
+    const [m] = o.splice(from, 1);
+    o.splice(to, 0, m);
+    set("sectionOrder", o);
+  };
+  const labelOf = (k: string) => SECTIONS.find(([kk]) => kk === k)?.[1] ?? k;
 
   async function save() {
     setStatus("saving");
@@ -139,9 +149,27 @@ export function HomeConfigForm() {
       </Card>
 
       <Card>
-        <CardHeader><CardTitle className="text-base">Secciones visibles</CardTitle></CardHeader>
-        <CardContent className="grid gap-3 sm:grid-cols-2">
-          {SECTIONS.map(([k, label]) => <Toggle key={k} checked={cfg.sections[k]} onChange={(v) => setSec(k, v)}>{label}</Toggle>)}
+        <CardHeader><CardTitle className="text-base">Secciones de la home</CardTitle></CardHeader>
+        <CardContent className="space-y-2">
+          <p className="text-xs text-muted-foreground mb-2">Arrastra para reordenar. El interruptor muestra u oculta cada sección.</p>
+          {cfg.sectionOrder.map((k, i) => (
+            <div
+              key={k}
+              draggable
+              onDragStart={() => setDragIdx(i)}
+              onDragOver={(e) => e.preventDefault()}
+              onDrop={() => { if (dragIdx !== null) reorder(dragIdx, i); setDragIdx(null); }}
+              onDragEnd={() => setDragIdx(null)}
+              className={`flex items-center gap-3 rounded-md border border-border bg-card px-3 py-2.5 transition-opacity ${dragIdx === i ? "opacity-40" : ""}`}
+            >
+              <span className="cursor-grab active:cursor-grabbing text-muted-foreground select-none" title="Arrastrar">⠿</span>
+              <span className="font-mono text-xs text-muted-foreground w-5">{String(i + 1).padStart(2, "0")}</span>
+              <span className="flex-1 text-sm">{labelOf(k)}</span>
+              <Toggle checked={cfg.sections[k as keyof Cfg["sections"]]} onChange={(v) => setSec(k as keyof Cfg["sections"], v)}>
+                <span className="text-xs text-muted-foreground">{cfg.sections[k as keyof Cfg["sections"]] ? "Visible" : "Oculta"}</span>
+              </Toggle>
+            </div>
+          ))}
         </CardContent>
       </Card>
 

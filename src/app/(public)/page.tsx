@@ -108,7 +108,7 @@ export default async function Home() {
   </div></section>`;
 
   const servicios = !S.servicios ? "" : `
-  <section class="blk" id="servicios" style="padding-top:0"><div class="wrap">
+  <section class="blk" id="servicios"><div class="wrap">
     <p class="lbl rev">Qué automatizamos</p>
     <h2 class="rev">Menos tareas tuyas. <em>Más negocio.</em></h2>
     <p class="sec-lede rev">Cada bloque es un problema real que dejas de tocar. Conectado a lo que ya usas.</p>
@@ -123,7 +123,7 @@ export default async function Home() {
   </div></section>`;
 
   const como = !S.como ? "" : `
-  <section class="blk" id="como" style="padding-top:0"><div class="wrap">
+  <section class="blk" id="como"><div class="wrap">
     <p class="lbl rev">Por qué nosotros</p>
     <h2 class="rev">Ingeniería de verdad, <em>trato de cofundador</em>.</h2>
     <div class="pillars">
@@ -134,7 +134,7 @@ export default async function Home() {
   </div></section>`;
 
   const productos = !S.productos ? "" : `
-  <section class="blk" id="productos" style="padding-top:0"><div class="wrap">
+  <section class="blk" id="productos"><div class="wrap">
     <p class="lbl rev">Casos reales</p>
     <h2 class="rev">Sistemas propios, <em>funcionando ahora</em>.</h2>
     <p class="sec-lede rev">No son demos: son productos en producción. La prueba de que lo que prometemos, se entrega.</p>
@@ -155,7 +155,10 @@ export default async function Home() {
     <span class="mono">hola@praxialabs.com</span>
   </div></div></div>`;
 
-  const html = hero + problema + servicios + como + productos + contacto + foot;
+  // Secciones en el orden configurado desde admin (cada una ya es "" si está oculta)
+  const secMap: Record<string, string> = { problema, servicios, como, productos, contacto };
+  const body = cfg.sectionOrder.map((k) => secMap[k] ?? "").join("");
+  const html = hero + body + foot;
 
   const styleVars = { "--cyan": cfg.accent, "--blue": cfg.accentBlue } as React.CSSProperties;
 

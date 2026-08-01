@@ -87,7 +87,7 @@
 .lx .trust .item .mono { color: var(--cyan); }
 
 /* section shell */
-.lx section.blk { padding: clamp(56px, 8vw, 112px) 0; position: relative; }
+.lx section.blk { padding: clamp(40px, 6vw, 84px) 0; position: relative; }
 .lx .lbl { font-family: ui-monospace, monospace; font-size: 11.5px; letter-spacing: .2em; text-transform: uppercase; color: var(--cyan); margin: 0 0 14px; display: flex; align-items: center; gap: 12px; }
 .lx .lbl::before { content: ""; width: 26px; height: 1px; background: var(--cyan); }
 .lx h2 { font-size: clamp(28px, 4vw, 48px); font-weight: 780; letter-spacing: -.03em; margin: 0 0 16px; text-wrap: balance; max-width: 20ch; }
