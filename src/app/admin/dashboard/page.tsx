@@ -6,7 +6,7 @@ import { VisitorsTable } from "@/components/admin/visitors-table";
 import { DeviceChart } from "@/components/admin/device-chart";
 import { AnalyticsAnalysis } from "@/components/admin/analytics-analysis";
 
-
+export const dynamic = "force-dynamic";
 
 export default async function DashboardPage() {
     const stats = await getRealDashboardStats();
