@@ -12,7 +12,7 @@ export function StatsCards({ stats }: StatsCardsProps) {
     {
       title: "Visitantes Hoy",
       value: stats.visitorsToday.toLocaleString("es"),
-      change: "+12%",
+      change: null,
       icon: Eye,
       gradient: "from-blue-500/20 to-blue-600/5",
       iconColor: "text-blue-400",
@@ -31,7 +31,7 @@ export function StatsCards({ stats }: StatsCardsProps) {
     {
       title: "Ingresos Mes",
       value: `${stats.revenueMonth.toLocaleString("es")}€`,
-      change: "+23%",
+      change: null,
       icon: DollarSign,
       gradient: "from-green-500/20 to-green-600/5",
       iconColor: "text-green-400",
@@ -40,7 +40,7 @@ export function StatsCards({ stats }: StatsCardsProps) {
     {
       title: "Conversión",
       value: `${stats.conversionRate}%`,
-      change: "+0.5%",
+      change: null,
       icon: TrendingUp,
       gradient: "from-purple-500/20 to-purple-600/5",
       iconColor: "text-purple-400",
@@ -49,7 +49,7 @@ export function StatsCards({ stats }: StatsCardsProps) {
     {
       title: "Visitantes Mes",
       value: stats.visitorsMonth.toLocaleString("es"),
-      change: "+18%",
+      change: null,
       icon: Users,
       gradient: "from-cyan-500/20 to-cyan-600/5",
       iconColor: "text-cyan-400",
@@ -60,7 +60,7 @@ export function StatsCards({ stats }: StatsCardsProps) {
       value: stats.avgSessionDuration > 0
         ? `${Math.floor(stats.avgSessionDuration / 60)}m ${stats.avgSessionDuration % 60}s`
         : "—",
-      change: "+30s",
+      change: null,
       icon: Clock,
       gradient: "from-amber-500/20 to-amber-600/5",
       iconColor: "text-amber-400",
@@ -69,7 +69,7 @@ export function StatsCards({ stats }: StatsCardsProps) {
     {
       title: "Rebote",
       value: stats.bounceRate > 0 ? `${stats.bounceRate}%` : "—",
-      change: "-2.1%",
+      change: null,
       icon: MousePointerClick,
       gradient: "from-red-500/20 to-red-600/5",
       iconColor: "text-red-400",
@@ -110,23 +110,25 @@ export function StatsCards({ stats }: StatsCardsProps) {
             </div>
             <div className="flex items-end gap-2">
               <p className="text-2xl font-bold tracking-tight">{card.value}</p>
-              <span
-                className={`text-xs font-medium mb-0.5 ${
-                  card.pulse
-                    ? "text-emerald-400 flex items-center gap-1.5"
-                    : card.change.startsWith("-")
-                    ? "text-red-400"
-                    : "text-emerald-400"
-                }`}
-              >
-                {card.pulse && (
-                  <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400" />
-                  </span>
-                )}
-                {card.change}
-              </span>
+              {card.change && (
+                <span
+                  className={`text-xs font-medium mb-0.5 ${
+                    card.pulse
+                      ? "text-emerald-400 flex items-center gap-1.5"
+                      : card.change.startsWith("-")
+                      ? "text-red-400"
+                      : "text-emerald-400"
+                  }`}
+                >
+                  {card.pulse && (
+                    <span className="relative flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400" />
+                    </span>
+                  )}
+                  {card.change}
+                </span>
+              )}
             </div>
           </div>
         </div>
