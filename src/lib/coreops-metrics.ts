@@ -14,10 +14,12 @@ const FETCH_TIMEOUT_MS = 4000;
 
 export interface InternalMetrics {
   rps: number;
-  latencyP50: number;
-  latencyP95: number;
-  latencyP99: number;
-  errorRate: number;
+  /** null = el servicio no mide latencia (p.ej. solo cuenta peticiones desde middleware). */
+  latencyP50: number | null;
+  latencyP95: number | null;
+  latencyP99: number | null;
+  /** null = el servicio no mide tasa de error. */
+  errorRate: number | null;
   cacheBackend: string;
   cacheHitRatio: number;
   jobsTotal: number;
@@ -88,10 +90,10 @@ function parseInternal(body: unknown): InternalMetrics | null {
   const hasCache = !!b.cache;
   return {
     rps: b.traffic?.rps ?? 0,
-    latencyP50: b.traffic?.latency_ms?.p50 ?? 0,
-    latencyP95: b.traffic?.latency_ms?.p95 ?? 0,
-    latencyP99: b.traffic?.latency_ms?.p99 ?? 0,
-    errorRate: b.traffic?.error_rate ?? 0,
+    latencyP50: b.traffic?.latency_ms?.p50 ?? null,
+    latencyP95: b.traffic?.latency_ms?.p95 ?? null,
+    latencyP99: b.traffic?.latency_ms?.p99 ?? null,
+    errorRate: b.traffic?.error_rate ?? null,
     cacheBackend: b.cache?.backend ?? "n/a",
     cacheHitRatio: b.cache?.hit_ratio ?? 0,
     jobsTotal: b.jobs?.total ?? 0,

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { after } from "next/server";
 import { verifyToken, SESSION_COOKIE } from "@/lib/auth/session";
 import { checkRateLimit, isMaliciousBot, logThreatAwait } from "@/lib/security-logger";
+import { recordApiHit } from "@/lib/self-metrics";
 
 function getClientIP(req: NextRequest): string {
   return (
@@ -87,9 +88,17 @@ export async function proxy(request: NextRequest) {
     }
   }
 
+  // ─── 4. Auto-métricas: cuenta peticiones de API que llegan hasta aquí ───
+  if (pathname.startsWith("/api/")) {
+    recordApiHit();
+  }
+
   return NextResponse.next();
 }
 
+// Next 16 "Proxy" (este fichero) corre siempre en Node.js — comparte
+// proceso/módulos con los route handlers, así self-metrics.ts puede
+// acumular en memoria y /api/metrics/self leerlo.
 export const config = {
   matcher: ["/admin/:path*", "/login", "/api/:path*"],
 };

@@ -38,24 +38,29 @@ export const MONITORED_SERVICES: MonitoredService[] = [
     healthPath: "/v1/metrics",
   },
   {
-    // No expone métricas internas, pero su healthPath es un chivato de la
-    // cadena entera: /api/backend/status es el proxy de Next reenviando al
-    // backend VERA por el túnel Cloudflare con el token compartido. Solo da
-    // 200 si funcionan Vercel + proxy + túnel + backend + token; si el túnel
-    // o el backend local caen, responde 502 y el panel lo marca caído.
+    // /api/backend/{status,metrics} es el proxy de Next reenviando al backend
+    // VERA (Flask) por el túnel Cloudflare con el token compartido — exento
+    // de sesión de usuario a propósito (son sondas de solo lectura, sin datos
+    // de residentes/negocio). Solo dan 200 si funcionan Vercel + proxy +
+    // túnel + backend + token; si el túnel o el backend caen, 502/401 y el
+    // panel lo marca caído. metrics trae rps/latencia reales (ventana móvil
+    // en memoria del propio backend); sin capa de caché, así que sin hit ratio.
     id: "adminapp",
     name: "AdminApp · VERA",
     url: strip(process.env.ADMINAPP_URL || "https://adminapp.praxialabs.com"),
-    metricsPath: "",
+    metricsPath: "/api/backend/metrics",
     healthPath: "/api/backend/status",
   },
   {
-    // La propia web pública de Praxia Labs (Vercel). Blackbox up/down + latencia
-    // contra /api/health (endpoint ligero). No expone métricas internas.
+    // La propia web pública de Praxia Labs (Vercel). /api/metrics/self cuenta
+    // peticiones a /api/* desde proxy.ts (rps real); no mide latencia/error
+    // rate porque el middleware de Next no ve la respuesta final del route
+    // handler (a diferencia de CORE OPS/VERA, que sí miden su propio
+    // request/response completo). Fallback a blackbox si ese endpoint falla.
     id: "praxia-web",
     name: "Praxia Labs Web",
     url: strip(process.env.PRAXIA_WEB_URL || "https://praxialabs.com"),
-    metricsPath: "",
+    metricsPath: "/api/metrics/self",
     healthPath: "/api/health",
   },
 ];

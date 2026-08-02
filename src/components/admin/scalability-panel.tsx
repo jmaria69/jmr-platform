@@ -36,9 +36,9 @@ function ServiceCard({ svc }: { svc: ServiceSnapshot }) {
       </div>
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         <Metric icon={<Activity className="h-3.5 w-3.5" />} label="Throughput" value={m ? `${m.rps}` : "—"} sub="req/s" />
-        <Metric icon={<Gauge className="h-3.5 w-3.5" />} label="Lat. p95" value={m ? `${m.latencyP95} ms` : "—"} sub={m ? `p99 ${m.latencyP99}` : "sin métricas"} tone={m && m.latencyP95 > 300 ? "amber" : "purple"} />
+        <Metric icon={<Gauge className="h-3.5 w-3.5" />} label="Lat. p95" value={m?.latencyP95 != null ? `${m.latencyP95} ms` : "n/a"} sub={m?.latencyP99 != null ? `p99 ${m.latencyP99}` : "sin medir"} tone={m?.latencyP95 != null && m.latencyP95 > 300 ? "amber" : "purple"} />
         <Metric icon={<Database className="h-3.5 w-3.5" />} label="Hit ratio" value={m?.hasCache ? `${(m.cacheHitRatio * 100).toFixed(1)}%` : "n/a"} sub={m?.hasCache ? m.cacheBackend : "sin caché"} tone="green" />
-        <Metric icon={<Zap className="h-3.5 w-3.5" />} label="Error rate" value={m ? `${(m.errorRate * 100).toFixed(2)}%` : "—"} tone={m && m.errorRate > 0.01 ? "red" : "green"} />
+        <Metric icon={<Zap className="h-3.5 w-3.5" />} label="Error rate" value={m?.errorRate != null ? `${(m.errorRate * 100).toFixed(2)}%` : "n/a"} tone={m?.errorRate != null && m.errorRate > 0.01 ? "red" : "green"} />
       </div>
     </div>
   );
