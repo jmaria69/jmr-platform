@@ -46,7 +46,7 @@ export function ContactForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-4" suppressHydrationWarning>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label className="block text-xs font-semibold text-gray-400 mb-1.5 uppercase tracking-wider">
@@ -58,6 +58,7 @@ export function ContactForm() {
             value={form.nombre}
             onChange={(e) => setForm((f) => ({ ...f, nombre: e.target.value }))}
             required
+            suppressHydrationWarning
             className="w-full px-4 py-3 rounded-lg bg-white/5 border border-purple-500/30 text-white placeholder-gray-500 focus:border-purple-500 focus:outline-none transition"
           />
         </div>
@@ -71,6 +72,7 @@ export function ContactForm() {
             value={form.email}
             onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
             required
+            suppressHydrationWarning
             className="w-full px-4 py-3 rounded-lg bg-white/5 border border-purple-500/30 text-white placeholder-gray-500 focus:border-purple-500 focus:outline-none transition"
           />
         </div>
@@ -84,6 +86,7 @@ export function ContactForm() {
           placeholder="Nombre de tu empresa (opcional)"
           value={form.empresa}
           onChange={(e) => setForm((f) => ({ ...f, empresa: e.target.value }))}
+          suppressHydrationWarning
           className="w-full px-4 py-3 rounded-lg bg-white/5 border border-purple-500/30 text-white placeholder-gray-500 focus:border-purple-500 focus:outline-none transition"
         />
       </div>
@@ -95,6 +98,7 @@ export function ContactForm() {
           value={form.proyecto}
           onChange={(e) => setForm((f) => ({ ...f, proyecto: e.target.value }))}
           required
+          suppressHydrationWarning
           className="w-full px-4 py-3 rounded-lg bg-background text-foreground border border-purple-500/30 focus:border-purple-500 focus:outline-none transition"
         >
           <option className="bg-background text-foreground" value="Automatizacion de procesos">Automatización de procesos</option>
@@ -114,6 +118,7 @@ export function ContactForm() {
           onChange={(e) => setForm((f) => ({ ...f, mensaje: e.target.value }))}
           required
           rows={4}
+          suppressHydrationWarning
           className="w-full px-4 py-3 rounded-lg bg-white/5 border border-purple-500/30 text-white placeholder-gray-500 focus:border-purple-500 focus:outline-none transition resize-none"
         />
       </div>

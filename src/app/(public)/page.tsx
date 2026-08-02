@@ -26,6 +26,17 @@ function esc(s: string): string {
   );
 }
 
+/** Solo deja pasar http(s) y rutas relativas — evita esquemas tipo javascript: en campos editables desde admin. */
+function safeUrl(s: string | null | undefined): string {
+  if (!s) return "";
+  try {
+    const u = new URL(s, "https://praxialabs.com");
+    return u.protocol === "http:" || u.protocol === "https:" ? s : "";
+  } catch {
+    return "";
+  }
+}
+
 export default async function Home() {
   const [all, cfg] = await Promise.all([findAllProjects(), getHomeConfig()]);
   const chosen = all.filter((p) => p.showOnHome).slice(0, 8);
@@ -34,10 +45,14 @@ export default async function Home() {
   const prods = featured
     .map((p) => {
       const status = STATUS[p.status] || "EN PRODUCCIÓN";
-      const img = p.image
-        ? `<div class="nimg"><img src="${esc(p.image)}" alt="${esc(p.name)}" loading="lazy" onerror="this.parentElement.style.display='none'"></div>`
-        : "";
-      const link = p.url ? `<a class="nlink" href="${esc(p.url)}" target="_blank" rel="noopener noreferrer">Ver proyecto &rarr;</a>` : "";
+      const safeImage = safeUrl(p.image);
+      const safeLink = safeUrl(p.url);
+      const initial = esc((p.name.trim().charAt(0) || "?").toUpperCase());
+      const fallback = `<span class="nimg-fb" style="color:${esc(p.color)};background:${esc(p.color)}20">${initial}</span>`;
+      const img = safeImage
+        ? `<div class="nimg">${fallback}<img src="${esc(safeImage)}" alt="${esc(p.name)}" loading="lazy" onerror="this.style.display='none'"></div>`
+        : `<div class="nimg">${fallback}</div>`;
+      const link = safeLink ? `<a class="nlink" href="${esc(safeLink)}" target="_blank" rel="noopener noreferrer">Ver proyecto &rarr;</a>` : "";
       return `
         <div class="nrow rev">
           <div class="nnode"></div>

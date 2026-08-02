@@ -58,16 +58,27 @@ export function HomeConfigForm() {
 
   if (!cfg) return <p className="text-muted-foreground">Cargando configuración…</p>;
 
-  const set = <K extends keyof Cfg>(k: K, v: Cfg[K]) => setCfg({ ...cfg, [k]: v });
-  const setHero = (k: keyof Cfg["hero"], v: string) => setCfg({ ...cfg, hero: { ...cfg.hero, [k]: v } });
-  const setSec = (k: keyof Cfg["sections"], v: boolean) => setCfg({ ...cfg, sections: { ...cfg.sections, [k]: v } });
-  const setSpark = (i: number, v: string) => { const s = [...cfg.sparkColors]; s[i] = v; set("sparkColors", s); };
+  const set = <K extends keyof Cfg>(k: K, v: Cfg[K]) => setCfg((prev) => (prev ? { ...prev, [k]: v } : prev));
+  const setHero = (k: keyof Cfg["hero"], v: string) =>
+    setCfg((prev) => (prev ? { ...prev, hero: { ...prev.hero, [k]: v } } : prev));
+  const setSec = (k: keyof Cfg["sections"], v: boolean) =>
+    setCfg((prev) => (prev ? { ...prev, sections: { ...prev.sections, [k]: v } } : prev));
+  const setSpark = (i: number, v: string) =>
+    setCfg((prev) => {
+      if (!prev) return prev;
+      const s = [...prev.sparkColors];
+      s[i] = v;
+      return { ...prev, sparkColors: s };
+    });
   const reorder = (from: number, to: number) => {
     if (from === to || from < 0 || to < 0) return;
-    const o = [...cfg.sectionOrder];
-    const [m] = o.splice(from, 1);
-    o.splice(to, 0, m);
-    set("sectionOrder", o);
+    setCfg((prev) => {
+      if (!prev) return prev;
+      const o = [...prev.sectionOrder];
+      const [m] = o.splice(from, 1);
+      o.splice(to, 0, m);
+      return { ...prev, sectionOrder: o };
+    });
   };
   const labelOf = (k: string) => SECTIONS.find(([kk]) => kk === k)?.[1] ?? k;
 
