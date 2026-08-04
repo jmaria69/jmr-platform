@@ -36,7 +36,9 @@ Durante la sesión de `/verify` de esta rama usé `puppeteer-core` apuntando a u
 Para producción: `puppeteer-core` + [`@sparticuz/chromium`](https://github.com/Sparticuz/chromium) (build de Chromium comprimido para Lambda/Vercel, paquete npm real). Nuevas dependencias en `package.json`. El route handler:
 
 1. `PATCH /api/projects/[id]/screenshot` (requiere sesión admin, mismo patrón que el resto de `/api/projects/[id]`).
-2. Lanza Chromium vía `@sparticuz/chromium`, navega a `project.url`, viewport 1280×800, espera `networkidle`-equivalente con timeout corto (8-10 s — el límite de función serverless manda).
+2. Lanza Chromium vía `@sparticuz/chromium`, navega a `project.url`, viewport 1280×800, espera `networkidle`-equivalente con timeout corto.
+
+   **Riesgo abierto, a confirmar en el plan:** el timeout real depende del plan de Vercel — Hobby limita funciones serverless a 10 s (justo para lanzar Chromium + navegar + capturar, puede quedarse corto con un proyecto lento), Pro permite hasta 60 s. Verificar el plan actual antes de fijar el timeout; si es Hobby, puede hacer falta `maxDuration` explícito o aceptar que algunos proyectos lentos fallen por tiempo.
 3. Captura PNG, sube a Vercel Blob (`BLOB_READ_WRITE_TOKEN` ya configurado): `put(\`projects/${id}-${Date.now()}.png\`, buffer, { access: "public" })`.
 4. Actualiza `project.image` con la URL del blob devuelta.
 
