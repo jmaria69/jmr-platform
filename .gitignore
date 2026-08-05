@@ -67,3 +67,6 @@ next-env.d.ts
 
 # graphify (artefacto local, 6.8M)
 /graphify-out
+
+# worktrees locales (subagent-driven-development, etc.)
+/.worktrees
