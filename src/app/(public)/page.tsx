@@ -4,6 +4,7 @@ import { findAllProjects } from "@/lib/repositories/projects.repository";
 import { getHomeConfig } from "@/lib/home-config";
 import { HomeFx } from "@/components/public/home-fx";
 import { ContactForm } from "@/components/public/contact-form";
+import { buildNeuralRowHtml } from "./neural-timeline";
 
 export const dynamic = "force-dynamic";
 
@@ -13,12 +14,6 @@ export const metadata: Metadata = {
     "Automatización a medida con agentes de IA. Diagnóstico de 15 min, operativo en 48 h. Sistemas propios en producción, no plantillas.",
 };
 
-const STATUS: Record<string, string> = {
-  production: "EN PRODUCCIÓN",
-  beta: "BETA",
-  development: "EN DESARROLLO",
-};
-
 function esc(s: string): string {
   return (s || "").replace(
     /[&<>"]/g,
@@ -26,48 +21,12 @@ function esc(s: string): string {
   );
 }
 
-/** Solo deja pasar http(s) y rutas relativas — evita esquemas tipo javascript: en campos editables desde admin. */
-function safeUrl(s: string | null | undefined): string {
-  if (!s) return "";
-  try {
-    const u = new URL(s, "https://praxialabs.com");
-    return u.protocol === "http:" || u.protocol === "https:" ? s : "";
-  } catch {
-    return "";
-  }
-}
-
 export default async function Home() {
   const [all, cfg] = await Promise.all([findAllProjects(), getHomeConfig()]);
   const chosen = all.filter((p) => p.showOnHome).slice(0, 8);
   const featured = chosen.length ? chosen : all.slice(0, 6);
 
-  const prods = featured
-    .map((p) => {
-      const status = STATUS[p.status] || "EN PRODUCCIÓN";
-      const safeImage = safeUrl(p.image);
-      const safeLink = safeUrl(p.url);
-      const initial = esc((p.name.trim().charAt(0) || "?").toUpperCase());
-      const fallback = `<span class="nimg-fb" style="color:${esc(p.color)};background:${esc(p.color)}20">${initial}</span>`;
-      const img = safeImage
-        ? `<div class="nimg">${fallback}<img src="${esc(safeImage)}" alt="${esc(p.name)}" loading="lazy" onerror="this.style.display='none'"></div>`
-        : `<div class="nimg">${fallback}</div>`;
-      const link = safeLink ? `<a class="nlink" href="${esc(safeLink)}" target="_blank" rel="noopener noreferrer">Ver proyecto &rarr;</a>` : "";
-      return `
-        <div class="nrow rev">
-          <div class="nnode"></div>
-          <div class="ncard">
-            ${img}
-            <div>
-              <div class="ntag">${esc(p.category)}<span class="nst">&#9679; ${status}</span></div>
-              <h3>${esc(p.name)}</h3>
-              <p>${esc(p.description)}</p>
-              ${link}
-            </div>
-          </div>
-        </div>`;
-    })
-    .join("");
+  const prods = featured.map((p, i) => buildNeuralRowHtml(p, i)).join("");
 
   const H = cfg.hero;
   const S = cfg.sections;
