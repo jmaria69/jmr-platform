@@ -150,7 +150,6 @@
 .lx .nseg path {
   stroke-dasharray: 260;
   stroke-dashoffset: 260;
-  vector-effect: non-scaling-stroke;
   transition: stroke-dashoffset 0.9s ease;
 }
 .lx .nrow.rev.in .nseg path {
@@ -188,6 +187,10 @@
   .lx .nrow .ncard { grid-column: 1; }
   .lx .nrow .ncard::after { display: none; }
   .lx .nseg { left: -25px; }
+  /* scaleX(--neural-amp) también adelgaza el trazo; se compensa aquí en vez de
+     con vector-effect: non-scaling-stroke, que rompe el dash-offset de la
+     animación de revelado (mide en unidades de viewport, no de trazado). */
+  .lx .nseg path { stroke-width: 20; }
 }
 
 /* final */
