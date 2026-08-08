@@ -136,7 +136,6 @@
 
 /* proyectos — flujo vertical "red neuronal" */
 .lx .neural { position: relative; margin-top: 46px; padding: 12px 0; }
-.lx .nrow { position: relative; }
 .lx .nseg {
   position: absolute;
   left: 50%;
@@ -151,13 +150,11 @@
 .lx .nseg path {
   stroke-dasharray: 260;
   stroke-dashoffset: 260;
+  vector-effect: non-scaling-stroke;
   transition: stroke-dashoffset 0.9s ease;
 }
 .lx .nrow.rev.in .nseg path {
   stroke-dashoffset: 0;
-}
-@media (max-width: 760px) {
-  .lx { --neural-amp: 0.15; }
 }
 .lx .nrow { position: relative; display: grid; grid-template-columns: 1fr 52px 1fr; align-items: center; margin: 30px 0; }
 .lx .nnode { grid-column: 2; justify-self: center; width: 15px; height: 15px; border-radius: 50%; background: var(--cyan); z-index: 2;
@@ -185,11 +182,12 @@
 .lx .ncard .nst { font-family: ui-monospace, monospace; font-size: 10px; color: var(--green); letter-spacing: .06em; margin-left: 8px; }
 
 @media (max-width: 760px) {
-  .lx .neural::before { left: 15px; }
+  .lx { --neural-amp: 0.15; }
   .lx .nrow { grid-template-columns: 1fr; margin: 20px 0 20px 40px; }
   .lx .nnode { position: absolute; left: -33px; top: 30px; grid-column: 1; }
   .lx .nrow .ncard { grid-column: 1; }
   .lx .nrow .ncard::after { display: none; }
+  .lx .nseg { left: -25px; }
 }
 
 /* final */

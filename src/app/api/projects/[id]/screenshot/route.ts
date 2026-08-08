@@ -9,6 +9,10 @@ interface RouteParams {
   params: Promise<{ id: string }>;
 }
 
+// Cubre lanzamiento de Chromium en frío + navegación (NAV_TIMEOUT_MS) con margen;
+// 60s cabe tanto en el techo de Hobby como en el de Pro sin asumir el plan de Vercel.
+export const maxDuration = 60;
+
 async function requireSession(request: NextRequest) {
   const token = request.cookies.get(SESSION_COOKIE)?.value;
   if (!token) return null;
