@@ -1,6 +1,6 @@
 "use client";
 
-import { Trash2, Users, Star, DollarSign, AlertCircle, Loader2, GripVertical, Eye } from "lucide-react";
+import { Trash2, Users, Star, DollarSign, AlertCircle, Loader2, GripVertical, Eye, Camera } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -28,10 +28,26 @@ interface ProjectsManagerProps {
 const STORAGE_KEY = "praxia-projects-order";
 
 export function ProjectsManager({ isReadOnly = false }: ProjectsManagerProps) {
-  const { projects, isLoading, error, addProject, updateProject, deleteProject, toggleStatus } =
+  const { projects, isLoading, error, addProject, updateProject, deleteProject, toggleStatus, captureScreenshot } =
     useProjects();
   const [deleteTarget, setDeleteTarget] = useState<Project | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [capturingIds, setCapturingIds] = useState<Set<string>>(new Set());
+
+  async function handleCapture(id: string) {
+    setCapturingIds((prev) => new Set(prev).add(id));
+    try {
+      await captureScreenshot(id);
+    } catch (err) {
+      console.error("[captureScreenshot] failed:", err instanceof Error ? err.message : String(err));
+    } finally {
+      setCapturingIds((prev) => {
+        const next = new Set(prev);
+        next.delete(id);
+        return next;
+      });
+    }
+  }
 
   // Conteo de vistas por proyecto (analítica interna)
   const [viewCounts, setViewCounts] = useState<Record<string, { total: number; last7d: number; uniques: number }>>({});
@@ -273,6 +289,21 @@ export function ProjectsManager({ isReadOnly = false }: ProjectsManagerProps) {
                     )}
                     {!isReadOnly && (
                       <>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 text-muted-foreground hover:text-cyan-400"
+                          title="Actualizar captura"
+                          aria-label="Actualizar captura"
+                          disabled={capturingIds.has(project.id)}
+                          onClick={() => handleCapture(project.id)}
+                        >
+                          {capturingIds.has(project.id) ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                          ) : (
+                            <Camera className="h-4 w-4" />
+                          )}
+                        </Button>
                         <EditProjectDialog project={project} onSave={updateProject} />
                         <Button
                           variant="ghost"
