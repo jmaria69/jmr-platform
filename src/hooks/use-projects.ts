@@ -10,6 +10,7 @@ interface UseProjectsReturn {
   addProject: (data: Omit<Project, "id">) => Promise<void>;
   updateProject: (id: string, data: Partial<Omit<Project, "id">>) => Promise<void>;
   deleteProject: (id: string) => Promise<void>;
+  captureScreenshot: (id: string) => Promise<void>;
   toggleStatus: (id: string) => void;
   refresh: () => Promise<void>;
 }
@@ -124,6 +125,16 @@ export function useProjects(): UseProjectsReturn {
     }
   }, []);
 
+  const captureScreenshot = useCallback(async (id: string) => {
+    const res = await fetch(`/api/projects/${id}/screenshot`, { method: "PATCH" });
+    if (!res.ok) {
+      const json = await res.json().catch(() => null);
+      throw new Error(json?.error?.message || "No se pudo capturar la pantalla");
+    }
+    const json = await res.json();
+    setProjects((prev) => prev.map((p) => (p.id === id ? json.data : p)));
+  }, []);
+
   const toggleStatus = useCallback((id: string) => {
     setProjects((prev) =>
       prev.map((p) => {
@@ -156,6 +167,7 @@ export function useProjects(): UseProjectsReturn {
     addProject,
     updateProject,
     deleteProject,
+    captureScreenshot,
     toggleStatus,
     refresh: fetchProjects,
   };
