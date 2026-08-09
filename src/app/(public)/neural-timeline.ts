@@ -56,6 +56,9 @@ export function buildNeuralRowHtml(p: Project, _index: number): string {
   const link = safeLink
     ? `<a class="nlink" href="${esc(safeLink)}" target="_blank" rel="noopener noreferrer">Ver proyecto &rarr;</a>`
     : "";
+  const tech = p.tech.length
+    ? `<div class="ntech">${p.tech.map((t) => `<span class="ntech-pill">${esc(t)}</span>`).join("")}</div>`
+    : "";
   return `
         <div class="nrow rev">
           ${neuralSegmentSvg(p.id)}
@@ -66,6 +69,7 @@ export function buildNeuralRowHtml(p: Project, _index: number): string {
               <div class="ntag">${esc(p.category)}<span class="nst">&#9679; ${status}</span></div>
               <h3>${esc(p.name)}</h3>
               <p>${esc(p.description)}</p>
+              ${tech}
               ${link}
             </div>
           </div>

@@ -71,4 +71,21 @@ describe("buildNeuralRowHtml", () => {
     const html = buildNeuralRowHtml(baseProject, 0);
     expect(html).toContain('<div class="ncard-body">');
   });
+
+  it("incluye una pill por cada tecnología del stack", () => {
+    const html = buildNeuralRowHtml({ ...baseProject, tech: ["React", "Node.js"] }, 0);
+    expect(html).toContain('<span class="ntech-pill">React</span>');
+    expect(html).toContain('<span class="ntech-pill">Node.js</span>');
+  });
+
+  it("no genera el bloque de tech si el proyecto no tiene stack", () => {
+    const html = buildNeuralRowHtml({ ...baseProject, tech: [] }, 0);
+    expect(html).not.toContain("ntech");
+  });
+
+  it("escapa los nombres de tecnología", () => {
+    const html = buildNeuralRowHtml({ ...baseProject, tech: ["<b>x</b>"] }, 0);
+    expect(html).not.toContain("<b>x</b>");
+    expect(html).toContain("&lt;b&gt;x&lt;/b&gt;");
+  });
 });

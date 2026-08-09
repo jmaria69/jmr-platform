@@ -21,6 +21,7 @@ html.ivory .lx .ed-bar { background: rgba(0,0,0,.02); }
 html.ivory .lx .ed-row { background: rgba(0,0,0,.025); }
 html.ivory .lx .trust { background: rgba(0,0,0,.015); }
 html.ivory .lx .code .kw { color: #7c3aed; }
+html.ivory .lx .ncard .ntech-pill { background: rgba(0,0,0,.03); }
 
 .lx .mono { font-family: ui-monospace, "SF Mono", "JetBrains Mono", "Cascadia Code", Menlo, monospace; }
 .lx .wrap { max-width: 1220px; margin: 0 auto; padding: 0 clamp(20px, 4vw, 44px); }
@@ -190,7 +191,11 @@ html.ivory .lx .code .kw { color: #7c3aed; }
 .lx .ncard .ntag { font-family: ui-monospace, monospace; font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
 .lx .ncard h3 { font-size: 20px; font-weight: 720; margin: 6px 0 6px; letter-spacing: -.02em; }
 .lx .ncard p { font-size: 14px; color: var(--muted); margin: 0; }
-.lx .ncard .nlink { display: inline-flex; align-items: center; gap: 6px; margin-top: 12px; font-size: 13px; font-weight: 600; color: var(--cyan); }
+.lx .ncard .ntech { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+.lx .ncard .ntech-pill { font-family: ui-monospace, monospace; font-size: 10.5px; letter-spacing: .03em; color: var(--muted); background: rgba(255,255,255,.04); border: 1px solid var(--line); border-radius: 999px; padding: 4px 10px; }
+.lx .ncard .nlink { display: inline-flex; align-items: center; gap: 8px; margin-top: 16px; font-size: 12px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase;
+  color: #001417; background: linear-gradient(135deg, var(--cyan), var(--aqua)); padding: 10px 20px; border-radius: 999px; transition: transform .15s, box-shadow .2s; }
+.lx .ncard .nlink:hover { transform: translateY(-2px); box-shadow: 0 12px 28px -10px rgba(0,242,255,.5); }
 .lx .ncard .nst { font-family: ui-monospace, monospace; font-size: 10px; color: var(--green); letter-spacing: .06em; margin-left: 8px; }
 
 @media (max-width: 760px) {
