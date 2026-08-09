@@ -1,6 +1,6 @@
 "use client";
 
-import { Trash2, Users, Star, DollarSign, AlertCircle, Loader2, GripVertical, Eye, Camera } from "lucide-react";
+import { Trash2, Users, Star, DollarSign, AlertCircle, Loader2, GripVertical, Eye, Camera, Home, FlaskConical } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -271,6 +271,28 @@ export function ProjectsManager({ isReadOnly = false }: ProjectsManagerProps) {
                         <Badge variant="outline">{PROJECT_STATUS_LABELS[project.status]}</Badge>
                         <Badge variant="secondary" className="text-xs bg-white/5 border-white/10">
                           {project.category}
+                        </Badge>
+                        <Badge
+                          variant="outline"
+                          title="Visible en la portada"
+                          className={
+                            project.showOnHome
+                              ? "text-[10px] gap-1 bg-cyan-500/15 text-cyan-300 border-cyan-500/30"
+                              : "text-[10px] gap-1 text-muted-foreground/40 border-white/10"
+                          }
+                        >
+                          <Home className="h-3 w-3" /> Home
+                        </Badge>
+                        <Badge
+                          variant="outline"
+                          title="Visible en /laboratorio"
+                          className={
+                            project.showInLab
+                              ? "text-[10px] gap-1 bg-emerald-500/15 text-emerald-300 border-emerald-500/30"
+                              : "text-[10px] gap-1 text-muted-foreground/40 border-white/10"
+                          }
+                        >
+                          <FlaskConical className="h-3 w-3" /> Lab
                         </Badge>
                       </div>
                     </div>
