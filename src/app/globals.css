@@ -551,6 +551,22 @@ html.ivory .text-sky-400   { color: #0284c7 !important; }
 html.ivory .text-green-400 { color: #16a34a !important; }
 html.ivory .text-red-400   { color: #dc2626 !important; }
 
+/* Variantes dark: — el <html> lleva la clase "dark" fija (ver layout.tsx),
+   así que Tailwind las aplica siempre, tema aparte. Hay que neutralizarlas
+   también en marfil, igual que sus equivalentes sin prefijo de arriba. */
+html.ivory .dark\:text-white     { color: #1a1a2e !important; }
+html.ivory .dark\:text-gray-100  { color: #2a2a3e !important; }
+html.ivory .dark\:text-gray-200  { color: #3a3a50 !important; }
+html.ivory .dark\:text-gray-300  { color: #44445a !important; }
+html.ivory .dark\:text-gray-400  { color: #555570 !important; }
+html.ivory .dark\:text-gray-500  { color: #666688 !important; }
+html.ivory .dark\:text-cyan-300  { color: #0369a1 !important; }
+html.ivory .dark\:text-cyan-400  { color: #0284c7 !important; }
+html.ivory .dark\:text-purple-300 { color: #6d28d9 !important; }
+html.ivory .dark\:text-purple-400 { color: #7c3aed !important; }
+html.ivory .dark\:border-purple-500\/25 { border-color: rgba(109, 40, 217, 0.25) !important; }
+html.ivory .dark\:bg-\[\#0d0d2b\]\/80   { background-color: rgba(240, 240, 235, 0.85) !important; }
+
 /* Fondos de tarjetas oscuros → claros */
 html.ivory [class*="bg-slate-900"] { background-color: rgba(240, 240, 235, 0.85) !important; }
 html.ivory [class*="bg-slate-950"] { background-color: rgba(245, 245, 240, 0.75) !important; }

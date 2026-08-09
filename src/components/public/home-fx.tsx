@@ -21,6 +21,19 @@ const PALETTES: Record<string, Palette> = {
   hielo: { id: "hielo", layers: [["rgba(120,200,255,.18)", 10], ["rgba(190,233,255,.58)", 4.5], ["rgba(255,255,255,.95)", 1.6]], tip: "150,215,255" },
 };
 
+// Mismas paletas pero oscurecidas: en marfil el canvas cambia a mezcla
+// "multiply" (que oscurece sobre blanco en vez de "screen", que se funde
+// a blanco puro y desaparece), así que el rayo necesita tonos oscuros
+// para seguir siendo visible sobre fondo claro.
+const PALETTES_IVORY: Record<string, Palette> = {
+  fuego: { id: "fuego", layers: [["rgba(8,110,140,.22)", 10], ["rgba(200,70,10,.60)", 4.5], ["rgba(120,35,5,.95)", 1.6]], tip: "150,55,10" },
+  azul: { id: "azul", layers: [["rgba(37,60,170,.22)", 10], ["rgba(45,80,210,.60)", 4.5], ["rgba(20,35,110,.95)", 1.6]], tip: "25,45,140" },
+  lima: { id: "lima", layers: [["rgba(50,140,30,.20)", 10], ["rgba(65,170,40,.60)", 4.5], ["rgba(25,85,15,.95)", 1.6]], tip: "40,120,25" },
+  oro: { id: "oro", layers: [["rgba(180,110,10,.22)", 10], ["rgba(200,135,15,.60)", 4.5], ["rgba(115,72,5,.95)", 1.6]], tip: "150,100,10" },
+  magenta: { id: "magenta", layers: [["rgba(130,35,170,.20)", 10], ["rgba(160,45,190,.60)", 4.5], ["rgba(85,18,115,.95)", 1.6]], tip: "110,28,145" },
+  hielo: { id: "hielo", layers: [["rgba(25,100,170,.20)", 10], ["rgba(35,130,200,.60)", 4.5], ["rgba(12,65,115,.95)", 1.6]], tip: "20,88,140" },
+};
+
 export type FxProps = {
   enabled?: boolean;
   bolt?: string;
@@ -95,6 +108,10 @@ export function HomeFx({ fx }: { fx?: FxProps }) {
 
       const loop = () => {
         frame++;
+        const ivory = document.documentElement.classList.contains("ivory");
+        const activePal = ivory ? (PALETTES_IVORY[cfg.bolt] ?? PALETTES_IVORY.azul) : pal;
+        const blend = ivory ? "multiply" : "screen";
+        if (cv.style.mixBlendMode !== blend) cv.style.mixBlendMode = blend;
         cx.clearRect(0, 0, w, h);
         if (performance.now() - lastMove > 40 && trail.length && frame % 3 === 0) trail.shift();
         const moving = performance.now() - lastMove < 90;
@@ -103,7 +120,7 @@ export function HomeFx({ fx }: { fx?: FxProps }) {
           for (let k = 0; k < cnt; k++) { const ang = Math.random() * 6.283, spd = 1.8 + Math.random() * 4; sparks.push({ x: last.x, y: last.y, vx: Math.cos(ang) * spd, vy: Math.sin(ang) * spd - .2, life: 0, max: 22 + Math.random() * 24, col: pick() }); }
         }
         if (trail.length > 1) {
-          pal.layers.forEach(([color, width], li) => {
+          activePal.layers.forEach(([color, width], li) => {
             const scale = (li === 0 ? 0.6 : li === 1 ? 0.85 : 0.8) * cfg.thickness;
             cx.lineWidth = width * scale; cx.strokeStyle = color; cx.lineCap = "round"; cx.lineJoin = "round";
             cx.beginPath(); cx.moveTo(trail[0].x, trail[0].y);
@@ -116,7 +133,7 @@ export function HomeFx({ fx }: { fx?: FxProps }) {
             cx.stroke();
           });
           const tip = trail[trail.length - 1];
-          cx.fillStyle = "rgba(255,255,255,.95)"; cx.beginPath(); cx.arc(tip.x, tip.y, 2 * cfg.thickness, 0, 6.2832); cx.fill();
+          cx.fillStyle = ivory ? `rgba(${activePal.tip},.95)` : "rgba(255,255,255,.95)"; cx.beginPath(); cx.arc(tip.x, tip.y, 2 * cfg.thickness, 0, 6.2832); cx.fill();
         }
         for (let i = sparks.length - 1; i >= 0; i--) {
           const p = sparks[i]; p.life++; p.x += p.vx; p.y += p.vy; p.vy += .03; p.vx *= .99;

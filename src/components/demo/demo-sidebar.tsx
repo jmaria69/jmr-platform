@@ -21,6 +21,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarFooter,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import { PraxiaLabLogo } from "@/components/praxia-lab-logo";
 
@@ -34,6 +35,10 @@ const menuItems = [
 
 export function DemoSidebar() {
   const pathname = usePathname();
+  const { isMobile, setOpenMobile } = useSidebar();
+  const closeOnMobile = () => {
+    if (isMobile) setOpenMobile(false);
+  };
 
   return (
     <Sidebar className="border-r border-purple-500/20 glass">
@@ -62,7 +67,7 @@ export function DemoSidebar() {
                 <SidebarMenuItem key={item.href}>
                   <SidebarMenuButton
                     isActive={pathname === item.href || pathname.startsWith(item.href + "/")}
-                    render={<Link href={item.href} />}
+                    render={<Link href={item.href} onClick={closeOnMobile} />}
                   >
                     <item.icon className="h-4 w-4" />
                     <span>{item.label}</span>
@@ -77,7 +82,7 @@ export function DemoSidebar() {
       <SidebarFooter className="border-t border-purple-500/20 p-4 bg-slate-950/50 backdrop-blur-md">
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton render={<Link href="/" />}>
+            <SidebarMenuButton render={<Link href="/" onClick={closeOnMobile} />}>
               <ArrowLeft className="h-4 w-4" />
               <span>Volver al sitio</span>
             </SidebarMenuButton>
