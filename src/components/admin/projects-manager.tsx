@@ -232,11 +232,8 @@ export function ProjectsManager({ isReadOnly = false }: ProjectsManagerProps) {
             <div
               key={project.id}
               className="relative"
-              draggable={!isReadOnly}
-              onDragStart={() => onDragStart(index)}
               onDragOver={(e) => onDragOver(e, index)}
               onDrop={(e) => onDrop(e, index)}
-              onDragEnd={onDragEnd}
             >
               {/* Línea indicadora de inserción */}
               {isOver && (
@@ -261,6 +258,9 @@ export function ProjectsManager({ isReadOnly = false }: ProjectsManagerProps) {
                       <div
                         className="mt-0.5 cursor-grab active:cursor-grabbing text-muted-foreground/40 hover:text-muted-foreground transition-colors touch-none"
                         title="Arrastra para reordenar"
+                        draggable
+                        onDragStart={() => onDragStart(index)}
+                        onDragEnd={onDragEnd}
                       >
                         <GripVertical className="h-5 w-5" />
                       </div>
@@ -308,7 +308,7 @@ export function ProjectsManager({ isReadOnly = false }: ProjectsManagerProps) {
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="h-8 w-8 text-muted-foreground hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                          className="h-8 w-8 text-muted-foreground hover:text-red-500 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity"
                           onClick={() => setDeleteTarget(project)}
                         >
                           <Trash2 className="h-4 w-4" />
