@@ -84,6 +84,7 @@ export function EditProjectDialog({ project, onSave }: EditProjectDialogProps) {
         showInLab: form.showInLab,
         url: form.url.trim() || undefined,
         github: form.github.trim() || undefined,
+        videoUrl: form.videoUrl.trim() || undefined,
         metrics: {
           users: form.users ? Number(form.users) : undefined,
           revenue: form.revenue ? Number(form.revenue) : undefined,
@@ -308,6 +309,18 @@ export function EditProjectDialog({ project, onSave }: EditProjectDialogProps) {
             </div>
           </div>
 
+          <div className="space-y-2">
+            <Label htmlFor="edit-video">Vídeo de presentación</Label>
+            <Input
+              id="edit-video"
+              placeholder="/videos/mi-proyecto.mp4"
+              value={form.videoUrl}
+              onChange={(e) =>
+                setForm((p) => ({ ...p, videoUrl: e.target.value }))
+              }
+            />
+          </div>
+
           {/* Metrics */}
           <div className="grid grid-cols-3 gap-4">
             <div className="space-y-2">
@@ -412,6 +425,7 @@ function projectToForm(p: Project) {
     tech: [...p.tech],
     url: p.url || "",
     github: p.github || "",
+    videoUrl: p.videoUrl || "",
     users: p.metrics?.users?.toString() || "",
     revenue: p.metrics?.revenue?.toString() || "",
     rating: p.metrics?.rating?.toString() || "",

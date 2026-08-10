@@ -39,6 +39,7 @@ model Project {
   github           String?
   image            String
   color            String
+  videoUrl         String?   @map("video_url")
   metricsUsers     Int?
   metricsRevenue   Float?
   metricsRating    Float?

@@ -35,13 +35,65 @@ export default async function ProjectDetailPage({
     return (
         <section className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-12 sm:py-20">
             <ProjectViewTracker projectId={project.id} />
-            <Link href="/proyectos" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-6">
+            <Link href="/laboratorio" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-6">
                 <ArrowLeft className="h-4 w-4" />
                 Volver a proyectos
             </Link>
             <div className="rounded-2xl glass border-gradient p-8">
                 <h1 className="text-4xl font-bold mb-4">{project.name}</h1>
                 <p className="text-lg text-muted-foreground mb-6">{project.description}</p>
+
+                {project.tech.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mb-6">
+                        {project.tech.map((t) => (
+                            <Badge key={t} variant="secondary" className="text-sm px-3 py-1">
+                                {t}
+                            </Badge>
+                        ))}
+                    </div>
+                )}
+
+                {project.metrics && (
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+                        {project.metrics.users != null && (
+                            <div className="flex items-center gap-3 rounded-xl bg-white/5 p-4">
+                                <Users className="h-5 w-5 text-blue-500" />
+                                <div>
+                                    <p className="text-2xl font-bold">{project.metrics.users}</p>
+                                    <p className="text-xs text-muted-foreground">Usuarios activos</p>
+                                </div>
+                            </div>
+                        )}
+                        {project.metrics.rating != null && (
+                            <div className="flex items-center gap-3 rounded-xl bg-white/5 p-4">
+                                <Star className="h-5 w-5 text-amber-400" />
+                                <div>
+                                    <p className="text-2xl font-bold">{project.metrics.rating}</p>
+                                    <p className="text-xs text-muted-foreground">Rating</p>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                )}
+
+                {project.videoUrl && (
+                    <div className="mb-10">
+                        <h3 className="text-lg font-semibold mb-4">Vídeo de presentación</h3>
+                        <div className="relative w-full rounded-2xl overflow-hidden border border-white/10 bg-black aspect-video shadow-2xl">
+                            <video
+                                src={project.videoUrl}
+                                controls
+                                controlsList="nodownload"
+                                className="w-full h-full"
+                                preload="metadata"
+                                playsInline
+                            >
+                                Tu navegador no soporta vídeo HTML5.
+                            </video>
+                        </div>
+                    </div>
+                )}
+
                 <div className="flex gap-3">
                     {project.url && (
                         <a
@@ -60,7 +112,7 @@ export default async function ProjectDetailPage({
                             🔨 En preproducción
                         </span>
                     )}
-                    <Link href="/proyectos" className="px-6 py-3 rounded-xl bg-white/5 hover:bg-white/10 text-white font-semibold transition">
+                    <Link href="/laboratorio" className="px-6 py-3 rounded-xl bg-white/5 hover:bg-white/10 text-white font-semibold transition">
                         Otros proyectos
                     </Link>
                 </div>
