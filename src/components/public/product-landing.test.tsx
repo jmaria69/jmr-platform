@@ -33,6 +33,16 @@ describe("ProductLanding", () => {
     }
   });
 
+  it("enlaza a la app real en directo, distinta del CTA de conversión", () => {
+    for (const p of PRODUCTS) {
+      const { unmount } = render(<ProductLanding product={p} />);
+      const enlace = screen.getByRole("link", { name: /Ver la app en directo/i });
+      expect(enlace).toHaveAttribute("href", p.appUrl);
+      expect(enlace).toHaveAttribute("target", "_blank");
+      unmount();
+    }
+  });
+
   it("renderiza los hijos que se le pasan", () => {
     render(
       <ProductLanding product={siam}>

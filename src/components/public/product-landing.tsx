@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, ExternalLink } from "lucide-react";
 import type { Product } from "@/content/products";
 
 export function ProductLanding({
@@ -47,12 +47,23 @@ export function ProductLanding({
             </ul>
           )}
 
-          <Link
-            href={product.ctaHref}
-            className="inline-flex items-center gap-2 px-8 py-4 rounded-lg shimmer-btn font-semibold text-white transition-transform hover:scale-105"
-          >
-            {product.ctaTexto} <ArrowRight className="h-4 w-4" />
-          </Link>
+          <div className="flex flex-wrap items-center gap-4">
+            <Link
+              href={product.ctaHref}
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-lg shimmer-btn font-semibold text-white transition-transform hover:scale-105"
+            >
+              {product.ctaTexto} <ArrowRight className="h-4 w-4" />
+            </Link>
+            <a
+              href={product.appUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-lg border font-semibold transition-colors hover:bg-white/5"
+              style={{ borderColor: `${product.color}60`, color: product.color }}
+            >
+              Ver la app en directo <ExternalLink className="h-4 w-4" />
+            </a>
+          </div>
         </div>
       </section>
 

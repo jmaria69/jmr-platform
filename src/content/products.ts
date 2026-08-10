@@ -24,6 +24,8 @@ export type Product = {
   dolores: Dolor[];
   ctaTexto: string;
   ctaHref: string;
+  /** URL de la app real en producción — enlace secundario, distinto del CTA de conversión. */
+  appUrl: string;
   color: string;
   /** Solo SIAM lleva campaña activa: determina el peso visual en la home. */
   foco: boolean;
@@ -83,6 +85,7 @@ export const PRODUCTS: readonly Product[] = [
     ],
     ctaTexto: "Calcular mi exposición",
     ctaHref: "#calculadora",
+    appUrl: "https://siem.praxialabs.com",
     color: "#dc2626",
     foco: true,
     fuentes: [FUENTE_INCIBE, FUENTE_NIS2_PLAZO],
@@ -109,8 +112,9 @@ export const PRODUCTS: readonly Product[] = [
         texto: "No hay una cifra fiable de disponibilidad que enseñar a dirección.",
       },
     ],
-    ctaTexto: "Ver el panel en vivo",
+    ctaTexto: "Hablemos",
     ctaHref: "/contacto",
+    appUrl: "https://demcore.praxialabs.com",
     color: "#06b6d4",
     foco: false,
     fuentes: [],
@@ -140,8 +144,9 @@ export const PRODUCTS: readonly Product[] = [
           "Actas, circulares y el mismo correo respondido cuarenta veces se llevan las tardes que deberían ser de gestión.",
       },
     ],
-    ctaTexto: "Ver AdminApp",
+    ctaTexto: "Hablemos",
     ctaHref: "/contacto",
+    appUrl: "https://adminapp.praxialabs.com/presentation",
     color: "#6366f1",
     foco: false,
     fuentes: [FUENTE_MOROSIDAD],

@@ -54,6 +54,12 @@ describe("PRODUCTS", () => {
     }
   });
 
+  it("cada producto enlaza a una app real en https", () => {
+    for (const p of PRODUCTS) {
+      expect(p.appUrl).toMatch(/^https:\/\//);
+    }
+  });
+
   it("getProduct devuelve el producto por slug", () => {
     expect(getProduct("siam")?.slug).toBe("siam");
   });
