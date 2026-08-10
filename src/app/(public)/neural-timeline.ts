@@ -13,6 +13,17 @@ function esc(s: string): string {
   );
 }
 
+/**
+ * Proyectos con landing de presentación propia dentro del sitio — antes de
+ * saltar a la app externa, el visitante pasa primero por aquí. Debe reflejar
+ * `CON_LANDING` en `src/lib/laboratorio.ts`.
+ */
+const PRESENTATION_PATHS: Record<string, string> = {
+  siam: "/siam",
+  "admin-app": "/adminapp",
+  "crm-it": "/core-ops",
+};
+
 /** Solo deja pasar http(s) y rutas relativas — evita esquemas tipo javascript: en campos editables desde admin. */
 export function safeUrl(s: string | null | undefined): string {
   if (!s) return "";
@@ -47,14 +58,17 @@ function neuralSegmentSvg(rowId: string): string {
 export function buildNeuralRowHtml(p: Project, _index: number): string {
   const status = STATUS_LABELS[p.status] || "EN PRODUCCIÓN";
   const safeImage = safeUrl(p.image);
-  const safeLink = safeUrl(p.url);
+  const presentationPath = PRESENTATION_PATHS[p.id];
+  const safeLink = presentationPath || safeUrl(p.url);
   const initial = esc((p.name.trim().charAt(0) || "?").toUpperCase());
   const fallback = `<span class="nimg-fb" style="color:${esc(p.color)};background:${esc(p.color)}20">${initial}</span>`;
   const img = safeImage
     ? `<div class="nimg">${fallback}<img src="${esc(safeImage)}" alt="${esc(p.name)}" loading="lazy" onerror="this.style.display='none'"></div>`
     : `<div class="nimg">${fallback}</div>`;
   const link = safeLink
-    ? `<a class="nlink" href="${esc(safeLink)}" target="_blank" rel="noopener noreferrer">Ver proyecto &rarr;</a>`
+    ? presentationPath
+      ? `<a class="nlink" href="${esc(safeLink)}">Ver proyecto &rarr;</a>`
+      : `<a class="nlink" href="${esc(safeLink)}" target="_blank" rel="noopener noreferrer">Ver proyecto &rarr;</a>`
     : "";
   const tech = p.tech.length
     ? `<div class="ntech">${p.tech.map((t) => `<span class="ntech-pill">${esc(t)}</span>`).join("")}</div>`
