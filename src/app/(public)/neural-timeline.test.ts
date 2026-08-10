@@ -56,10 +56,27 @@ describe("buildNeuralRowHtml", () => {
     expect(html).toContain("&lt;script&gt;");
   });
 
-  it('usa la insignia con inicial cuando no hay imagen válida', () => {
+  it('usa la insignia con inicial cuando no hay imagen ni vídeo válidos', () => {
     const html = buildNeuralRowHtml({ ...baseProject, image: "" }, 0);
     expect(html).toContain("nimg-fb");
     expect(html).not.toContain("<img");
+    expect(html).not.toContain("<video");
+  });
+
+  it("usa vídeo en autoplay en vez de imagen cuando el proyecto tiene videoUrl", () => {
+    const html = buildNeuralRowHtml({ ...baseProject, videoUrl: "/videos/olga-ai.mp4" }, 0);
+    expect(html).toContain('<video src="/videos/olga-ai.mp4"');
+    expect(html).toContain("autoplay");
+    expect(html).toContain("muted");
+    expect(html).toContain("loop");
+    expect(html).toContain(`poster="${baseProject.image}"`);
+    expect(html).not.toContain("<img");
+  });
+
+  it("no genera vídeo si videoUrl es javascript:", () => {
+    const html = buildNeuralRowHtml({ ...baseProject, videoUrl: "javascript:alert(1)" }, 0);
+    expect(html).not.toContain("<video");
+    expect(html).toContain("<img");
   });
 
   it('no genera enlace "Ver proyecto" si la URL es javascript:', () => {

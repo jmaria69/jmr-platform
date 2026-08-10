@@ -48,13 +48,17 @@ function neuralSegmentSvg(rowId: string): string {
 export function buildNeuralRowHtml(p: Project, _index: number): string {
   const status = STATUS_LABELS[p.status] || "EN PRODUCCIÓN";
   const safeImage = safeUrl(p.image);
+  const safeVideo = safeUrl(p.videoUrl);
   const presentationPath = PRESENTATION_PATHS[p.id];
   const safeLink = presentationPath || safeUrl(p.url);
   const initial = esc((p.name.trim().charAt(0) || "?").toUpperCase());
   const fallback = `<span class="nimg-fb" style="color:${esc(p.color)};background:${esc(p.color)}20">${initial}</span>`;
-  const img = safeImage
-    ? `<div class="nimg">${fallback}<img src="${esc(safeImage)}" alt="${esc(p.name)}" loading="lazy" onerror="this.style.display='none'"></div>`
-    : `<div class="nimg">${fallback}</div>`;
+  const media = safeVideo
+    ? `<video src="${esc(safeVideo)}" ${safeImage ? `poster="${esc(safeImage)}" ` : ""}autoplay muted loop playsinline preload="metadata" aria-label="${esc(p.name)}" onerror="this.style.display='none'"></video>`
+    : safeImage
+      ? `<img src="${esc(safeImage)}" alt="${esc(p.name)}" loading="lazy" onerror="this.style.display='none'">`
+      : "";
+  const img = media ? `<div class="nimg">${fallback}${media}</div>` : `<div class="nimg">${fallback}</div>`;
   const link = safeLink
     ? presentationPath
       ? `<a class="nlink" href="${esc(safeLink)}">Ver proyecto &rarr;</a>`

@@ -155,6 +155,7 @@ export const projects: Project[] = [
     category: "ai",
     url: "https://siem.praxialabs.com",
     image: "/projects/siam.jpg",
+    videoUrl: "/videos/siam.mp4",
     color: "#dc2626",
   },
   {
