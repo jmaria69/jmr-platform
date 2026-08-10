@@ -70,3 +70,6 @@ next-env.d.ts
 
 # worktrees locales (subagent-driven-development, etc.)
 /.worktrees
+
+# serena (caché y estado local del MCP, no se comparte)
+/.serena
