@@ -4,6 +4,17 @@ import { verifyToken, SESSION_COOKIE } from "@/lib/auth/session";
 import { findProjectById, updateProject, ProjectNotFoundError } from "@/lib/repositories";
 import { captureProjectScreenshot } from "@/lib/screenshot";
 import { apiSuccess, apiBadRequest, apiNotFound, apiServerError } from "@/lib/api-response";
+import { PRESENTATION_PATHS } from "@/lib/presentation-paths";
+
+/**
+ * Si el proyecto tiene landing de presentación propia, la captura se toma de
+ * ahí (es lo que el visitante ve al pulsar "Ver proyecto"), no de la app
+ * externa — evita mostrar en la tarjeta una imagen que nadie llega a ver.
+ */
+function resolveShowcaseUrl(id: string, projectUrl: string): string {
+  const presentationPath = PRESENTATION_PATHS[id];
+  return presentationPath ? `https://praxialabs.com${presentationPath}` : projectUrl;
+}
 
 interface RouteParams {
   params: Promise<{ id: string }>;
@@ -35,7 +46,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
 
   let shot: Awaited<ReturnType<typeof captureProjectScreenshot>>;
   try {
-    shot = await captureProjectScreenshot(project.url);
+    shot = await captureProjectScreenshot(resolveShowcaseUrl(id, project.url));
   } catch {
     return NextResponse.json(
       { error: { code: "CAPTURE_FAILED", message: "No se pudo capturar la web del proyecto (¿está caída o tarda demasiado?)" } },

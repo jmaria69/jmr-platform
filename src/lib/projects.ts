@@ -26,7 +26,7 @@ export const projects: Project[] = [
     category: "web",
     url: "https://adminapp.praxialabs.com/presentation",
     videoUrl: "/videos/admin-app.mp4",
-    image: "/projects/admin-app.svg",
+    image: "/projects/admin-app.jpg",
     color: "#6366f1",
   },
   {
@@ -40,7 +40,7 @@ export const projects: Project[] = [
     category: "web",
     url: "https://demcore.praxialabs.com",
     videoUrl: "/videos/core-ops.mp4",
-    image: "/projects/crm-it.svg",
+    image: "/projects/crm-it.jpg",
     color: "#06b6d4",
   },
   {
@@ -154,7 +154,7 @@ export const projects: Project[] = [
     status: "beta",
     category: "ai",
     url: "https://siem.praxialabs.com",
-    image: "/projects/siam.svg",
+    image: "/projects/siam.jpg",
     color: "#dc2626",
   },
   {

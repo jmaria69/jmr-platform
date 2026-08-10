@@ -1,4 +1,5 @@
 import type { Project } from "@/types";
+import { PRESENTATION_PATHS } from "@/lib/presentation-paths";
 
 const STATUS_LABELS: Record<string, string> = {
   production: "EN PRODUCCIÓN",
@@ -12,17 +13,6 @@ function esc(s: string): string {
     (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c] as string,
   );
 }
-
-/**
- * Proyectos con landing de presentación propia dentro del sitio — antes de
- * saltar a la app externa, el visitante pasa primero por aquí. Debe reflejar
- * `CON_LANDING` en `src/lib/laboratorio.ts`.
- */
-const PRESENTATION_PATHS: Record<string, string> = {
-  siam: "/siam",
-  "admin-app": "/adminapp",
-  "crm-it": "/core-ops",
-};
 
 /** Solo deja pasar http(s) y rutas relativas — evita esquemas tipo javascript: en campos editables desde admin. */
 export function safeUrl(s: string | null | undefined): string {

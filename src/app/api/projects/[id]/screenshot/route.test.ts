@@ -87,6 +87,18 @@ describe("PATCH /api/projects/[id]/screenshot", () => {
     expect(updateProjectMock).toHaveBeenCalledWith("olga-ai", { image: "https://blob.vercel-storage.com/projects/olga-ai-123.png" });
   });
 
+  it("captura la landing de presentación en vez de la app externa cuando el proyecto tiene una", async () => {
+    verifyTokenMock.mockResolvedValue({ id: "admin-1" });
+    findProjectByIdMock.mockResolvedValue({ id: "siam", url: "https://siem.praxialabs.com" });
+    captureMock.mockResolvedValue({ buffer: Buffer.from("png"), contentType: "image/png" });
+    putMock.mockResolvedValue({ url: "https://blob.vercel-storage.com/projects/siam-123.png" });
+    updateProjectMock.mockResolvedValue({ id: "siam", image: "https://blob.vercel-storage.com/projects/siam-123.png" });
+
+    await PATCH(req(), params("siam"));
+
+    expect(captureMock).toHaveBeenCalledWith("https://praxialabs.com/siam");
+  });
+
   it("502 si la captura falla, sin tocar project.image", async () => {
     verifyTokenMock.mockResolvedValue({ id: "admin-1" });
     findProjectByIdMock.mockResolvedValue({ id: "olga-ai", url: "https://olga-caida.example.com" });
