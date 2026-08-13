@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, Space_Grotesk } from "next/font/google";
-import Script from "next/script";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { GoogleAnalytics } from "@/components/analytics/google-analytics";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -72,25 +72,7 @@ export default function RootLayout({
     <html lang="es" className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} dark`}>
       <head />
       <body className="praxia-body grain min-h-full flex flex-col">
-        <Script
-          strategy="afterInteractive"
-          src="/gtag/js"
-        />
-        <Script
-          id="google-analytics"
-          strategy="afterInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-CQ6W47R42W', {
-        transport_url: 'https://praxialabs.com',
-        first_party_collection: true,
-      });
-    `,
-          }}
-        />
+        <GoogleAnalytics />
         <TooltipProvider>
           <main className="flex-1">
             {children}
