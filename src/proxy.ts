@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { after } from "next/server";
 import { verifyToken, SESSION_COOKIE } from "@/lib/auth/session";
 import { checkRateLimit, isMaliciousBot, logThreatAwait } from "@/lib/security-logger";
-import { recordApiHit } from "@/lib/self-metrics";
+import { recordApiHit, selfTrafficSnapshot } from "@/lib/self-metrics";
 
 function getClientIP(req: NextRequest): string {
   return (
@@ -62,7 +62,7 @@ export async function proxy(request: NextRequest) {
   }
 
   // ─── 3. Auth admin + detección de tokens inválidos ───
-  if (pathname.startsWith("/admin") && pathname !== "/admin/demo") {
+  if (pathname.startsWith("/admin")) {
     const token = request.cookies.get(SESSION_COOKIE)?.value;
 
     if (!token) {
@@ -93,12 +93,20 @@ export async function proxy(request: NextRequest) {
     recordApiHit();
   }
 
+  // En Vercel el Proxy corre como función independiente de los route
+  // handlers (aunque ambos usen runtime Node.js): no comparten `globalThis`
+  // en producción, solo en `next dev` (un único proceso). Por eso el
+  // contador vive aquí y se le pasa a /api/metrics/self por cabecera en
+  // vez de fiarse de memoria compartida.
+  if (pathname === "/api/metrics/self") {
+    const headers = new Headers(request.headers);
+    headers.set("x-self-traffic", JSON.stringify(selfTrafficSnapshot()));
+    return NextResponse.next({ request: { headers } });
+  }
+
   return NextResponse.next();
 }
 
-// Next 16 "Proxy" (este fichero) corre siempre en Node.js — comparte
-// proceso/módulos con los route handlers, así self-metrics.ts puede
-// acumular en memoria y /api/metrics/self leerlo.
 export const config = {
   matcher: ["/admin/:path*", "/login", "/api/:path*"],
 };

@@ -1,21 +1,17 @@
 import type { Metadata } from "next";
-import { getDashboardStats } from "@/lib/repositories/dashboard.repository";
+import { demoDashboardStats } from "@/lib/demo-data";
 import { StatsCards } from "@/components/admin/stats-cards";
 import { TrafficChart } from "@/components/admin/traffic-chart";
 import { VisitorsTable } from "@/components/admin/visitors-table";
 import { DeviceChart } from "@/components/admin/device-chart";
 import { AnalyticsAnalysis } from "@/components/admin/analytics-analysis";
 
-// Consulta la BD (Prisma) en cada request: no prerenderizar en build, donde
-// DATABASE_URL no es accesible y Prisma lanza errores de inicializacion.
-export const dynamic = "force-dynamic";
-
 export const metadata: Metadata = {
     title: "Demo — Dashboard",
 };
 
 export default async function DemoDashboardPage() {
-    const stats = await getDashboardStats();
+    const stats = demoDashboardStats;
 
     return (
         <div className="space-y-6">

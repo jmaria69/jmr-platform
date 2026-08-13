@@ -9,7 +9,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { getDashboardStats } from "@/lib/repositories/dashboard.repository";
+import { demoDashboardStats } from "@/lib/demo-data";
 import { findAllProjects } from "@/lib/repositories/projects.repository";
 
 // Consulta la BD (Prisma) en cada request: no prerenderizar en build, donde
@@ -21,10 +21,8 @@ export const metadata: Metadata = {
 };
 
 export default async function DemoAnalyticsPage() {
-    const [dashboardStats, projects] = await Promise.all([
-        getDashboardStats(),
-        findAllProjects(),
-    ]);
+    const dashboardStats = demoDashboardStats;
+    const projects = await findAllProjects();
 
     const totalRevenue = projects.reduce((sum, p) => sum + (p.metrics?.revenue || 0), 0);
     const totalUsers = projects.reduce((sum, p) => sum + (p.metrics?.users || 0), 0);
