@@ -39,17 +39,20 @@ export interface CreateCampaignInput {
   utmCampaign?: string;
 }
 
-// Borrador generado por el pipeline local de IA (ver scripts/generate-campaign-draft.ts):
-// nace en estado "borrador" para revisión manual, nunca se publica en automático.
+// Borrador generado por un pipeline de automatización (ver scripts/generate-campaign-draft.ts
+// y scripts/sync-campaign.ts): nace en estado "borrador" para revisión manual, nunca se publica
+// en automático. researchNotes/script/videoUrl son opcionales porque no todo origen (p.ej. una
+// campaña de solo texto para LinkedIn) tiene los tres — a diferencia del pipeline de vídeo con
+// ComfyUI, que siempre los rellena.
 export interface CreateDraftCampaignInput {
   slug: string;
   name: string;
   description?: string;
   channel?: string;
   targetUrl: string;
-  researchNotes: string;
-  script: string;
-  videoUrl: string;
+  researchNotes?: string;
+  script?: string;
+  videoUrl?: string;
 }
 
 function dbRowToCampaign(row: any, stats: CampaignStats): CampaignWithStats {
@@ -171,12 +174,39 @@ export async function createDraftCampaign(input: CreateDraftCampaignInput): Prom
       channel: input.channel || "linkedin",
       status: "borrador",
       targetUrl: input.targetUrl,
-      researchNotes: input.researchNotes,
-      script: input.script,
-      videoUrl: input.videoUrl,
+      researchNotes: input.researchNotes ?? null,
+      script: input.script ?? null,
+      videoUrl: input.videoUrl ?? null,
     },
   });
   return dbRowToCampaign(row, { total: 0, last7d: 0, uniques: 0 });
+}
+
+// Actualiza el contenido de un borrador ya existente (mismo slug, re-sincronizado). El llamador
+// es responsable de comprobar antes que el estado sigue siendo "borrador" — esta función no
+// vuelve a comprobarlo para no ocultar una condición de carrera entre la comprobación y la
+// escritura; ver scripts/sync-campaign.ts para el guard real.
+export async function updateDraftCampaignContent(
+  id: string,
+  input: Partial<CreateDraftCampaignInput>
+): Promise<CampaignWithStats> {
+  const row = await prisma.campaign.update({
+    where: { id },
+    data: {
+      ...(input.name !== undefined && { name: input.name }),
+      ...(input.description !== undefined && { description: input.description }),
+      ...(input.channel !== undefined && { channel: input.channel }),
+      ...(input.targetUrl !== undefined && { targetUrl: input.targetUrl }),
+      ...(input.researchNotes !== undefined && { researchNotes: input.researchNotes }),
+      ...(input.script !== undefined && { script: input.script }),
+      ...(input.videoUrl !== undefined && { videoUrl: input.videoUrl }),
+    },
+  });
+  const [total, uniques] = await Promise.all([
+    prisma.campaignClick.count({ where: { campaignId: id } }),
+    prisma.campaignClick.groupBy({ by: ["ipHash"], where: { campaignId: id } }),
+  ]);
+  return dbRowToCampaign(row, { total, last7d: 0, uniques: uniques.length });
 }
 
 export async function updateCampaignStatus(id: string, status: string) {

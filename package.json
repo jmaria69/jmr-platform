@@ -9,7 +9,8 @@
     "lint": "eslint",
     "test": "vitest run",
     "db:seed": "node --require dotenv/config scripts/seed.dev.ts",
-    "campaign:draft": "node --require dotenv/config scripts/generate-campaign-draft.ts"
+    "campaign:draft": "node --require dotenv/config scripts/generate-campaign-draft.ts",
+    "campaign:sync": "node --require dotenv/config scripts/sync-campaign.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.4.1",
