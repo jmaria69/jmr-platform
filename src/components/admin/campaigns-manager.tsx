@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, Copy, Check, Trash2, ExternalLink, MousePointerClick, Users, TrendingUp } from "lucide-react";
+import { Plus, Copy, Check, Trash2, ExternalLink, MousePointerClick, Users, TrendingUp, ChevronDown, ChevronUp, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -38,6 +38,7 @@ const STATUS_STYLES: Record<string, string> = {
   activa: "bg-emerald-500/15 text-emerald-500 border-emerald-500/30",
   pausada: "bg-amber-500/15 text-amber-500 border-amber-500/30",
   finalizada: "bg-zinc-500/15 text-zinc-400 border-zinc-500/30",
+  borrador: "bg-purple-500/15 text-purple-300 border-purple-500/30",
 };
 
 const slugify = (s: string) =>
@@ -50,6 +51,7 @@ export function CampaignsManager({ initialCampaigns }: { initialCampaigns: Campa
   const [copied, setCopied] = useState<string | null>(null);
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
+  const [expanded, setExpanded] = useState<Set<string>>(new Set());
   const [form, setForm] = useState({
     name: "",
     slug: "",
@@ -104,6 +106,23 @@ export function CampaignsManager({ initialCampaigns }: { initialCampaigns: Campa
     if (!confirm(`¿Eliminar la campaña «${c.name}» y todos sus clicks registrados?`)) return;
     const res = await fetch(`/api/campaigns/${c.id}`, { method: "DELETE" });
     if (res.ok) setCampaigns((prev) => prev.filter((x) => x.id !== c.id));
+  };
+
+  const approveDraft = async (c: CampaignWithStats) => {
+    const res = await fetch(`/api/campaigns/${c.id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status: "activa" }),
+    });
+    if (res.ok) setCampaigns((prev) => prev.map((x) => (x.id === c.id ? { ...x, status: "activa" } : x)));
+  };
+
+  const toggleExpanded = (id: string) => {
+    setExpanded((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
   };
 
   const totals = campaigns.reduce(
@@ -210,52 +229,90 @@ export function CampaignsManager({ initialCampaigns }: { initialCampaigns: Campa
             </CardContent>
           </Card>
         )}
-        {campaigns.map((c) => (
-          <Card key={c.id}>
-            <CardContent className="flex flex-col gap-4 py-5 sm:flex-row sm:items-center">
-              <div className="min-w-0 flex-1">
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="font-semibold">{c.name}</span>
-                  <Badge variant="outline" className={STATUS_STYLES[c.status] || ""}>{c.status}</Badge>
-                  <Badge variant="outline">{c.channel}</Badge>
+        {campaigns.map((c) => {
+          const isDraft = c.status === "borrador";
+          const isOpen = expanded.has(c.id);
+          return (
+            <Card key={c.id}>
+              <CardContent className="flex flex-col gap-4 py-5 sm:flex-row sm:items-center">
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="font-semibold">{c.name}</span>
+                    <Badge variant="outline" className={STATUS_STYLES[c.status] || ""}>
+                      {isDraft && <Sparkles className="mr-1 h-3 w-3" />}
+                      {isDraft ? "Borrador IA" : c.status}
+                    </Badge>
+                    <Badge variant="outline">{c.channel}</Badge>
+                  </div>
+                  {c.description && <p className="mt-1 truncate text-sm text-muted-foreground">{c.description}</p>}
+                  <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+                    <code className="rounded bg-muted px-2 py-0.5 font-mono">{shortUrl(c.slug)}</code>
+                    <Button size="sm" variant="ghost" className="h-6 px-2" onClick={() => copyLink(c.slug)}>
+                      {copied === c.slug ? <Check className="h-3 w-3 text-emerald-500" /> : <Copy className="h-3 w-3" />}
+                    </Button>
+                    <a href={c.targetUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 hover:text-foreground">
+                      destino <ExternalLink className="h-3 w-3" />
+                    </a>
+                    {isDraft && (
+                      <Button size="sm" variant="ghost" className="h-6 px-2" onClick={() => toggleExpanded(c.id)}>
+                        {isOpen ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+                        {isOpen ? "Ocultar propuesta" : "Ver propuesta"}
+                      </Button>
+                    )}
+                  </div>
+                  {isDraft && isOpen && (
+                    <div className="mt-4 space-y-3 rounded-lg border border-purple-500/20 bg-purple-500/5 p-4">
+                      {c.videoUrl && (
+                        <video controls src={c.videoUrl} className="max-h-80 w-full rounded-md bg-black" />
+                      )}
+                      {c.script && (
+                        <div>
+                          <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Guion</p>
+                          <p className="whitespace-pre-line text-sm">{c.script}</p>
+                        </div>
+                      )}
+                      {c.researchNotes && (
+                        <div>
+                          <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Investigación</p>
+                          <p className="whitespace-pre-line text-sm text-muted-foreground">{c.researchNotes}</p>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
-                {c.description && <p className="mt-1 truncate text-sm text-muted-foreground">{c.description}</p>}
-                <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-                  <code className="rounded bg-muted px-2 py-0.5 font-mono">{shortUrl(c.slug)}</code>
-                  <Button size="sm" variant="ghost" className="h-6 px-2" onClick={() => copyLink(c.slug)}>
-                    {copied === c.slug ? <Check className="h-3 w-3 text-emerald-500" /> : <Copy className="h-3 w-3" />}
-                  </Button>
-                  <a href={c.targetUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 hover:text-foreground">
-                    destino <ExternalLink className="h-3 w-3" />
-                  </a>
-                </div>
-              </div>
 
-              <div className="flex items-center gap-6">
-                <div className="text-center">
-                  <div className="text-xl font-bold">{c.stats.total}</div>
-                  <div className="text-[10px] uppercase tracking-wide text-muted-foreground">Clicks</div>
+                <div className="flex items-center gap-6">
+                  <div className="text-center">
+                    <div className="text-xl font-bold">{c.stats.total}</div>
+                    <div className="text-[10px] uppercase tracking-wide text-muted-foreground">Clicks</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-xl font-bold">{c.stats.last7d}</div>
+                    <div className="text-[10px] uppercase tracking-wide text-muted-foreground">7 días</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-xl font-bold">{c.stats.uniques}</div>
+                    <div className="text-[10px] uppercase tracking-wide text-muted-foreground">Únicos</div>
+                  </div>
+                  <div className="flex gap-1">
+                    {isDraft ? (
+                      <Button size="sm" variant="outline" onClick={() => approveDraft(c)}>
+                        Aprobar
+                      </Button>
+                    ) : (
+                      <Button size="sm" variant="outline" onClick={() => toggleStatus(c)}>
+                        {c.status === "activa" ? "Pausar" : "Activar"}
+                      </Button>
+                    )}
+                    <Button size="sm" variant="ghost" className="text-red-500 hover:text-red-600" onClick={() => removeCampaign(c)}>
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
                 </div>
-                <div className="text-center">
-                  <div className="text-xl font-bold">{c.stats.last7d}</div>
-                  <div className="text-[10px] uppercase tracking-wide text-muted-foreground">7 días</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-xl font-bold">{c.stats.uniques}</div>
-                  <div className="text-[10px] uppercase tracking-wide text-muted-foreground">Únicos</div>
-                </div>
-                <div className="flex gap-1">
-                  <Button size="sm" variant="outline" onClick={() => toggleStatus(c)}>
-                    {c.status === "activa" ? "Pausar" : "Activar"}
-                  </Button>
-                  <Button size="sm" variant="ghost" className="text-red-500 hover:text-red-600" onClick={() => removeCampaign(c)}>
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+              </CardContent>
+            </Card>
+          );
+        })}
       </div>
     </div>
   );

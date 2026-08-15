@@ -21,6 +21,9 @@ export interface CampaignWithStats {
   utmCampaign: string;
   startDate: Date;
   endDate: Date | null;
+  researchNotes: string | null;
+  script: string | null;
+  videoUrl: string | null;
   createdAt: Date;
   stats: CampaignStats;
 }
@@ -34,6 +37,19 @@ export interface CreateCampaignInput {
   utmSource?: string;
   utmMedium?: string;
   utmCampaign?: string;
+}
+
+// Borrador generado por el pipeline local de IA (ver scripts/generate-campaign-draft.ts):
+// nace en estado "borrador" para revisión manual, nunca se publica en automático.
+export interface CreateDraftCampaignInput {
+  slug: string;
+  name: string;
+  description?: string;
+  channel?: string;
+  targetUrl: string;
+  researchNotes: string;
+  script: string;
+  videoUrl: string;
 }
 
 function dbRowToCampaign(row: any, stats: CampaignStats): CampaignWithStats {
@@ -50,6 +66,9 @@ function dbRowToCampaign(row: any, stats: CampaignStats): CampaignWithStats {
     utmCampaign: row.utmCampaign,
     startDate: row.startDate,
     endDate: row.endDate,
+    researchNotes: row.researchNotes ?? null,
+    script: row.script ?? null,
+    videoUrl: row.videoUrl ?? null,
     createdAt: row.createdAt,
     stats,
   };
@@ -138,6 +157,23 @@ export async function createCampaign(input: CreateCampaignInput): Promise<Campai
       utmSource: input.utmSource || "",
       utmMedium: input.utmMedium || "",
       utmCampaign: input.utmCampaign || input.slug,
+    },
+  });
+  return dbRowToCampaign(row, { total: 0, last7d: 0, uniques: 0 });
+}
+
+export async function createDraftCampaign(input: CreateDraftCampaignInput): Promise<CampaignWithStats> {
+  const row = await prisma.campaign.create({
+    data: {
+      slug: input.slug,
+      name: input.name,
+      description: input.description || "",
+      channel: input.channel || "linkedin",
+      status: "borrador",
+      targetUrl: input.targetUrl,
+      researchNotes: input.researchNotes,
+      script: input.script,
+      videoUrl: input.videoUrl,
     },
   });
   return dbRowToCampaign(row, { total: 0, last7d: 0, uniques: 0 });
