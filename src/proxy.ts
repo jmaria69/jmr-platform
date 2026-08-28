@@ -5,6 +5,17 @@ import { checkRateLimit, isMaliciousBot, logThreatAwait } from "@/lib/security-l
 import { recordApiHit, selfTrafficSnapshot } from "@/lib/self-metrics";
 import { prefersMarkdown, withMarkdownVary } from "@/lib/markdown-negotiation";
 
+// Primeros segmentos de ruta que resuelven a una página o handler real.
+// Cualquier otro segmento de primer nivel es, por definición, un 404 — se
+// usa para decidir si una petición que prefiere markdown debe reescribirse
+// a /md-404 en vez de dejar pasar el HTML normal (ver bloque 1c).
+const KNOWN_TOP_SEGMENTS = new Set([
+  "acerca-de", "adminapp", "contacto", "core-ops", "laboratorio",
+  "precios", "proyectos", "siam",
+  "admin", "api", "c", "demo", "login", "md-home", "md-404",
+  "apple-icon", "opengraph-image",
+]);
+
 function getClientIP(req: NextRequest): string {
   return (
     req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
@@ -46,6 +57,19 @@ export async function proxy(request: NextRequest) {
       : NextResponse.next();
     res.headers.set("Vary", withMarkdownVary(res.headers.get("Vary")));
     return res;
+  }
+
+  // ─── 1c. 404 de primer nivel: mismo trato markdown que la home ───
+  // Solo mira el primer segmento — un 404 anidado bajo una ruta real
+  // (p.ej. /proyectos/no-existe) sigue devolviendo el 404 HTML normal.
+  const firstSegment = pathname.split("/")[1] || "";
+  if (firstSegment && !KNOWN_TOP_SEGMENTS.has(firstSegment)) {
+    const accept = request.headers.get("accept");
+    if (prefersMarkdown(accept)) {
+      const res = NextResponse.rewrite(new URL("/md-404", request.url));
+      res.headers.set("Vary", withMarkdownVary(res.headers.get("Vary")));
+      return res;
+    }
   }
 
   // ─── 2. Rate limiting (login y API) ───
@@ -121,5 +145,8 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/login", "/api/:path*", "/"],
+  // Todo excepto los internos de Next y ficheros estáticos (cualquier
+  // segmento final con extensión: .ico, .xml, .txt, .svg, .js...), para que
+  // el bloque 1c pueda detectar rutas de primer nivel desconocidas.
+  matcher: ["/((?!_next/static|_next/image|.*\\.[^/]+$).*)"],
 };

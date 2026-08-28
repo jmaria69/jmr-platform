@@ -11,8 +11,10 @@ describe("robots", () => {
     expect(rule.allow).toBe("/");
   });
 
-  it("mantiene /admin/ y /api/ fuera del alcance y excluye la ruta interna /md-home", () => {
+  it("mantiene /admin/ y /api/ fuera del alcance y excluye las rutas internas /md-home y /md-404", () => {
     const [rule] = robots().rules as { disallow: string[] }[];
-    expect(rule.disallow).toEqual(expect.arrayContaining(["/admin/", "/api/", "/md-home"]));
+    expect(rule.disallow).toEqual(
+      expect.arrayContaining(["/admin/", "/api/", "/md-home", "/md-404"]),
+    );
   });
 });

@@ -16,6 +16,7 @@ const SITE_DESCRIPTION =
 export const metadata: Metadata = {
   title: "Praxia Labs — El trabajo que haces a mano, hecho solo",
   description: SITE_DESCRIPTION,
+  alternates: { canonical: "/" },
 };
 
 const ORG_JSON_LD = {
@@ -163,6 +164,12 @@ export default async function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(ORG_JSON_LD) }}
       />
+      {/* Sin JS, la animación de scroll-reveal (.rev, opacity:0 hasta que
+          HomeFx añade .in) nunca se dispara — esto la neutraliza solo para
+          navegadores/agentes sin JS, sin tocar la experiencia normal. */}
+      <noscript>
+        <style>{`.lx .rev { opacity: 1 !important; transform: none !important; }`}</style>
+      </noscript>
       <HomeFx fx={{ enabled: cfg.effectsEnabled, bolt: cfg.bolt, thickness: cfg.thickness, length: cfg.length, sparkDensity: cfg.sparkDensity, sparkColors: cfg.sparkColors, starfield: cfg.starfield }} />
       <div className="lx" style={styleVars}>
         <div dangerouslySetInnerHTML={{ __html: hero }} />

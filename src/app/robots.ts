@@ -6,7 +6,7 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/admin/", "/api/", "/md-home"],
+        disallow: ["/admin/", "/api/", "/md-home", "/md-404"],
       },
     ],
     sitemap: "https://praxialabs.com/sitemap.xml",
