@@ -3,6 +3,7 @@ import { after } from "next/server";
 import { verifyToken, SESSION_COOKIE } from "@/lib/auth/session";
 import { checkRateLimit, isMaliciousBot, logThreatAwait } from "@/lib/security-logger";
 import { recordApiHit, selfTrafficSnapshot } from "@/lib/self-metrics";
+import { prefersMarkdown, withMarkdownVary } from "@/lib/markdown-negotiation";
 
 function getClientIP(req: NextRequest): string {
   return (
@@ -33,6 +34,18 @@ export async function proxy(request: NextRequest) {
       }
     });
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+
+  // ─── 1b. Home: negociación de Accept (texto/markdown para agentes) ───
+  // https://acceptmarkdown.com — el Vary se añade siempre (también cuando
+  // se sirve el HTML normal) para que la CDN no mezcle las dos variantes.
+  if (pathname === "/") {
+    const accept = request.headers.get("accept");
+    const res = prefersMarkdown(accept)
+      ? NextResponse.rewrite(new URL("/md-home", request.url))
+      : NextResponse.next();
+    res.headers.set("Vary", withMarkdownVary(res.headers.get("Vary")));
+    return res;
   }
 
   // ─── 2. Rate limiting (login y API) ───
@@ -108,5 +121,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/login", "/api/:path*"],
+  matcher: ["/admin/:path*", "/login", "/api/:path*", "/"],
 };

@@ -25,6 +25,12 @@ export default function NotFound() {
             </Button>
           </Link>
         </div>
+        <p className="text-xs text-muted-foreground mt-6">
+          ¿Buscas otra cosa? Consulta el{" "}
+          <a href="/sitemap.xml" className="underline">mapa del sitio</a>
+          {" "}o el{" "}
+          <a href="/llms.txt" className="underline">resumen para agentes (llms.txt)</a>.
+        </p>
       </div>
     </div>
   );

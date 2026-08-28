@@ -6,9 +6,9 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/admin/", "/api/"],
+        disallow: ["/admin/", "/api/", "/md-home"],
       },
     ],
-    sitemap: "https://jmrplatform.com/sitemap.xml",
+    sitemap: "https://praxialabs.com/sitemap.xml",
   };
 }

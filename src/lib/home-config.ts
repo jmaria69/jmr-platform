@@ -55,7 +55,12 @@ export function mergeHomeConfig(data: Partial<HomeConfig> | null | undefined): H
   return {
     ...HOME_DEFAULTS,
     ...d,
-    hero: { ...HOME_DEFAULTS.hero, ...(d.hero ?? {}) },
+    hero: {
+      tagline: d.hero?.tagline || HOME_DEFAULTS.hero.tagline,
+      h1: d.hero?.h1 || HOME_DEFAULTS.hero.h1,
+      h1em: d.hero?.h1em || HOME_DEFAULTS.hero.h1em,
+      lede: d.hero?.lede || HOME_DEFAULTS.hero.lede,
+    },
     sections: { ...HOME_DEFAULTS.sections, ...(d.sections ?? {}) },
     sparkColors: Array.isArray(d.sparkColors) && d.sparkColors.length ? d.sparkColors : HOME_DEFAULTS.sparkColors,
     sectionOrder: sanitizeOrder(d.sectionOrder),

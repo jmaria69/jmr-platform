@@ -5,13 +5,27 @@ import { getHomeConfig } from "@/lib/home-config";
 import { HomeFx } from "@/components/public/home-fx";
 import { ContactForm } from "@/components/public/contact-form";
 import { buildNeuralRowHtml } from "./neural-timeline";
+import { CONTACT_EMAIL } from "@/lib/constants";
 
 export const dynamic = "force-dynamic";
 
+const BASE_URL = "https://praxialabs.com";
+const SITE_DESCRIPTION =
+  "Automatización a medida con agentes de IA. Diagnóstico de 15 min, operativo en 48 h. Sistemas propios en producción, no plantillas.";
+
 export const metadata: Metadata = {
   title: "Praxia Labs — El trabajo que haces a mano, hecho solo",
-  description:
-    "Automatización a medida con agentes de IA. Diagnóstico de 15 min, operativo en 48 h. Sistemas propios en producción, no plantillas.",
+  description: SITE_DESCRIPTION,
+};
+
+const ORG_JSON_LD = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "Praxia Labs",
+  url: BASE_URL,
+  description: SITE_DESCRIPTION,
+  email: CONTACT_EMAIL,
+  address: { "@type": "PostalAddress", addressCountry: "ES" },
 };
 
 function esc(s: string): string {
@@ -145,6 +159,10 @@ export default async function Home() {
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(ORG_JSON_LD) }}
+      />
       <HomeFx fx={{ enabled: cfg.effectsEnabled, bolt: cfg.bolt, thickness: cfg.thickness, length: cfg.length, sparkDensity: cfg.sparkDensity, sparkColors: cfg.sparkColors, starfield: cfg.starfield }} />
       <div className="lx" style={styleVars}>
         <div dangerouslySetInnerHTML={{ __html: hero }} />

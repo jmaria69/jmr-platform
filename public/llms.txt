@@ -1,0 +1,21 @@
+# Praxia Labs
+
+> Automatización a medida con agentes de IA para empresas: facturas, seguimiento de clientes, ciberseguridad y operaciones IT. Sistemas propios en producción, no plantillas — diagnóstico de 15 min, operativo en 48 h.
+
+## Páginas clave
+
+- [Inicio](https://praxialabs.com/): propuesta de valor y casos reales.
+- [SIAM](https://praxialabs.com/siam): agente de ciberseguridad.
+- [Core OPS](https://praxialabs.com/core-ops): operaciones IT unificadas.
+- [AdminApp](https://praxialabs.com/adminapp): administración y facturación.
+- [Laboratorio](https://praxialabs.com/laboratorio): productos en desarrollo.
+- [Proyectos](https://praxialabs.com/proyectos): catálogo completo de casos reales.
+- [Precios](https://praxialabs.com/precios): planes y tarifas.
+- [Acerca de](https://praxialabs.com/acerca-de): quiénes somos.
+- [Contacto](https://praxialabs.com/contacto): diagnóstico gratuito de 15 min.
+
+## Recursos para agentes
+
+- [Mapa del sitio (sitemap.xml)](https://praxialabs.com/sitemap.xml)
+- [robots.txt](https://praxialabs.com/robots.txt)
+- Contacto: contacto@praxialabs.com
