@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
-const ORG_JSON_LD = {
+export const ORG_JSON_LD = {
   "@context": "https://schema.org",
   "@type": "Organization",
   name: "Praxia Labs",
@@ -27,6 +27,13 @@ const ORG_JSON_LD = {
   description: SITE_DESCRIPTION,
   email: CONTACT_EMAIL,
   address: { "@type": "PostalAddress", addressCountry: "ES" },
+  contactPoint: {
+    "@type": "ContactPoint",
+    email: CONTACT_EMAIL,
+    contactType: "sales",
+    areaServed: "ES",
+    availableLanguage: ["Spanish"],
+  },
 };
 
 function esc(s: string): string {
@@ -144,11 +151,11 @@ export default async function Home() {
       </div>
       <div class="fcol">
         <h4>Praxia</h4>
-        <a href="#servicios">Qué automatizamos</a><a href="#como">Por qué nosotros</a><a href="/precios">Precios</a><a href="/contacto">Contacto</a>
+        <a href="#servicios">Qué automatizamos</a><a href="#como">Por qué nosotros</a><a href="/precios">Precios</a><a href="/acerca-de">Acerca de</a><a href="/contacto">Contacto</a>
       </div>
       <div class="fcol">
         <h4>Contacto</h4>
-        <a href="mailto:hola@praxialabs.com">hola@praxialabs.com</a><span>Diagnóstico de 15 min, gratis</span><span>Operativo desde el lunes</span>
+        <a href="mailto:hola@praxialabs.com">hola@praxialabs.com</a><span>Diagnóstico de 15 min, gratis</span><span>Operativo desde el lunes</span><a href="/politica-privacidad">Política de privacidad</a>
       </div>
     </div>
     <div class="fbot"><span>&copy; ${new Date().getFullYear()} Praxia Labs</span><span class="mono">Hecho en España</span></div>

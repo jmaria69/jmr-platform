@@ -15,6 +15,7 @@ const KEY_PAGES = [
   { href: "/proyectos", label: "Proyectos" },
   { href: "/acerca-de", label: "Acerca de" },
   { href: "/contacto", label: "Contacto" },
+  { href: "/politica-privacidad", label: "Política de privacidad" },
 ];
 
 /**

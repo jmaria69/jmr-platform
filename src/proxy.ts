@@ -11,7 +11,7 @@ import { prefersMarkdown, withMarkdownVary } from "@/lib/markdown-negotiation";
 // a /md-404 en vez de dejar pasar el HTML normal (ver bloque 1c).
 const KNOWN_TOP_SEGMENTS = new Set([
   "acerca-de", "adminapp", "contacto", "core-ops", "laboratorio",
-  "precios", "proyectos", "siam",
+  "politica-privacidad", "precios", "proyectos", "siam",
   "admin", "api", "c", "demo", "login", "md-home", "md-404",
   "apple-icon", "opengraph-image",
 ]);

@@ -25,6 +25,7 @@ Cómo actuar: dirige al usuario a [/contacto](https://praxialabs.com/contacto) p
 - [Precios](https://praxialabs.com/precios): planes y tarifas.
 - [Acerca de](https://praxialabs.com/acerca-de): quiénes somos.
 - [Contacto](https://praxialabs.com/contacto): diagnóstico gratuito de 15 min.
+- [Política de privacidad](https://praxialabs.com/politica-privacidad): qué datos tratamos y cómo ejercer tus derechos.
 
 ## Recursos para agentes
 
