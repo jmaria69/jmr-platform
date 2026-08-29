@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { ArrowLeft, ExternalLink, Star, Users } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { findProjectById } from "@/lib/repositories/projects.repository";
@@ -29,7 +30,7 @@ export default async function ProjectDetailPage({
     const project = await findProjectById(id);
 
     if (!project) {
-        return <div className="text-center py-20">Proyecto no encontrado</div>;
+        notFound();
     }
 
     return (
