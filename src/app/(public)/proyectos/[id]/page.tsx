@@ -3,10 +3,22 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ExternalLink, Star, Users } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { findProjectById } from "@/lib/repositories/projects.repository";
+import { findAllProjects, findProjectById } from "@/lib/repositories/projects.repository";
 import { ProjectViewTracker } from "@/components/public/project-view-tracker";
 
-export const dynamic = "force-dynamic";
+// Prerenderiza los ids conocidos en build/deploy: un render completo (sin
+// streaming de loading.tsx) es lo único que permite que notFound() fije un
+// 404 real en la respuesta. Con dynamicParams = true (por defecto), un id
+// nuevo creado después del deploy (los proyectos se gestionan en vivo desde
+// /admin) se genera on-demand con el mismo render completo la primera vez
+// que se visita, así que también recibe su status correcto (200 o 404).
+export async function generateStaticParams() {
+  const projects = await findAllProjects();
+  return projects.map((p) => ({ id: p.id }));
+}
+
+export const dynamicParams = true;
+export const revalidate = 3600;
 
 export async function generateMetadata({
     params,
