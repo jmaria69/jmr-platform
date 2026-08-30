@@ -2,7 +2,21 @@ import { describe, expect, it, vi } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 
 vi.mock("@/lib/repositories/projects.repository", () => ({
-  findAllProjects: vi.fn().mockResolvedValue([]),
+  findAllProjects: vi.fn().mockResolvedValue([
+    {
+      id: "demo-project",
+      name: "Proyecto demo",
+      description: "Un proyecto de ejemplo para el test.",
+      longDescription: "",
+      tech: [],
+      status: "production",
+      category: "web",
+      color: "#000",
+      image: "",
+      showOnHome: true,
+      showInLab: true,
+    },
+  ]),
 }));
 
 vi.mock("@/lib/home-config", () => ({
@@ -47,5 +61,17 @@ describe("SSR de la home para agentes sin JS", () => {
       .replace(/\s+/g, " ")
       .trim();
     expect(text.length).toBeGreaterThanOrEqual(500);
+  });
+
+  it("no salta niveles de heading (cada nivel nuevo es como mucho +1 sobre el más profundo visto)", async () => {
+    const element = await Home();
+    const html = renderToStaticMarkup(element);
+    const levels = [...html.matchAll(/<h([1-6])[ >]/g)].map((m) => Number(m[1]));
+    expect(levels[0]).toBe(1);
+    let deepestSeen = 1;
+    for (const level of levels.slice(1)) {
+      expect(level).toBeLessThanOrEqual(deepestSeen + 1);
+      deepestSeen = Math.max(deepestSeen, level);
+    }
   });
 });

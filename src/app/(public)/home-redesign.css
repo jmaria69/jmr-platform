@@ -39,8 +39,6 @@ html.ivory .lx .ncard .ntech-pill { background: rgba(0,0,0,.03); }
   background-size: 48px 48px;
   -webkit-mask-image: radial-gradient(120% 90% at 20% 30%, #000 0%, transparent 65%);
   mask-image: radial-gradient(120% 90% at 20% 30%, #000 0%, transparent 65%); }
-/* Haz de luz difuminado desactivado (a cero, como loofidev) */
-.lx .hero .glow { display: none; }
 .lx .hero .wrap { position: relative; z-index: 1; }
 .lx .hero-grid { display: grid; grid-template-columns: 1.02fr .98fr; gap: clamp(28px, 4.5vw, 64px);
   align-items: center; padding: clamp(48px, 7vw, 104px) 0 clamp(48px, 6vw, 88px); }
@@ -48,7 +46,7 @@ html.ivory .lx .ncard .ntech-pill { background: rgba(0,0,0,.03); }
   letter-spacing: .16em; text-transform: uppercase; color: var(--cyan);
   border: 1px solid color-mix(in srgb, var(--cyan) 35%, transparent); border-radius: 999px; padding: 7px 15px; margin: 0 0 30px;
   background: color-mix(in srgb, var(--cyan) 7%, transparent); }
-.lx .tagline b { width: 6px; height: 6px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 8px var(--cyan); }
+.lx .tagline::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 8px var(--cyan); }
 .lx h1 { font-size: clamp(46px, 8vw, 96px); line-height: .98; font-weight: 800; letter-spacing: -.04em;
   margin: 0 0 26px; text-wrap: balance; }
 .lx h1 em { font-style: normal; background: linear-gradient(105deg, var(--cyan), var(--blue));
@@ -227,7 +225,7 @@ html.ivory .lx .ncard .ntech-pill { background: rgba(0,0,0,.03); }
 .lx .foot .fbrand .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; margin-bottom: 12px; }
 .lx .foot .fbrand .mk { width: 22px; height: 22px; border-radius: 6px; background: linear-gradient(135deg, var(--cyan), var(--aqua)); box-shadow: 0 0 14px rgba(0,242,255,.35); }
 .lx .foot .fbrand p { color: var(--muted); font-size: 14px; max-width: 34ch; margin: 0; }
-.lx .foot .fcol h4 { font-family: ui-monospace, monospace; font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--cyan); margin: 0 0 14px; }
+.lx .foot .fcol h3 { font-family: ui-monospace, monospace; font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--cyan); margin: 0 0 14px; }
 .lx .foot .fcol a, .lx .foot .fcol span { display: block; color: var(--muted); font-size: 14px; margin-bottom: 9px; transition: color .15s; }
 .lx .foot .fcol a:hover { color: var(--fg); }
 .lx .foot .fbot { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 20px 0 30px; border-top: 1px solid var(--line); color: var(--dim); font-size: 13px; }

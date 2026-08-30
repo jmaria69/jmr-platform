@@ -56,11 +56,10 @@ export default async function Home() {
   const hero = `
   <header class="hero">
     <div class="grid-bg"></div>
-    <div class="glow"></div>
     <canvas aria-hidden="true"></canvas>
     <div class="wrap"><div class="hero-grid">
       <div>
-        <span class="tagline"><b></b>${esc(H.tagline)}</span>
+        <span class="tagline">${esc(H.tagline)}</span>
         <h1>${esc(H.h1)} <em>${esc(H.h1em)}</em>.</h1>
         <p class="lede">${esc(H.lede)}</p>
         <div class="cta-row">
@@ -146,15 +145,15 @@ export default async function Home() {
         <p>Automatización con agentes de IA, a medida. Sistemas propios en producción — desde España.</p>
       </div>
       <div class="fcol">
-        <h4>Producto</h4>
+        <h3>Producto</h3>
         <a href="/siam">SIAM</a><a href="/core-ops">Core OPS</a><a href="/adminapp">AdminApp</a><a href="/laboratorio">Laboratorio</a>
       </div>
       <div class="fcol">
-        <h4>Praxia</h4>
+        <h3>Praxia</h3>
         <a href="#servicios">Qué automatizamos</a><a href="#como">Por qué nosotros</a><a href="/precios">Precios</a><a href="/acerca-de">Acerca de</a><a href="/contacto">Contacto</a>
       </div>
       <div class="fcol">
-        <h4>Contacto</h4>
+        <h3>Contacto</h3>
         <a href="mailto:hola@praxialabs.com">hola@praxialabs.com</a><span>Diagnóstico de 15 min, gratis</span><span>Operativo desde el lunes</span><a href="/politica-privacidad">Política de privacidad</a>
       </div>
     </div>
