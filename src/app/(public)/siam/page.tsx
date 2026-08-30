@@ -16,7 +16,7 @@ export default function SiamPage() {
 
   return (
     <ProductLanding product={product}>
-      <section className="py-16 px-6 border-t border-purple-500/20">
+      <section id="nis2-calculadora" className="py-16 px-6 border-t border-purple-500/20 scroll-mt-24">
         <div className="max-w-2xl mx-auto">
           <h2 className="font-display text-2xl text-foreground mb-3">
             ¿Te aplica la directiva?
