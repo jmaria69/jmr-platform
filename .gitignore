@@ -73,3 +73,6 @@ next-env.d.ts
 
 # serena (caché y estado local del MCP, no se comparte)
 /.serena
+
+# loop-auto (estado runtime de las skills /loop, no se comparte)
+/.loop
