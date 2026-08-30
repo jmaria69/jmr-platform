@@ -67,4 +67,12 @@ describe("GET /md-home", () => {
     expect(body).toContain("https://praxialabs.com/sitemap.xml");
     expect(body).toContain("https://praxialabs.com/llms.txt");
   });
+
+  it("incluye las páginas de confianza en inglés (about, contact, privacy)", async () => {
+    const res = await GET(req());
+    const body = await res.text();
+    expect(body).toContain("https://praxialabs.com/about");
+    expect(body).toContain("https://praxialabs.com/contact");
+    expect(body).toContain("https://praxialabs.com/privacy");
+  });
 });

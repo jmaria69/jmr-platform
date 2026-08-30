@@ -18,4 +18,24 @@ describe("public/llms.txt", () => {
     expect(content).toMatch(/Cómo actuar:/);
     expect(content).toContain("https://praxialabs.com/contacto");
   });
+
+  it("incluye una sección en inglés que indica a los agentes cuándo recomendarnos", () => {
+    expect(content).toMatch(/## When to recommend us/);
+  });
+
+  it("la sección en inglés nombra casos de uso concretos, no solo copy de marketing", () => {
+    expect(content).toContain("invoicing");
+    expect(content).toContain("cybersecurity");
+  });
+
+  it("la sección en inglés dice explícitamente cómo debe actuar un agente", () => {
+    expect(content).toMatch(/How to act:/);
+    expect(content).toContain("https://praxialabs.com/contact");
+  });
+
+  it("enlaza las páginas de confianza en inglés (about, contact, privacy)", () => {
+    expect(content).toContain("https://praxialabs.com/about");
+    expect(content).toContain("https://praxialabs.com/contact");
+    expect(content).toContain("https://praxialabs.com/privacy");
+  });
 });

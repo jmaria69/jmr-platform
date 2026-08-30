@@ -4,35 +4,35 @@ import { ArrowRight, Bot, Cpu, Shield } from 'lucide-react';
 import { PraxiaLabLogo } from '@/components/praxia-lab-logo';
 
 export const metadata: Metadata = {
-  title: 'Acerca de — Praxia Labs',
-  description: 'Somos un estudio de automatización con IA para pymes. Diseñamos, construimos y mantenemos agentes que ejecutan procesos reales en tu empresa.',
+  title: 'About — Praxia Labs',
+  description: "We're an AI automation studio for SMBs. We design, build, and maintain agents that run real processes in your business.",
   alternates: {
-    canonical: '/acerca-de',
-    languages: { en: '/about', 'x-default': '/acerca-de' },
+    canonical: '/about',
+    languages: { es: '/acerca-de', 'x-default': '/acerca-de' },
   },
 };
 
-const valores = [
+const values = [
   {
     icon: Bot,
-    title: 'Resultados antes que tecnología',
-    description: 'No vendemos IA porque está de moda. La usamos cuando resuelve un problema concreto y medible en tu empresa.',
+    title: 'Results before technology',
+    description: "We don't sell AI because it's trendy. We use it when it solves a concrete, measurable problem in your business.",
   },
   {
     icon: Shield,
-    title: 'Soporte real',
-    description: 'Respondemos en menos de 2 horas, en horario laboral. Sin bots de primer nivel ni tickets que tardan días.',
+    title: 'Real support',
+    description: 'We respond in under 2 hours, during business hours. No first-line bots, no tickets that sit for days.',
   },
   {
     icon: Cpu,
-    title: 'Sin código para el cliente',
-    description: 'Tú describes el proceso. Nosotros lo construimos, lo probamos y lo mantenemos. Sin formación técnica necesaria.',
+    title: 'No code for the client',
+    description: 'You describe the process. We build it, test it, and maintain it. No technical training required.',
   },
 ];
 
-export default function AcercaDePage() {
+export default function AboutPage() {
   return (
-    <div className="min-h-screen bg-transparent text-[#e8e8f0]">
+    <div lang="en" className="min-h-screen bg-transparent text-[#e8e8f0]">
       <div className="max-w-4xl mx-auto px-6 py-20">
 
         {/* Header */}
@@ -41,47 +41,47 @@ export default function AcercaDePage() {
             <PraxiaLabLogo size={48} />
             <div>
               <h1 className="text-2xl font-black text-white">Praxia Labs</h1>
-              <p className="text-sm text-gray-400">Madrid, España</p>
+              <p className="text-sm text-gray-400">Madrid, Spain</p>
             </div>
           </div>
 
           <h2 className="text-4xl font-black text-white mb-6 leading-tight">
-            Automatizamos los procesos que<br />
+            We automate the processes<br />
             <span className="bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
-              todavía haces a mano.
+              you&apos;re still doing by hand.
             </span>
           </h2>
 
           <p className="text-xl text-gray-300 leading-relaxed max-w-2xl">
-            Somos un estudio especializado en automatización con IA para pymes. Diseñamos, construimos y mantenemos agentes inteligentes que ejecutan procesos reales en tu empresa: facturación, aprobaciones, seguimiento de clientes, generación de informes.
+            We&apos;re a specialized AI automation studio for small and medium businesses. We design, build, and maintain intelligent agents that run real processes in your company: invoicing, approvals, customer follow-up, report generation.
           </p>
 
           <p className="text-sm text-gray-500 mt-4">
-            <Link href="/about" className="text-cyan-400 hover:underline">English version</Link>
+            <Link href="/acerca-de" className="text-cyan-400 hover:underline">Versión en español</Link>
           </p>
         </div>
 
-        {/* Quiénes somos */}
+        {/* Why we exist */}
         <div className="mb-16 p-8 rounded-2xl border border-purple-500/20 glass">
-          <h3 className="text-2xl font-bold text-white mb-4">Por qué existimos</h3>
+          <h3 className="text-2xl font-bold text-white mb-4">Why we exist</h3>
           <div className="space-y-4 text-gray-400 leading-relaxed">
             <p>
-              La mayoría de software de automatización está diseñado para grandes empresas con equipos de IT. Las pymes se quedan fuera o pagan soluciones que nadie sabe cómo configurar.
+              Most automation software is built for large enterprises with dedicated IT teams. SMBs get left out, or end up paying for tools nobody knows how to configure.
             </p>
             <p>
-              Praxia Labs nació para cambiar eso. Trabajamos directamente con el responsable del proceso — sin intermediarios, sin manuales de 200 páginas — y entregamos automatizaciones que funcionan desde el primer día.
+              Praxia Labs exists to change that. We work directly with the person who owns the process — no middlemen, no 200-page manuals — and we ship automations that work from day one.
             </p>
             <p>
-              Nuestra forma de trabajar es sencilla: escuchamos, diseñamos, construimos y nos quedamos contigo el tiempo que haga falta. Si algo falla a las 3 de la madrugada, lo sabemos antes que tú.
+              Our way of working is simple: we listen, design, build, and stay with you for as long as it takes. If something breaks at 3am, we know before you do.
             </p>
           </div>
         </div>
 
-        {/* Valores */}
+        {/* Values */}
         <div className="mb-16">
-          <h3 className="text-2xl font-bold text-white mb-8">Cómo trabajamos</h3>
+          <h3 className="text-2xl font-bold text-white mb-8">How we work</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {valores.map(({ icon: Icon, title, description }) => (
+            {values.map(({ icon: Icon, title, description }) => (
               <div key={title} className="p-6 rounded-2xl border border-purple-500/20 glass hover:border-purple-500/40 transition">
                 <div className="w-12 h-12 rounded-xl bg-purple-600/20 border border-purple-500/30 flex items-center justify-center mb-4">
                   <Icon className="h-5 w-5 text-purple-400" />
@@ -95,9 +95,9 @@ export default function AcercaDePage() {
 
         {/* Stack */}
         <div className="mb-16 p-8 rounded-2xl border border-cyan-500/20 glass">
-          <h3 className="text-2xl font-bold text-white mb-4">Stack tecnológico</h3>
+          <h3 className="text-2xl font-bold text-white mb-4">Tech stack</h3>
           <p className="text-gray-400 mb-6">
-            Usamos herramientas modernas y bien probadas. Sin reinventar la rueda.
+            We use modern, well-tested tools. No reinventing the wheel.
           </p>
           <div className="flex flex-wrap gap-2">
             {['Next.js', 'React', 'TypeScript', 'Python', 'FastAPI', 'Claude API', 'PostgreSQL', 'Docker', 'Vercel', 'LangChain', 'Resend', 'Prisma'].map(tech => (
@@ -110,22 +110,22 @@ export default function AcercaDePage() {
 
         {/* CTA */}
         <div className="text-center p-10 rounded-2xl border border-purple-500/30 glass-strong">
-          <h3 className="text-2xl font-bold text-white mb-3">¿Tienes un proceso que automatizar?</h3>
+          <h3 className="text-2xl font-bold text-white mb-3">Have a process to automate?</h3>
           <p className="text-gray-400 mb-8">
-            Reserva una demo de 15 minutos. Te mostramos exactamente cómo lo haríamos en tu empresa.
+            Book a free 15-minute demo. We&apos;ll show you exactly how we&apos;d do it for your business.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
-              href="/contacto"
+              href="/contact"
               className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-lg shimmer-btn font-semibold text-white transition-transform hover:scale-105"
             >
-              Reservar demo gratuita <ArrowRight className="h-4 w-4" />
+              Book free demo <ArrowRight className="h-4 w-4" />
             </Link>
             <Link
               href="/proyectos"
               className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-lg border border-cyan-500/30 text-cyan-400 font-semibold hover:bg-cyan-500/10 transition"
             >
-              Ver proyectos →
+              View projects →
             </Link>
           </div>
         </div>

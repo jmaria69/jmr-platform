@@ -14,4 +14,12 @@ describe("sitemap", () => {
     expect(urls).toContain("https://praxialabs.com/contacto");
     expect(urls).toContain("https://praxialabs.com/politica-privacidad");
   });
+
+  it("incluye las versiones en inglés de las páginas de confianza (about, contact, privacy)", async () => {
+    const entries = await sitemap();
+    const urls = entries.map((e) => e.url);
+    expect(urls).toContain("https://praxialabs.com/about");
+    expect(urls).toContain("https://praxialabs.com/contact");
+    expect(urls).toContain("https://praxialabs.com/privacy");
+  });
 });

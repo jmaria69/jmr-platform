@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import { PraxiaLabLogo } from '@/components/praxia-lab-logo';
 import { CONTACT_EMAIL } from '@/lib/constants';
 
@@ -6,7 +7,10 @@ export const metadata: Metadata = {
   title: 'Política de privacidad — Praxia Labs',
   description:
     'Qué datos recoge Praxia Labs, para qué los usamos, cuánto tiempo los conservamos y cómo ejercer tus derechos de acceso, rectificación o supresión.',
-  alternates: { canonical: '/politica-privacidad' },
+  alternates: {
+    canonical: '/politica-privacidad',
+    languages: { en: '/privacy', 'x-default': '/politica-privacidad' },
+  },
 };
 
 export default function PoliticaPrivacidadPage() {
@@ -21,6 +25,10 @@ export default function PoliticaPrivacidadPage() {
             <p className="text-sm text-gray-400">Praxia Labs · Madrid, España</p>
           </div>
         </div>
+
+        <p className="text-sm text-gray-500 mb-10">
+          <Link href="/privacy" className="text-cyan-400 hover:underline">English version</Link>
+        </p>
 
         <div className="space-y-10 text-gray-300 leading-relaxed">
           <section>
