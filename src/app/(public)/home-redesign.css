@@ -192,9 +192,12 @@ html.ivory .lx .ncard .ntech-pill { background: rgba(0,0,0,.03); }
 .lx .ncard p { font-size: 14px; color: var(--muted); margin: 0; }
 .lx .ncard .ntech { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
 .lx .ncard .ntech-pill { font-family: ui-monospace, monospace; font-size: 10.5px; letter-spacing: .03em; color: var(--muted); background: rgba(255,255,255,.04); border: 1px solid var(--line); border-radius: 999px; padding: 4px 10px; }
-.lx .ncard .nlink { display: inline-flex; align-items: center; gap: 8px; margin-top: 16px; font-size: 12px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase;
+.lx .ncard .nlinks { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+.lx .ncard .nlink { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase;
   color: #001417; background: linear-gradient(135deg, var(--cyan), var(--aqua)); padding: 10px 20px; border-radius: 999px; transition: transform .15s, box-shadow .2s; }
 .lx .ncard .nlink:hover { transform: translateY(-2px); box-shadow: 0 12px 28px -10px rgba(0,242,255,.5); }
+.lx .ncard .nlink.sec { color: var(--fg); background: transparent; border: 1px solid var(--line2); }
+.lx .ncard .nlink.sec:hover { border-color: color-mix(in srgb, var(--cyan) 50%, transparent); box-shadow: none; }
 .lx .ncard .nst { font-family: ui-monospace, monospace; font-size: 10px; color: var(--green); letter-spacing: .06em; margin-left: 8px; }
 
 @media (max-width: 760px) {

@@ -59,13 +59,14 @@ export function buildNeuralRowHtml(p: Project, _index: number): string {
       ? `<img src="${esc(safeImage)}" alt="${esc(p.name)}" loading="lazy" onerror="this.style.display='none'">`
       : "";
   const img = media ? `<div class="nimg">${fallback}${media}</div>` : `<div class="nimg">${fallback}</div>`;
-  const linkText = p.id === "siam" ? "Calculadora NIS2 &rarr;" : "Ver proyecto &rarr;";
-  const linkHref = p.id === "siam" ? "/siam#nis2-calculadora" : safeLink;
-  const link = safeLink
+  const primaryLink = safeLink
     ? presentationPath
-      ? `<a class="nlink" href="${esc(linkHref)}">${linkText}</a>`
-      : `<a class="nlink" href="${esc(linkHref)}" target="_blank" rel="noopener noreferrer">${linkText}</a>`
+      ? `<a class="nlink" href="${esc(safeLink)}">Ver proyecto &rarr;</a>`
+      : `<a class="nlink" href="${esc(safeLink)}" target="_blank" rel="noopener noreferrer">Ver proyecto &rarr;</a>`
     : "";
+  const secondaryLink =
+    p.id === "siam" ? `<a class="nlink sec" href="/siam#nis2-calculadora">Calculadora NIS2 &rarr;</a>` : "";
+  const link = primaryLink || secondaryLink ? `<div class="nlinks">${primaryLink}${secondaryLink}</div>` : "";
   const tech = p.tech.length
     ? `<div class="ntech">${p.tech.map((t) => `<span class="ntech-pill">${esc(t)}</span>`).join("")}</div>`
     : "";
