@@ -27,6 +27,7 @@ export const ORG_JSON_LD = {
   description: SITE_DESCRIPTION,
   email: CONTACT_EMAIL,
   address: { "@type": "PostalAddress", addressCountry: "ES" },
+  sameAs: ["https://www.linkedin.com/company/130074338/"],
   contactPoint: {
     "@type": "ContactPoint",
     email: CONTACT_EMAIL,

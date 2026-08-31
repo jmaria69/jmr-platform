@@ -44,4 +44,8 @@ describe("ORG_JSON_LD", () => {
       addressCountry: "ES",
     });
   });
+
+  it("incluye sameAs con el perfil de LinkedIn de la empresa", () => {
+    expect(ORG_JSON_LD.sameAs).toContain("https://www.linkedin.com/company/130074338/");
+  });
 });
