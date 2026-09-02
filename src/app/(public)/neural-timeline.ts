@@ -1,10 +1,11 @@
 import type { Project } from "@/types";
 import { PRESENTATION_PATHS } from "@/lib/presentation-paths";
 
-const STATUS_LABELS: Record<string, string> = {
-  production: "EN PRODUCCIÓN",
-  beta: "BETA",
-  development: "EN DESARROLLO",
+type Lang = "es" | "en";
+
+const STATUS_LABELS: Record<Lang, Record<string, string>> = {
+  es: { production: "EN PRODUCCIÓN", beta: "BETA", development: "EN DESARROLLO" },
+  en: { production: "IN PRODUCTION", beta: "BETA", development: "IN DEVELOPMENT" },
 };
 
 function esc(s: string): string {
@@ -45,8 +46,9 @@ function neuralSegmentSvg(rowId: string): string {
     </svg>`;
 }
 
-export function buildNeuralRowHtml(p: Project, _index: number): string {
-  const status = STATUS_LABELS[p.status] || "EN PRODUCCIÓN";
+export function buildNeuralRowHtml(p: Project, _index: number, lang: Lang = "es"): string {
+  const labels = STATUS_LABELS[lang];
+  const status = labels[p.status] || labels.production;
   const safeImage = safeUrl(p.image);
   const safeVideo = safeUrl(p.videoUrl);
   const presentationPath = PRESENTATION_PATHS[p.id];
@@ -59,13 +61,16 @@ export function buildNeuralRowHtml(p: Project, _index: number): string {
       ? `<img src="${esc(safeImage)}" alt="${esc(p.name)}" loading="lazy" onerror="this.style.display='none'">`
       : "";
   const img = media ? `<div class="nimg">${fallback}${media}</div>` : `<div class="nimg">${fallback}</div>`;
+  const verProyecto = lang === "en" ? "View project" : "Ver proyecto";
   const primaryLink = safeLink
     ? presentationPath
-      ? `<a class="nlink" href="${esc(safeLink)}">Ver proyecto &rarr;</a>`
-      : `<a class="nlink" href="${esc(safeLink)}" target="_blank" rel="noopener noreferrer">Ver proyecto &rarr;</a>`
+      ? `<a class="nlink" href="${esc(safeLink)}">${verProyecto} &rarr;</a>`
+      : `<a class="nlink" href="${esc(safeLink)}" target="_blank" rel="noopener noreferrer">${verProyecto} &rarr;</a>`
     : "";
   const secondaryLink =
-    p.id === "siam" ? `<a class="nlink sec" href="/siam#nis2-calculadora">Calculadora NIS2 &rarr;</a>` : "";
+    lang === "es" && p.id === "siam"
+      ? `<a class="nlink sec" href="/siam#nis2-calculadora">Calculadora NIS2 &rarr;</a>`
+      : "";
   const link = primaryLink || secondaryLink ? `<div class="nlinks">${primaryLink}${secondaryLink}</div>` : "";
   const tech = p.tech.length
     ? `<div class="ntech">${p.tech.map((t) => `<span class="ntech-pill">${esc(t)}</span>`).join("")}</div>`

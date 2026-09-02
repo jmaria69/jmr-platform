@@ -6,48 +6,49 @@ import { findAllProjects } from "@/lib/repositories/projects.repository";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Laboratorio",
+  title: "Lab",
   description:
-    "Sistemas que he construido: producción, betas y experimentos. La prueba de que lo que prometo se entrega.",
+    "Systems we've built: production, betas, and experiments. Proof that what we promise gets delivered.",
   alternates: {
-    canonical: "/laboratorio",
-    languages: { en: "/en/lab", "x-default": "/laboratorio" },
+    canonical: "/en/lab",
+    languages: { es: "/laboratorio", "x-default": "/laboratorio" },
   },
 };
 
-const ETIQUETA_ESTADO: Record<string, string> = {
-  production: "Producción",
+const STATUS_LABEL: Record<string, string> = {
+  production: "Production",
   beta: "Beta",
 };
 
-export default async function LaboratorioPage() {
-  // Muestra los proyectos con el flag "mostrar en laboratorio" activado
-  // (toggle en /admin/proyectos). force-dynamic → refleja admin al instante.
+export default async function LabPageEn() {
+  // Same source as /laboratorio (toggle in /admin/proyectos); project titles
+  // and descriptions are entered in Spanish and are not translated here —
+  // see i18n scope notes.
   const allProjects = await findAllProjects();
-  const proyectos = allProjects.filter((p) => p.showInLab);
+  const projects = allProjects.filter((p) => p.showInLab);
 
   return (
-    <div className="min-h-screen bg-transparent pt-32 pb-24 px-6">
+    <div lang="en" className="min-h-screen bg-transparent pt-32 pb-24 px-6">
       <div className="max-w-6xl mx-auto">
         <div className="max-w-2xl mb-14">
           <h1 className="font-display text-4xl text-gray-900 dark:text-white mb-4">
-            Laboratorio
+            Lab
           </h1>
           <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
-            Cosas que he construido. Algunas están en producción, otras son experimentos que
-            siguen vivos. No son productos a la venta: están aquí como prueba de que lo que
-            prometo se entrega.
+            Things we&apos;ve built. Some are in production, others are experiments still
+            alive. Not products for sale — they&apos;re here as proof that what we promise
+            gets delivered.
           </p>
         </div>
 
-        {proyectos.length === 0 && (
+        {projects.length === 0 && (
           <p className="text-gray-500 dark:text-gray-400">
-            Todavía no hay proyectos que mostrar aquí.
+            No projects to show here yet.
           </p>
         )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {proyectos.map((project) => (
+          {projects.map((project) => (
             <div key={project.id} className="project-card-v2 group p-6 rounded-2xl transition-all">
               <div
                 className="h-0.5 w-full rounded-full mb-5"
@@ -67,7 +68,7 @@ export default async function LaboratorioPage() {
                         border: `1px solid ${project.color}30`,
                       }}
                     >
-                      {ETIQUETA_ESTADO[project.status] ?? "Explorando"}
+                      {STATUS_LABEL[project.status] ?? "Exploring"}
                     </span>
                     <span className="badge-tech">{project.category.toUpperCase()}</span>
                   </div>
@@ -94,7 +95,7 @@ export default async function LaboratorioPage() {
                   href={`/proyectos/${project.id}`}
                   className="flex items-center gap-1 text-sm text-cyan-500 dark:text-cyan-400 hover:text-cyan-300 font-semibold transition"
                 >
-                  Ver detalles <ArrowRight className="h-3.5 w-3.5" />
+                  View details <ArrowRight className="h-3.5 w-3.5" />
                 </Link>
                 {project.url && (
                   <a
@@ -103,7 +104,7 @@ export default async function LaboratorioPage() {
                     rel="noopener noreferrer"
                     className="flex items-center gap-1 text-sm text-purple-500 dark:text-purple-400 hover:text-purple-300 font-semibold transition"
                   >
-                    Ver en vivo <ExternalLink className="h-3.5 w-3.5" />
+                    View live <ExternalLink className="h-3.5 w-3.5" />
                   </a>
                 )}
               </div>

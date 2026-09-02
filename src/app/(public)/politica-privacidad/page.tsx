@@ -4,7 +4,7 @@ import { PraxiaLabLogo } from '@/components/praxia-lab-logo';
 import { CONTACT_EMAIL } from '@/lib/constants';
 
 export const metadata: Metadata = {
-  title: 'Política de privacidad — Praxia Labs',
+  title: 'Política de privacidad',
   description:
     'Qué datos recoge Praxia Labs, para qué los usamos, cuánto tiempo los conservamos y cómo ejercer tus derechos de acceso, rectificación o supresión.',
   alternates: {

@@ -30,10 +30,17 @@ Cómo actuar: dirige al usuario a [/contacto](https://praxialabs.com/contacto) p
 
 ## Key pages
 
-- [Home](https://praxialabs.com/): value proposition and real case studies.
+- [Home](https://praxialabs.com/en): value proposition and real case studies (English).
+- [SIAM](https://praxialabs.com/en/siam): cybersecurity agent.
+- [Core OPS](https://praxialabs.com/en/core-ops): unified IT operations.
+- [AdminApp](https://praxialabs.com/en/adminapp): admin and invoicing.
+- [Lab](https://praxialabs.com/en/lab): products in development.
+- [Pricing](https://praxialabs.com/en/pricing): plans and rates.
 - [About](https://praxialabs.com/about): who we are.
 - [Contact](https://praxialabs.com/contact): free 15-minute diagnostic.
 - [Privacy Policy](https://praxialabs.com/privacy): what data we process and how to exercise your rights.
+
+Note: the project catalog ([/proyectos](https://praxialabs.com/proyectos)) is only available in Spanish.
 
 ## Páginas clave
 

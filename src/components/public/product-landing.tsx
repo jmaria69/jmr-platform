@@ -3,13 +3,39 @@ import type { ReactNode } from "react";
 import { ArrowRight, ExternalLink } from "lucide-react";
 import type { Product } from "@/content/products";
 
+const STRINGS = {
+  es: {
+    fuente: "Fuente",
+    verApp: "Ver la app en directo",
+    porQue: "Por qué esto es un problema hoy",
+    queHace: (nombre: string) => `Qué hace ${nombre}`,
+    hablamos: "Hablamos 15 minutos",
+    sinPresentacion: "Sin presentación comercial. Me cuentas cómo lo lleváis hoy y te digo si esto os sirve.",
+    reservarLlamada: "Reservar una llamada",
+    contactoHref: "/contacto",
+  },
+  en: {
+    fuente: "Source",
+    verApp: "See the app live",
+    porQue: "Why this is a problem today",
+    queHace: (nombre: string) => `What ${nombre} does`,
+    hablamos: "Let's talk for 15 minutes",
+    sinPresentacion: "No sales pitch. Tell us how you handle it today and we'll tell you if this fits.",
+    reservarLlamada: "Book a call",
+    contactoHref: "/contact",
+  },
+} as const;
+
 export function ProductLanding({
   product,
   children,
+  lang = "es",
 }: {
   product: Product;
   children?: ReactNode;
+  lang?: "es" | "en";
 }) {
+  const t = STRINGS[lang];
   return (
     <div className="min-h-screen bg-transparent">
       <section className="relative pt-32 pb-16 px-6">
@@ -40,7 +66,7 @@ export function ProductLanding({
                     rel="noopener noreferrer"
                     className="text-[11px] text-muted-foreground hover:text-foreground underline underline-offset-2"
                   >
-                    Fuente: {f.titulo}
+                    {t.fuente}: {f.titulo}
                   </a>
                 </li>
               ))}
@@ -61,7 +87,7 @@ export function ProductLanding({
               className="inline-flex items-center gap-2 px-8 py-4 rounded-lg border font-semibold transition-colors hover:bg-white/5"
               style={{ borderColor: `${product.color}60`, color: product.color }}
             >
-              Ver la app en directo <ExternalLink className="h-4 w-4" />
+              {t.verApp} <ExternalLink className="h-4 w-4" />
             </a>
           </div>
         </div>
@@ -70,7 +96,7 @@ export function ProductLanding({
       <section className="py-16 px-6 border-t border-border">
         <div className="max-w-4xl mx-auto">
           <h2 className="font-display text-2xl text-foreground mb-8">
-            Por qué esto es un problema hoy
+            {t.porQue}
           </h2>
           <div className="space-y-4">
             {product.dolores.map((d) => (
@@ -86,7 +112,7 @@ export function ProductLanding({
                     rel="noopener noreferrer"
                     className="mt-2 inline-block text-[11px] text-muted-foreground hover:text-foreground underline underline-offset-2"
                   >
-                    Fuente: {d.fuente.titulo}
+                    {t.fuente}: {d.fuente.titulo}
                   </a>
                 )}
               </div>
@@ -98,7 +124,7 @@ export function ProductLanding({
             style={{ background: `${product.color}10`, borderColor: `${product.color}30` }}
           >
             <p className="text-xs uppercase tracking-widest font-bold mb-1" style={{ color: product.color }}>
-              Qué hace {product.nombre}
+              {t.queHace(product.nombre)}
             </p>
             <p className="text-foreground font-semibold leading-relaxed">
               {product.promesa}
@@ -112,16 +138,16 @@ export function ProductLanding({
       <section className="py-20 px-6 border-t border-border">
         <div className="max-w-2xl mx-auto text-center space-y-6">
           <h2 className="font-display text-3xl text-foreground">
-            Hablamos 15 minutos
+            {t.hablamos}
           </h2>
           <p className="text-muted-foreground">
-            Sin presentación comercial. Me cuentas cómo lo lleváis hoy y te digo si esto os sirve.
+            {t.sinPresentacion}
           </p>
           <Link
-            href="/contacto"
+            href={t.contactoHref}
             className="inline-flex items-center gap-2 px-8 py-4 rounded-lg shimmer-btn font-semibold text-white transition-transform hover:scale-105"
           >
-            Reservar una llamada <ArrowRight className="h-4 w-4" />
+            {t.reservarLlamada} <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
       </section>

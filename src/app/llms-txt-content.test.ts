@@ -38,4 +38,10 @@ describe("public/llms.txt", () => {
     expect(content).toContain("https://praxialabs.com/contact");
     expect(content).toContain("https://praxialabs.com/privacy");
   });
+
+  it("enlaza la versión en inglés del sitio estático (/en/*)", () => {
+    expect(content).toContain("https://praxialabs.com/en");
+    expect(content).toContain("https://praxialabs.com/en/siam");
+    expect(content).toContain("https://praxialabs.com/en/pricing");
+  });
 });

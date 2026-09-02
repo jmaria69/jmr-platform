@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Contacto — Praxia Labs',
+  title: 'Contacto',
   description: 'Cuéntanos sobre tu proyecto. Diagnóstico gratuito de 15 minutos, operativo en 48 horas.',
   alternates: {
     canonical: '/contacto',

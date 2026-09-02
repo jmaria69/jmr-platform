@@ -74,6 +74,6 @@ export const MAX_VISIBLE_VISITORS = 30;
 
 // ─── Contact info ───
 
-export const CONTACT_EMAIL = "contacto@praxialabs.com";
+export const CONTACT_EMAIL = "jmaria.romero@praxialabs.com";
 export const CONTACT_PHONE = "+34 600 000 000";
 export const CONTACT_LOCATION = "Madrid, España";

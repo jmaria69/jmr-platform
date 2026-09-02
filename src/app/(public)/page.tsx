@@ -14,9 +14,12 @@ const SITE_DESCRIPTION =
   "Automatización a medida con agentes de IA. Diagnóstico de 15 min, operativo en 48 h. Sistemas propios en producción, no plantillas.";
 
 export const metadata: Metadata = {
-  title: "Praxia Labs — El trabajo que haces a mano, hecho solo",
+  title: "El trabajo que haces a mano, hecho solo",
   description: SITE_DESCRIPTION,
-  alternates: { canonical: "/" },
+  alternates: {
+    canonical: "/",
+    languages: { en: "/en", "x-default": "/" },
+  },
 };
 
 export const ORG_JSON_LD = {
@@ -155,7 +158,7 @@ export default async function Home() {
       </div>
       <div class="fcol">
         <h3>Contacto</h3>
-        <a href="mailto:hola@praxialabs.com">hola@praxialabs.com</a><span>Diagnóstico de 15 min, gratis</span><span>Operativo desde el lunes</span><a href="/politica-privacidad">Política de privacidad</a>
+        <a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a><span>Diagnóstico de 15 min, gratis</span><span>Operativo desde el lunes</span><a href="/politica-privacidad">Política de privacidad</a>
       </div>
     </div>
     <div class="fbot"><span>&copy; ${new Date().getFullYear()} Praxia Labs</span><span class="mono">Hecho en España</span></div>

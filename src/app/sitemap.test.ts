@@ -22,4 +22,15 @@ describe("sitemap", () => {
     expect(urls).toContain("https://praxialabs.com/contact");
     expect(urls).toContain("https://praxialabs.com/privacy");
   });
+
+  it("incluye la versión en inglés del sitio estático (/en/*)", async () => {
+    const entries = await sitemap();
+    const urls = entries.map((e) => e.url);
+    expect(urls).toContain("https://praxialabs.com/en");
+    expect(urls).toContain("https://praxialabs.com/en/siam");
+    expect(urls).toContain("https://praxialabs.com/en/core-ops");
+    expect(urls).toContain("https://praxialabs.com/en/adminapp");
+    expect(urls).toContain("https://praxialabs.com/en/lab");
+    expect(urls).toContain("https://praxialabs.com/en/pricing");
+  });
 });

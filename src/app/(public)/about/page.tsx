@@ -4,7 +4,7 @@ import { ArrowRight, Bot, Cpu, Shield } from 'lucide-react';
 import { PraxiaLabLogo } from '@/components/praxia-lab-logo';
 
 export const metadata: Metadata = {
-  title: 'About — Praxia Labs',
+  title: 'About',
   description: "We're an AI automation studio for SMBs. We design, build, and maintain agents that run real processes in your business.",
   alternates: {
     canonical: '/about',

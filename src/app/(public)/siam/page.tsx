@@ -5,9 +5,13 @@ import { ProductLanding } from "@/components/public/product-landing";
 import { Nis2Calculator } from "@/components/public/nis2-calculator";
 
 export const metadata: Metadata = {
-  title: "SIAM — SOC virtual para pymes | Praxia Labs",
+  title: "SIAM — SOC virtual para pymes",
   description:
     "El 70% de los ciberataques en España caen sobre pymes. SIAM te da visibilidad de lo que pasa en tu red y la capacidad de notificarlo dentro del plazo que exige NIS2.",
+  alternates: {
+    canonical: "/siam",
+    languages: { en: "/en/siam", "x-default": "/siam" },
+  },
 };
 
 export default function SiamPage() {

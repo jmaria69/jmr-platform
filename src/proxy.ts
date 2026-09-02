@@ -12,6 +12,7 @@ import { prefersMarkdown, withMarkdownVary } from "@/lib/markdown-negotiation";
 const KNOWN_TOP_SEGMENTS = new Set([
   "acerca-de", "adminapp", "contacto", "core-ops", "laboratorio",
   "politica-privacidad", "precios", "proyectos", "siam",
+  "about", "contact", "privacy", "en",
   "admin", "api", "c", "demo", "login", "md-home", "md-404",
   "apple-icon", "opengraph-image",
 ]);

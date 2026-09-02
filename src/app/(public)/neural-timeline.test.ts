@@ -105,4 +105,22 @@ describe("buildNeuralRowHtml", () => {
     expect(html).not.toContain("<b>x</b>");
     expect(html).toContain("&lt;b&gt;x&lt;/b&gt;");
   });
+
+  it("por defecto usa las etiquetas y enlaces en español", () => {
+    const html = buildNeuralRowHtml(baseProject, 0);
+    expect(html).toContain("EN PRODUCCIÓN");
+    expect(html).toContain("Ver proyecto &rarr;");
+  });
+
+  it("con lang=\"en\" usa etiquetas y texto de enlace en inglés", () => {
+    const html = buildNeuralRowHtml(baseProject, 0, "en");
+    expect(html).toContain("IN PRODUCTION");
+    expect(html).toContain("View project &rarr;");
+    expect(html).not.toContain("EN PRODUCCIÓN");
+  });
+
+  it("con lang=\"en\" no añade el enlace a la calculadora NIS2 en español", () => {
+    const html = buildNeuralRowHtml({ ...baseProject, id: "siam" }, 0, "en");
+    expect(html).not.toContain("nis2-calculadora");
+  });
 });

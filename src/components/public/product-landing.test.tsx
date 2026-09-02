@@ -74,4 +74,13 @@ describe("ProductLanding", () => {
       unmount();
     }
   });
+
+  it('con lang="en" traduce el chrome estático (CTA, encabezados, enlace de contacto)', () => {
+    render(<ProductLanding product={siam} lang="en" />);
+    expect(screen.getByRole("link", { name: /See the app live/i })).toBeInTheDocument();
+    expect(screen.getByText("Why this is a problem today")).toBeInTheDocument();
+    expect(screen.getByText(`What ${siam.nombre} does`)).toBeInTheDocument();
+    const callLink = screen.getByRole("link", { name: /Book a call/i });
+    expect(callLink).toHaveAttribute("href", "/contact");
+  });
 });

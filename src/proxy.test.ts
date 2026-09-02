@@ -50,6 +50,20 @@ describe("proxy — negociación markdown en 404 de primer nivel", () => {
     expect(res.headers.get("x-middleware-rewrite")).toBeNull();
   });
 
+  it("no reescribe las páginas de confianza en inglés (about, contact, privacy)", async () => {
+    for (const path of ["/about", "/contact", "/privacy"]) {
+      const res = await proxy(req(path, "text/markdown"));
+      expect(res.headers.get("x-middleware-rewrite")).toBeNull();
+    }
+  });
+
+  it("no reescribe rutas bajo /en (sitio en inglés)", async () => {
+    for (const path of ["/en", "/en/siam", "/en/pricing"]) {
+      const res = await proxy(req(path, "text/markdown"));
+      expect(res.headers.get("x-middleware-rewrite")).toBeNull();
+    }
+  });
+
   it("añade Accept y Accept-Encoding a Vary al reescribir", async () => {
     const res = await proxy(req("/esto-no-existe", "text/markdown"));
     expect(res.headers.get("Vary")).toBe("Accept, Accept-Encoding");
