@@ -421,7 +421,7 @@ export default function SeguridadPage() {
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Estado</span>
                 <span className={`font-medium ${process.env.NEXT_PUBLIC_EMAIL_CONFIGURED === "true" ? "text-green-400" : "text-amber-400"}`}>
-                  Configurar template ↓
+                  {process.env.NEXT_PUBLIC_EMAIL_CONFIGURED === "true" ? "Activo" : "Configurar template ↓"}
                 </span>
               </div>
               <div className="pt-2 text-xs text-muted-foreground bg-muted/30 rounded-lg p-3">

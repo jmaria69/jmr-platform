@@ -1,9 +1,13 @@
 import { getSession } from "@/lib/auth/session";
 import { readStore, writeStore, type SecurityEvent } from "@/lib/security-store";
 import { fetchCloudflareWafEvents } from "@/lib/cloudflare-waf";
+import { sendSecurityAlertEmail } from "@/lib/security-email";
 import { NextRequest, NextResponse } from "next/server";
 
 const VALID_TYPES = ["bot_blocked", "rate_limited", "invalid_token", "brute_force", "suspicious"];
+
+const SEVERITY_RANK: Record<SecurityEvent["severity"], number> = { low: 0, medium: 1, high: 2, critical: 3 };
+const EMAIL_COOLDOWN_MS = 5 * 60 * 1000;
 
 export async function POST(req: NextRequest) {
   const session = await getSession();
@@ -50,6 +54,17 @@ export async function POST(req: NextRequest) {
 
     store.events.unshift(event);
     if (store.events.length > 200) store.events.splice(200);
+
+    // Alerta por email (EmailJS) para severidad media o superior, con cooldown
+    // global de 5 min para no saturar el buzón durante un ataque sostenido.
+    const now = Date.now();
+    if (
+      SEVERITY_RANK[event.severity] >= SEVERITY_RANK.medium &&
+      (!store.lastEmailSentAt || now - store.lastEmailSentAt >= EMAIL_COOLDOWN_MS)
+    ) {
+      store.lastEmailSentAt = now;
+      await sendSecurityAlertEmail(event);
+    }
 
     await writeStore(store);
 

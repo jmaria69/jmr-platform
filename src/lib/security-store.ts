@@ -21,6 +21,9 @@ export interface DemoStore {
   // estado "resuelto" no puede guardarse en el propio objeto del evento
   // como con los de proxy.ts; se guarda aparte y se aplica al fusionar.
   resolvedCfIds?: string[];
+  // Timestamp (ms) del último email de alerta enviado (ver src/lib/security-email.ts).
+  // Cooldown global de 5 min para no saturar el buzón durante un ataque sostenido.
+  lastEmailSentAt?: number;
 }
 
 const BLOB_KEY = "security-events.json";
