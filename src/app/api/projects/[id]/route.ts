@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { verifyToken, SESSION_COOKIE } from "@/lib/auth/session";
 import {
   findProjectById,
@@ -47,6 +48,9 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
     const { id } = await params;
     const body = await request.json();
     const updated = await updateProject(id, body);
+    revalidatePath("/");
+    revalidatePath("/laboratorio");
+    revalidatePath(`/proyectos/${id}`);
     return apiSuccess(updated);
   } catch (err) {
     if (err instanceof ProjectNotFoundError) return apiNotFound("Proyecto");
@@ -63,6 +67,9 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     if (!session) return NextResponse.json({ error: "No autenticado" }, { status: 401 });
     const { id } = await params;
     await deleteProject(id);
+    revalidatePath("/");
+    revalidatePath("/laboratorio");
+    revalidatePath(`/proyectos/${id}`);
     return new NextResponse(null, { status: 204 });
   } catch (err) {
     if (err instanceof ProjectNotFoundError) return apiNotFound("Proyecto");

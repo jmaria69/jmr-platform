@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { verifyToken, SESSION_COOKIE } from "@/lib/auth/session";
 import {
   findAllProjects,
@@ -80,6 +81,8 @@ export async function POST(request: NextRequest) {
       },
     });
 
+    revalidatePath("/");
+    revalidatePath("/laboratorio");
     return apiCreated(project);
   } catch (err) {
     if (err instanceof ProjectAlreadyExistsError) {

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { verifyToken, SESSION_COOKIE } from "@/lib/auth/session";
 import { reorderProjects } from "@/lib/repositories";
 import { apiSuccess, apiBadRequest, apiServerError } from "@/lib/api-response";
@@ -21,6 +22,8 @@ export async function POST(request: NextRequest) {
     }
 
     await reorderProjects(ids);
+    revalidatePath("/");
+    revalidatePath("/laboratorio");
     return apiSuccess({ reordered: ids.length });
   } catch {
     return apiServerError();

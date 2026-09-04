@@ -201,77 +201,80 @@ export default function SeguridadPage() {
     <div className="space-y-6">
       {/* Event Detail Modal */}
       {selectedEvent && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-          <div className="relative bg-white rounded-2xl p-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="flex justify-between items-start mb-4">
-              <h2 className="text-2xl font-bold">
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
+          onClick={() => setSelectedEvent(null)}
+        >
+          <Card
+            onClick={e => e.stopPropagation()}
+            className="relative rounded-2xl glass border-gradient max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+          >
+            <CardHeader className="pb-3 flex flex-row items-start justify-between space-y-0">
+              <CardTitle className="text-base flex items-center gap-2">
+                <AlertTriangle className="h-4 w-4 text-amber-400" />
                 Detalle del evento
-              </h2>
+              </CardTitle>
               <button
                 onClick={() => setSelectedEvent(null)}
-                className="text-gray-400 hover:text-gray-600 transition-colors"
+                aria-label="Cerrar"
+                className="text-muted-foreground hover:text-foreground transition-colors rounded-lg p-1 -mt-1 -mr-1 hover:bg-muted/40"
               >
-                <X className="h-5 w-5" />
+                <X className="h-4 w-4" />
               </button>
-            </div>
-            <div className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <h3 className="font-semibold text-gray-700 mb-1">Información básica</h3>
-                  <p className="text-gray-600"><span className="font-medium">ID:</span> {selectedEvent.id}</p>
-                  <p className="text-gray-600"><span className="font-medium">Tipo:</span> {TYPE_CONFIG[selectedEvent.type]?.label}</p>
-                  <p className="text-gray-600"><span className="font-medium">Severidad:</span>
-                    <span className={`px-2 py-1 rounded text-xs font-medium ${SEVERITY_CONFIG[selectedEvent.severity]?.class}`}>
+            </CardHeader>
+            <CardContent className="space-y-4 text-sm">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Información básica</p>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="font-medium">{TYPE_CONFIG[selectedEvent.type]?.label}</span>
+                    <Badge className={`text-xs ${SEVERITY_CONFIG[selectedEvent.severity]?.class}`}>
                       {SEVERITY_CONFIG[selectedEvent.severity]?.label}
-                    </span>
-                  </p>
-                  <p className="text-gray-600"><span className="font-medium">Estado:</span> {selectedEvent.resolved ? 'Resuelto' : 'Activo'}</p>
+                    </Badge>
+                    {selectedEvent.resolved && <Badge className="text-xs bg-green-500/15 text-green-400 border-green-500/30">Resuelto</Badge>}
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-semibold text-gray-700 mb-1">Ubicación y tiempo</h3>
-                  <p className="text-gray-600"><span className="font-medium">IP:</span> <code className="bg-gray-50 px-2 py-0.5 rounded">{selectedEvent.ip}</code></p>
-                  <p className="text-gray-600"><span className="font-medium">Ruta:</span> <code className="bg-gray-50 px-2 py-0.5 rounded">{selectedEvent.path}</code></p>
-                  <p className="text-gray-600"><span className="font-medium">Hora:</span> {new Date(selectedEvent.timestamp).toLocaleString("es-ES")}</p>
+                <div className="space-y-1">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Ubicación y tiempo</p>
+                  <p className="font-mono text-xs">{selectedEvent.ip}</p>
+                  <p className="text-xs text-muted-foreground">{new Date(selectedEvent.timestamp).toLocaleString("es-ES")}</p>
                 </div>
               </div>
 
-              <div className="mt-4">
-                <h3 className="font-semibold text-gray-700 mb-2">Detalles técnicos</h3>
-                <p className="text-gray-600"><span className="font-medium">User Agent:</span></p>
-                <p className="text-xs text-gray-500 bg-gray-50 p-3 rounded font-mono break-all">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-1">Ruta</p>
+                <p className="font-mono text-xs bg-muted/30 rounded-lg p-2 break-all">{selectedEvent.path}</p>
+              </div>
+
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-1">User Agent</p>
+                <p className="text-xs text-muted-foreground bg-muted/30 rounded-lg p-2 font-mono break-all">
                   {selectedEvent.userAgent}
                 </p>
               </div>
 
-              <div className="mt-4">
-                <h3 className="font-semibold text-gray-700 mb-2">Descripción del evento</h3>
-                <p className="text-gray-600 leading-relaxed">{selectedEvent.details}</p>
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-1">Descripción</p>
+                <p className="text-muted-foreground leading-relaxed">{selectedEvent.details}</p>
               </div>
 
-              <div className="mt-4">
-                <h3 className="font-semibold text-gray-700 mb-2">Instrucciones de mitigación</h3>
-                <div className="space-y-2">
-                  <p className="font-medium text-gray-800">{SOLUTIONS[selectedEvent.type]?.title}</p>
-                  <ol className="list-decimal list-inside space-y-1 pl-5 text-gray-600">
-                    {SOLUTIONS[selectedEvent.type]?.steps.map((step, i) => (
-                      <li key={i} className="text-gray-600 leading-relaxed">{step}</li>
-                    ))}
-                  </ol>
-                </div>
-                {!selectedEvent.resolved && (
-                  <div className="mt-4">
-                    <button
-                      onClick={() => resolveEvent(selectedEvent.id)}
-                      className="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition-colors flex items-center justify-center gap-2"
-                    >
-                      <CheckCircle className="h-4 w-4" />
-                      Marcar como resuelto
-                    </button>
-                  </div>
-                )}
+              <div className="pt-2 border-t border-border">
+                <p className="text-muted-foreground mb-1 font-semibold">{SOLUTIONS[selectedEvent.type]?.title}</p>
+                <ol className="space-y-1.5 list-decimal list-inside">
+                  {SOLUTIONS[selectedEvent.type]?.steps.map((step, i) => (
+                    <li key={i} className="text-xs text-muted-foreground leading-relaxed">{step}</li>
+                  ))}
+                </ol>
               </div>
-            </div>
-          </div>
+
+              {!selectedEvent.resolved && (
+                <Button size="sm" className="w-full gap-2" onClick={() => resolveEvent(selectedEvent.id)}>
+                  <CheckCircle className="h-3.5 w-3.5" />
+                  Marcar como resuelto
+                </Button>
+              )}
+            </CardContent>
+          </Card>
         </div>
       )}
 
