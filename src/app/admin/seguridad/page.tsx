@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { Shield, ShieldAlert, ShieldCheck, RefreshCw, CheckCircle, Bot, Zap, KeyRound, Skull, AlertTriangle, Mail, Wifi, Flame } from "lucide-react";
+import { Shield, ShieldAlert, ShieldCheck, RefreshCw, CheckCircle, Bot, Zap, KeyRound, Skull, AlertTriangle, Mail, Wifi, Flame, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -113,14 +113,18 @@ export default function SeguridadPage() {
   const [selectedEvent, setSelectedEvent] = useState<SecurityEvent | null>(null);
   const [filterType, setFilterType] = useState<string>("");
   const [filterSeverity, setFilterSeverity] = useState<string>("");
+  const [pageSize, setPageSize] = useState(10);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [deleting, setDeleting] = useState(false);
 
   const fetchData = useCallback(async () => {
     try {
       const params = new URLSearchParams();
       if (filterType) params.set("type", filterType);
+      params.set("limit", String(pageSize));
       // cuando quieras filtrar en servidor:
       // if (filterSeverity) params.set("severity", filterSeverity);
-      const url = `/api/security/events${params.size ? `?${params}` : ""}`;
+      const url = `/api/security/events?${params}`;
       const res = await fetch(url);
       const data = await res.json();
       setEvents(data.events ?? []);
@@ -128,7 +132,7 @@ export default function SeguridadPage() {
     } catch { /* silent */ } finally {
       setLoading(false);
     }
-  }, [filterType]);
+  }, [filterType, pageSize]);
 
   useEffect(() => {
     fetchData();
@@ -154,6 +158,40 @@ export default function SeguridadPage() {
     if (filterSeverity && e.severity !== filterSeverity) return false;
     return true;
   });
+
+  const toggleSelect = (id: string) => {
+    setSelectedIds(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
+  };
+
+  const allVisibleSelected = filtered.length > 0 && filtered.every(e => selectedIds.has(e.id));
+  const toggleSelectAll = () => {
+    setSelectedIds(prev => {
+      if (allVisibleSelected) return new Set();
+      return new Set(filtered.map(e => e.id));
+    });
+  };
+
+  const deleteSelected = async () => {
+    if (selectedIds.size === 0) return;
+    if (!confirm(`¿Eliminar definitivamente ${selectedIds.size} evento(s)? Esta acción no se puede deshacer.`)) return;
+    setDeleting(true);
+    try {
+      await fetch("/api/security/events", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ids: [...selectedIds] }),
+      });
+      setEvents(ev => ev.filter(e => !selectedIds.has(e.id)));
+      if (selectedEvent && selectedIds.has(selectedEvent.id)) setSelectedEvent(null);
+      setSelectedIds(new Set());
+    } finally {
+      setDeleting(false);
+    }
+  };
 
   const criticalCount = stats?.critical ?? 0;
   const highCount = stats?.high ?? 0;
@@ -279,6 +317,44 @@ export default function SeguridadPage() {
             </select>
           </div>}
 
+          {!loading && filtered.length > 0 && (
+            <div className="flex items-center justify-between flex-wrap gap-2 text-xs">
+              <label className="flex items-center gap-2 text-muted-foreground cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={allVisibleSelected}
+                  onChange={toggleSelectAll}
+                  className="h-3.5 w-3.5"
+                />
+                Seleccionar todo ({filtered.length})
+              </label>
+              <div className="flex items-center gap-2">
+                {selectedIds.size > 0 && (
+                  <Button
+                    size="sm"
+                    variant="destructive"
+                    onClick={deleteSelected}
+                    disabled={deleting}
+                    className="h-7 text-xs gap-1.5"
+                  >
+                    <Trash2 className="h-3.5 w-3.5" />
+                    {deleting ? "Eliminando..." : `Eliminar (${selectedIds.size})`}
+                  </Button>
+                )}
+                <div className="flex gap-1">
+                  {[10, 50, 100].map(n => (
+                    <button
+                      key={n}
+                      onClick={() => setPageSize(n)}
+                      className={`px-2 py-1 rounded border ${pageSize === n ? "bg-indigo-600 border-indigo-500 text-white" : "border-border text-muted-foreground hover:bg-muted/40"}`}
+                    >
+                      {n}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
 
           {loading ? (
             <div className="text-center py-16 text-muted-foreground">Cargando eventos...</div>
@@ -291,17 +367,24 @@ export default function SeguridadPage() {
               </CardContent>
             </Card>
           ) : (
-            filtered.map(event => {
+            filtered.map((event, index) => {
               const cfg = TYPE_CONFIG[event.type] ?? TYPE_CONFIG.suspicious;
               const sev = SEVERITY_CONFIG[event.severity] ?? SEVERITY_CONFIG.low;
               const Icon = cfg.icon;
               return (
                 <div
-                  key={event.id}
+                  key={`${event.id}-${index}`}
                   onClick={() => setSelectedEvent(event)}
                   className={`flex items-start gap-3 p-4 rounded-xl border cursor-pointer transition-all hover:opacity-90 ${event.resolved ? "opacity-40" : ""
                     } ${selectedEvent?.id === event.id ? "ring-2 ring-indigo-500" : ""} ${cfg.border} ${cfg.bg}`}
                 >
+                  <input
+                    type="checkbox"
+                    checked={selectedIds.has(event.id)}
+                    onClick={e => e.stopPropagation()}
+                    onChange={() => toggleSelect(event.id)}
+                    className="mt-1 h-3.5 w-3.5 shrink-0"
+                  />
                   <div className={`p-2 rounded-lg ${cfg.bg}`}>
                     <Icon className={`h-4 w-4 ${cfg.color}`} />
                   </div>
