@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { Shield, ShieldAlert, ShieldCheck, RefreshCw, CheckCircle, Bot, Zap, KeyRound, Skull, AlertTriangle, Mail, Wifi, Flame, Trash2 } from "lucide-react";
+import { Shield, ShieldAlert, ShieldCheck, RefreshCw, CheckCircle, Bot, Zap, KeyRound, Skull, AlertTriangle, Mail, Wifi, Flame, Trash2, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -199,6 +199,82 @@ export default function SeguridadPage() {
 
   return (
     <div className="space-y-6">
+      {/* Event Detail Modal */}
+      {selectedEvent && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <div className="relative bg-white rounded-2xl p-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-start mb-4">
+              <h2 className="text-2xl font-bold">
+                Detalle del evento
+              </h2>
+              <button
+                onClick={() => setSelectedEvent(null)}
+                className="text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <h3 className="font-semibold text-gray-700 mb-1">Información básica</h3>
+                  <p className="text-gray-600"><span className="font-medium">ID:</span> {selectedEvent.id}</p>
+                  <p className="text-gray-600"><span className="font-medium">Tipo:</span> {TYPE_CONFIG[selectedEvent.type]?.label}</p>
+                  <p className="text-gray-600"><span className="font-medium">Severidad:</span>
+                    <span className={`px-2 py-1 rounded text-xs font-medium ${SEVERITY_CONFIG[selectedEvent.severity]?.class}`}>
+                      {SEVERITY_CONFIG[selectedEvent.severity]?.label}
+                    </span>
+                  </p>
+                  <p className="text-gray-600"><span className="font-medium">Estado:</span> {selectedEvent.resolved ? 'Resuelto' : 'Activo'}</p>
+                </div>
+                <div>
+                  <h3 className="font-semibold text-gray-700 mb-1">Ubicación y tiempo</h3>
+                  <p className="text-gray-600"><span className="font-medium">IP:</span> <code className="bg-gray-50 px-2 py-0.5 rounded">{selectedEvent.ip}</code></p>
+                  <p className="text-gray-600"><span className="font-medium">Ruta:</span> <code className="bg-gray-50 px-2 py-0.5 rounded">{selectedEvent.path}</code></p>
+                  <p className="text-gray-600"><span className="font-medium">Hora:</span> {new Date(selectedEvent.timestamp).toLocaleString("es-ES")}</p>
+                </div>
+              </div>
+
+              <div className="mt-4">
+                <h3 className="font-semibold text-gray-700 mb-2">Detalles técnicos</h3>
+                <p className="text-gray-600"><span className="font-medium">User Agent:</span></p>
+                <p className="text-xs text-gray-500 bg-gray-50 p-3 rounded font-mono break-all">
+                  {selectedEvent.userAgent}
+                </p>
+              </div>
+
+              <div className="mt-4">
+                <h3 className="font-semibold text-gray-700 mb-2">Descripción del evento</h3>
+                <p className="text-gray-600 leading-relaxed">{selectedEvent.details}</p>
+              </div>
+
+              <div className="mt-4">
+                <h3 className="font-semibold text-gray-700 mb-2">Instrucciones de mitigación</h3>
+                <div className="space-y-2">
+                  <p className="font-medium text-gray-800">{SOLUTIONS[selectedEvent.type]?.title}</p>
+                  <ol className="list-decimal list-inside space-y-1 pl-5 text-gray-600">
+                    {SOLUTIONS[selectedEvent.type]?.steps.map((step, i) => (
+                      <li key={i} className="text-gray-600 leading-relaxed">{step}</li>
+                    ))}
+                  </ol>
+                </div>
+                {!selectedEvent.resolved && (
+                  <div className="mt-4">
+                    <button
+                      onClick={() => resolveEvent(selectedEvent.id)}
+                      className="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition-colors flex items-center justify-center gap-2"
+                    >
+                      <CheckCircle className="h-4 w-4" />
+                      Marcar como resuelto
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
@@ -419,46 +495,6 @@ export default function SeguridadPage() {
 
         {/* Right panel */}
         <div className="space-y-4">
-          {/* Selected event detail */}
-          {selectedEvent ? (
-            <Card className="rounded-2xl glass border-gradient overflow-hidden transition-all duration-300 hover:scale-[1.02] glow-hover">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-base flex items-center gap-2">
-                  <AlertTriangle className="h-4 w-4 text-amber-400" />
-                  Detalle del evento
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3 text-sm">
-                <div><span className="text-muted-foreground">Tipo:</span> <span className="font-medium">{TYPE_CONFIG[selectedEvent.type]?.label}</span></div>
-                <div><span className="text-muted-foreground">IP:</span> <span className="font-mono font-medium">{selectedEvent.ip}</span></div>
-                <div><span className="text-muted-foreground">Ruta:</span> <span className="font-mono text-xs">{selectedEvent.path}</span></div>
-                <div><span className="text-muted-foreground">Hora:</span> <span>{new Date(selectedEvent.timestamp).toLocaleString("es-ES")}</span></div>
-                <div><span className="text-muted-foreground">UA:</span> <span className="text-xs text-muted-foreground break-all">{selectedEvent.userAgent.slice(0, 80)}...</span></div>
-                <div className="pt-2 border-t border-border">
-                  <p className="text-muted-foreground mb-1 font-semibold">{SOLUTIONS[selectedEvent.type]?.title}</p>
-                  <ol className="space-y-1.5 list-decimal list-inside">
-                    {SOLUTIONS[selectedEvent.type]?.steps.map((step, i) => (
-                      <li key={i} className="text-xs text-muted-foreground leading-relaxed">{step}</li>
-                    ))}
-                  </ol>
-                </div>
-                {!selectedEvent.resolved && (
-                  <Button size="sm" className="w-full gap-2" onClick={() => resolveEvent(selectedEvent.id)}>
-                    <CheckCircle className="h-3.5 w-3.5" />
-                    Marcar como resuelto
-                  </Button>
-                )}
-              </CardContent>
-            </Card>
-          ) : (
-            <Card className="rounded-2xl glass border-gradient overflow-hidden transition-all duration-300 hover:scale-[1.02] glow-hover">
-              <CardContent className="py-8 text-center text-muted-foreground text-sm">
-                <Shield className="h-8 w-8 mx-auto mb-2 opacity-30" />
-                Selecciona un evento para ver el detalle y las instrucciones de mitigación
-              </CardContent>
-            </Card>
-          )}
-
           {/* Top IPs */}
           {stats?.topIPs && stats.topIPs.length > 0 && (
             <Card className="rounded-2xl glass border-gradient overflow-hidden transition-all duration-300 hover:scale-[1.02] glow-hover">
