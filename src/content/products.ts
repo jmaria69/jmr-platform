@@ -85,7 +85,7 @@ export const PRODUCTS: readonly Product[] = [
     ],
     ctaTexto: "Calcular mi exposición",
     ctaHref: "#calculadora",
-    appUrl: "https://siem.praxialabs.com",
+    appUrl: "https://siem.praxialabs.com/demo/dashboard",
     color: "#dc2626",
     foco: true,
     fuentes: [FUENTE_INCIBE, FUENTE_NIS2_PLAZO],

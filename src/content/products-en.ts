@@ -58,7 +58,7 @@ export const PRODUCTS_EN: readonly Product[] = [
     ],
     ctaTexto: "Book a free call",
     ctaHref: "/contact",
-    appUrl: "https://siem.praxialabs.com",
+    appUrl: "https://siem.praxialabs.com/demo/dashboard",
     color: "#dc2626",
     foco: true,
     fuentes: [FUENTE_INCIBE, FUENTE_NIS2_PLAZO],
