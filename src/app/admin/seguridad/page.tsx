@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { Shield, ShieldAlert, ShieldCheck, RefreshCw, CheckCircle, Bot, Zap, KeyRound, Skull, AlertTriangle, Mail, Wifi } from "lucide-react";
+import { Shield, ShieldAlert, ShieldCheck, RefreshCw, CheckCircle, Bot, Zap, KeyRound, Skull, AlertTriangle, Mail, Wifi, Flame } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -13,7 +13,7 @@ const ThreatMap = dynamic(
 
 interface SecurityEvent {
   id: string;
-  type: "bot_blocked" | "rate_limited" | "invalid_token" | "brute_force" | "suspicious";
+  type: "bot_blocked" | "rate_limited" | "invalid_token" | "brute_force" | "suspicious" | "waf_blocked";
   ip: string;
   path: string;
   userAgent: string;
@@ -39,6 +39,7 @@ const TYPE_CONFIG = {
   invalid_token: { label: "Token inválido", icon: KeyRound, color: "text-purple-400", bg: "bg-purple-500/10", border: "border-purple-500/30" },
   brute_force: { label: "Ataque de fuerza bruta", icon: Skull, color: "text-red-400", bg: "bg-red-500/10", border: "border-red-500/30" },
   suspicious: { label: "Actividad sospechosa", icon: AlertTriangle, color: "text-yellow-400", bg: "bg-yellow-500/10", border: "border-yellow-500/30" },
+  waf_blocked: { label: "WAF Cloudflare (edge)", icon: Flame, color: "text-rose-400", bg: "bg-rose-500/10", border: "border-rose-500/30" },
 };
 
 const SEVERITY_CONFIG = {
@@ -91,6 +92,15 @@ const SOLUTIONS: Record<string, { title: string; steps: string[] }> = {
       "Revisa los detalles del evento para entender el contexto.",
       "Comprueba si la IP tiene historial de ataques (use ipinfo.io o abuseipdb.com).",
       "Si el patrón es recurrente, bloquea la IP en Vercel Firewall.",
+    ],
+  },
+  waf_blocked: {
+    title: "Bloqueado en el edge por el WAF de Cloudflare",
+    steps: [
+      "Cloudflare ya paró la petición antes de que llegara al servidor -- no se requiere acción para este intento concreto.",
+      "Severidad CRÍTICA = firma de ataque conocida (RCE, SQLi...); revisa si la tecnología afectada tiene un CVE público y si tu versión ya está parcheada.",
+      "Severidad ALTA = bloqueado por la regla de hardening propia (path traversal / archivos sensibles).",
+      "Si la misma IP insiste, ya queda bloqueada de forma permanente vía el panel SOC de SIAM (Active Defense) -- más detalle del incidente ahí.",
     ],
   },
 };

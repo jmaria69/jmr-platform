@@ -2,7 +2,7 @@ import { put, get } from "@vercel/blob";
 
 export interface SecurityEvent {
   id: string;
-  type: "bot_blocked" | "rate_limited" | "invalid_token" | "brute_force" | "suspicious";
+  type: "bot_blocked" | "rate_limited" | "invalid_token" | "brute_force" | "suspicious" | "waf_blocked";
   ip: string;
   path: string;
   userAgent: string;
@@ -15,6 +15,12 @@ export interface SecurityEvent {
 export interface DemoStore {
   events: SecurityEvent[];
   rateLimitMap: Record<string, { count: number; firstSeen: number }>;
+  // Ids de eventos de Cloudflare (prefijo "cf-", ver src/lib/cloudflare-waf.ts)
+  // marcados como resueltos. Esos eventos no viven en `events` -- se
+  // recalculan en cada GET desde la GraphQL API de Cloudflare, así que su
+  // estado "resuelto" no puede guardarse en el propio objeto del evento
+  // como con los de proxy.ts; se guarda aparte y se aplica al fusionar.
+  resolvedCfIds?: string[];
 }
 
 const BLOB_KEY = "security-events.json";

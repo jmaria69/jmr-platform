@@ -1,5 +1,6 @@
 import { getSession } from "@/lib/auth/session";
 import { readStore, writeStore, type SecurityEvent } from "@/lib/security-store";
+import { fetchCloudflareWafEvents } from "@/lib/cloudflare-waf";
 import { NextRequest, NextResponse } from "next/server";
 
 const VALID_TYPES = ["bot_blocked", "rate_limited", "invalid_token", "brute_force", "suspicious"];
@@ -69,10 +70,29 @@ export async function GET(req: NextRequest) {
   const type = req.nextUrl.searchParams.get("type");
 
   const store = await readStore();
-  const { events } = store;
+
+  // Bloqueos reales del WAF de Cloudflare (edge, ver src/lib/cloudflare-waf.ts)
+  // -- proxy.ts nunca los ve porque Cloudflare corta la petición antes de que
+  // llegue a Vercel, así que sin esto el panel no reflejaba ataques reales
+  // (caso detectado 2026-09-04, intento de RCE CVE-2025-55182). Últimas 24h.
+  const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+  const resolvedCfIds = new Set(store.resolvedCfIds ?? []);
+  const cfEvents = (await fetchCloudflareWafEvents(since)).map((e) =>
+    resolvedCfIds.has(e.id) ? { ...e, resolved: true } : e,
+  );
+
+  const events = [...cfEvents, ...store.events].sort(
+    (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(),
+  );
 
   let filtered = type ? events.filter((e) => e.type === type) : events;
   filtered = filtered.slice(0, limit);
+
+  const ipCounts = new Map<string, number>();
+  for (const e of events) ipCounts.set(e.ip, (ipCounts.get(e.ip) ?? 0) + 1);
+  for (const [ip, r] of Object.entries(store.rateLimitMap)) {
+    ipCounts.set(ip, Math.max(ipCounts.get(ip) ?? 0, r.count));
+  }
 
   const stats = {
     total: events.length,
@@ -86,11 +106,12 @@ export async function GET(req: NextRequest) {
       invalid_token: events.filter((e) => e.type === "invalid_token").length,
       brute_force: events.filter((e) => e.type === "brute_force").length,
       suspicious: events.filter((e) => e.type === "suspicious").length,
+      waf_blocked: events.filter((e) => e.type === "waf_blocked").length,
     },
-    topIPs: Object.entries(store.rateLimitMap)
-      .sort((a, b) => b[1].count - a[1].count)
+    topIPs: [...ipCounts.entries()]
+      .sort((a, b) => b[1] - a[1])
       .slice(0, 5)
-      .map(([ip, r]) => ({ ip, count: r.count })),
+      .map(([ip, count]) => ({ ip, count })),
   };
 
   return NextResponse.json({ events: filtered, stats });
@@ -108,8 +129,19 @@ export async function PATCH(req: NextRequest) {
   }
 
   const store = await readStore();
-  const ev = store.events.find((e) => e.id === body.id);
 
+  // Los eventos de Cloudflare (prefijo "cf-") no viven en store.events -- se
+  // recalculan en cada GET (ver src/lib/cloudflare-waf.ts), así que su
+  // resolución se guarda en una lista aparte y se reaplica al fusionar.
+  if (body.id.startsWith("cf-")) {
+    const resolvedCfIds = new Set(store.resolvedCfIds ?? []);
+    resolvedCfIds.add(body.id);
+    store.resolvedCfIds = [...resolvedCfIds];
+    await writeStore(store);
+    return NextResponse.json({ ok: true });
+  }
+
+  const ev = store.events.find((e) => e.id === body.id);
   if (ev) {
     ev.resolved = true;
     await writeStore(store);
