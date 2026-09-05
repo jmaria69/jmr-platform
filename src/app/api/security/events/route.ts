@@ -92,9 +92,10 @@ export async function GET(req: NextRequest) {
   // (caso detectado 2026-09-04, intento de RCE CVE-2025-55182). Últimas 24h.
   const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
   const resolvedCfIds = new Set(store.resolvedCfIds ?? []);
-  const cfEvents = (await fetchCloudflareWafEvents(since)).map((e) =>
-    resolvedCfIds.has(e.id) ? { ...e, resolved: true } : e,
-  );
+  const hiddenCfIds = new Set(store.hiddenCfIds ?? []);
+  const cfEvents = (await fetchCloudflareWafEvents(since))
+    .filter((e) => !hiddenCfIds.has(e.id))
+    .map((e) => (resolvedCfIds.has(e.id) ? { ...e, resolved: true } : e));
 
   const events = [...cfEvents, ...store.events].sort(
     (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(),
@@ -163,4 +164,36 @@ export async function PATCH(req: NextRequest) {
   }
 
   return NextResponse.json({ ok: true });
+}
+
+export async function DELETE(req: NextRequest) {
+  const session = await getSession();
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const body = (await req.json()) as { ids?: string[] };
+  const ids = body.ids ?? [];
+  if (ids.length === 0) {
+    return NextResponse.json({ error: "Missing ids" }, { status: 400 });
+  }
+
+  const store = await readStore();
+
+  const cfIdsToHide = ids.filter((id) => id.startsWith("cf-"));
+  const localIdsToDelete = new Set(ids.filter((id) => !id.startsWith("cf-")));
+
+  if (cfIdsToHide.length > 0) {
+    const hiddenCfIds = new Set(store.hiddenCfIds ?? []);
+    for (const id of cfIdsToHide) hiddenCfIds.add(id);
+    store.hiddenCfIds = [...hiddenCfIds];
+  }
+
+  if (localIdsToDelete.size > 0) {
+    store.events = store.events.filter((e) => !localIdsToDelete.has(e.id));
+  }
+
+  await writeStore(store);
+
+  return NextResponse.json({ ok: true, deleted: ids.length });
 }

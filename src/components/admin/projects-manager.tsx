@@ -251,8 +251,8 @@ export function ProjectsManager({ isReadOnly = false }: ProjectsManagerProps) {
                   className="absolute top-0 left-0 right-0 h-1"
                   style={{ backgroundColor: project.color }}
                 />
-                <CardHeader className="flex flex-row items-start justify-between space-y-0">
-                  <div className="flex items-start gap-2">
+                <CardHeader className="flex flex-col sm:flex-row items-start sm:justify-between gap-3 space-y-0">
+                  <div className="flex items-start gap-2 min-w-0">
                     {/* Handle de arrastre — solo en modo admin */}
                     {!isReadOnly && (
                       <div
@@ -265,9 +265,9 @@ export function ProjectsManager({ isReadOnly = false }: ProjectsManagerProps) {
                         <GripVertical className="h-5 w-5" />
                       </div>
                     )}
-                    <div>
+                    <div className="min-w-0">
                       <CardTitle className="text-lg">{project.name}</CardTitle>
-                      <div className="flex items-center gap-2 mt-1">
+                      <div className="flex items-center gap-2 mt-1 flex-wrap">
                         <Badge variant="outline">{PROJECT_STATUS_LABELS[project.status]}</Badge>
                         <Badge variant="secondary" className="text-xs bg-white/5 border-white/10">
                           {project.category}
@@ -298,7 +298,7 @@ export function ProjectsManager({ isReadOnly = false }: ProjectsManagerProps) {
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3 flex-wrap w-full sm:w-auto justify-between sm:justify-end">
                     {!isReadOnly && (
                       <div className="flex items-center gap-2">
                         <Label htmlFor={`active-${project.id}`} className="text-xs">Activo</Label>
@@ -310,7 +310,7 @@ export function ProjectsManager({ isReadOnly = false }: ProjectsManagerProps) {
                       </div>
                     )}
                     {!isReadOnly && (
-                      <>
+                      <div className="flex items-center gap-1">
                         <Button
                           variant="ghost"
                           size="icon"
@@ -330,12 +330,12 @@ export function ProjectsManager({ isReadOnly = false }: ProjectsManagerProps) {
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="h-8 w-8 text-muted-foreground hover:text-red-500 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity"
+                          className="h-8 w-8 text-muted-foreground hover:text-red-500 opacity-100 transition-opacity"
                           onClick={() => setDeleteTarget(project)}
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
-                      </>
+                      </div>
                     )}
                   </div>
                 </CardHeader>

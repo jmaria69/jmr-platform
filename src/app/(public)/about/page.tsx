@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowRight, Bot, Cpu, Shield } from 'lucide-react';
-import { PraxiaLabLogo } from '@/components/praxia-lab-logo';
+import { ResponsivePraxiaLabLogo } from '@/components/public/responsive-logo';
 
 export const metadata: Metadata = {
   title: 'About',
@@ -38,7 +38,7 @@ export default function AboutPage() {
         {/* Header */}
         <div className="mb-16">
           <div className="flex items-center gap-3 mb-8">
-            <PraxiaLabLogo size={48} />
+            <ResponsivePraxiaLabLogo />
             <div>
               <h1 className="text-2xl font-black text-white">Praxia Labs</h1>
               <p className="text-sm text-gray-400">Madrid, Spain</p>

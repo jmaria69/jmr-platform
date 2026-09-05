@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 import { PraxiaLabLogo } from "@/components/praxia-lab-logo";
+import { ResponsivePraxiaLabLogo } from "@/components/public/responsive-logo";
 import { ThemeToggle } from "@/components/public/theme-toggle";
 import { isEnglishPath, counterpartPath } from "@/lib/i18n-routes";
 
@@ -54,9 +55,9 @@ export function Navbar() {
     <header className="sticky top-0 z-50 w-full glass-strong">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Logo */}
-        <Link href={homeHref} className="flex items-center gap-2.5 group">
+        <Link href={homeHref} className="flex items-center gap-2 group">
           <div className="transition-transform group-hover:scale-110 group-hover:rotate-3">
-            <PraxiaLabLogo size={36} />
+            <ResponsivePraxiaLabLogo lg={44} md={38} sm={32} />
           </div>
           <div className="flex flex-col leading-none">
             <span className="navbar-logo-name text-base font-black tracking-tight">

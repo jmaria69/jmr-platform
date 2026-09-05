@@ -1,139 +1,66 @@
 "use client";
 
-// Neon atom logo — three glowing orbital rings (violet, cyan, teal)
-// with animated electron dots and a bright central nucleus.
-// Inspired by the Praxia Labs color palette: #7c3aed / #00d4ff / #06ffa5
-
 export function PraxiaLabLogo({ size = 36 }: { size?: number }) {
-  // Unique prefix per instance to avoid filter ID collisions when rendered multiple times
-  const id = "pl";
-
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 100 100"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-label="Praxia Labs logo"
-    >
-      <defs>
-        {/* ── Glow filters ── */}
-        <filter id={`${id}-gv`} x="-60%" y="-60%" width="220%" height="220%">
-          <feGaussianBlur in="SourceGraphic" stdDeviation="3.5" result="blur" />
-          <feColorMatrix in="blur" type="matrix" values="0 0 0 0 0.56  0 0 0 0 0.22  0 0 0 0 0.93  0 0 0 1 0" result="colored" />
-          <feBlend in="SourceGraphic" in2="colored" mode="screen" />
-        </filter>
-        <filter id={`${id}-gc`} x="-60%" y="-60%" width="220%" height="220%">
-          <feGaussianBlur in="SourceGraphic" stdDeviation="3.5" result="blur" />
-          <feColorMatrix in="blur" type="matrix" values="0 0 0 0 0  0 0 0 0 0.75  0 0 0 0 1  0 0 0 1 0" result="colored" />
-          <feBlend in="SourceGraphic" in2="colored" mode="screen" />
-        </filter>
-        <filter id={`${id}-gt`} x="-60%" y="-60%" width="220%" height="220%">
-          <feGaussianBlur in="SourceGraphic" stdDeviation="3.5" result="blur" />
-          <feColorMatrix in="blur" type="matrix" values="0 0 0 0 0  0 0 0 0 0.9  0 0 0 0 0.6  0 0 0 1 0" result="colored" />
-          <feBlend in="SourceGraphic" in2="colored" mode="screen" />
-        </filter>
-        <filter id={`${id}-nucleus`} x="-80%" y="-80%" width="360%" height="360%">
-          <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur" />
-          <feColorMatrix in="blur" type="matrix" values="0 0 0 0 0.2  0 0 0 0 0.85  0 0 0 0 1  0 0 0 1 0" result="colored" />
-          <feBlend in="SourceGraphic" in2="colored" mode="screen" />
-        </filter>
-
-        {/* ── Orbit strokes gradients ── */}
-        <linearGradient id={`${id}-lv`} x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="#7c3aed" stopOpacity="0.2" />
-          <stop offset="50%" stopColor="#a78bfa" stopOpacity="0.9" />
-          <stop offset="100%" stopColor="#7c3aed" stopOpacity="0.2" />
-        </linearGradient>
-        <linearGradient id={`${id}-lc`} x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="#00d4ff" stopOpacity="0.2" />
-          <stop offset="50%" stopColor="#38bdf8" stopOpacity="0.9" />
-          <stop offset="100%" stopColor="#00d4ff" stopOpacity="0.2" />
-        </linearGradient>
-        <linearGradient id={`${id}-lt`} x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="#06ffa5" stopOpacity="0.2" />
-          <stop offset="50%" stopColor="#2dd4bf" stopOpacity="0.9" />
-          <stop offset="100%" stopColor="#06ffa5" stopOpacity="0.2" />
-        </linearGradient>
-
-        {/* ── Nucleus glow gradient ── */}
-        <radialGradient id={`${id}-ng`} cx="40%" cy="35%" r="65%">
-          <stop offset="0%" stopColor="#ffffff" />
-          <stop offset="30%" stopColor="#7dd3fc" />
-          <stop offset="70%" stopColor="#2563eb" />
-          <stop offset="100%" stopColor="#1e3a8a" />
-        </radialGradient>
-      </defs>
-
-      {/* ── Orbit 1: violet — horizontal ── */}
-      <ellipse
-        cx="50" cy="50" rx="47" ry="15"
-        stroke={`url(#${id}-lv)`} strokeWidth="2.8" fill="none"
-        filter={`url(#${id}-gv)`}
-      />
-      {/* Electrons on orbit 1 */}
-      <circle r="3.6" fill="#a78bfa" filter={`url(#${id}-gv)`}>
-        <animateMotion dur="5s" repeatCount="indefinite">
-          <mpath href={`#${id}-p1`} />
-        </animateMotion>
-      </circle>
-      <circle r="2.2" fill="#c4b5fd" filter={`url(#${id}-gv)`} opacity="0.75">
-        <animateMotion dur="5s" begin="-2.5s" repeatCount="indefinite">
-          <mpath href={`#${id}-p1`} />
-        </animateMotion>
-      </circle>
-
-      {/* ── Orbit 2: cyan — 60° ── */}
-      <ellipse
-        cx="50" cy="50" rx="47" ry="15"
-        stroke={`url(#${id}-lc)`} strokeWidth="2.8" fill="none"
-        filter={`url(#${id}-gc)`}
-        transform="rotate(60 50 50)"
-      />
-      <circle r="3.6" fill="#38bdf8" filter={`url(#${id}-gc)`}>
-        <animateMotion dur="7s" repeatCount="indefinite">
-          <mpath href={`#${id}-p2`} />
-        </animateMotion>
-      </circle>
-      <circle r="2.2" fill="#7dd3fc" filter={`url(#${id}-gc)`} opacity="0.75">
-        <animateMotion dur="7s" begin="-3.5s" repeatCount="indefinite">
-          <mpath href={`#${id}-p2`} />
-        </animateMotion>
-      </circle>
-
-      {/* ── Orbit 3: teal — 120° ── */}
-      <ellipse
-        cx="50" cy="50" rx="47" ry="15"
-        stroke={`url(#${id}-lt)`} strokeWidth="2.8" fill="none"
-        filter={`url(#${id}-gt)`}
-        transform="rotate(120 50 50)"
-      />
-      <circle r="3.6" fill="#2dd4bf" filter={`url(#${id}-gt)`}>
-        <animateMotion dur="6s" begin="-1s" repeatCount="indefinite">
-          <mpath href={`#${id}-p3`} />
-        </animateMotion>
-      </circle>
-      <circle r="2.2" fill="#5eead4" filter={`url(#${id}-gt)`} opacity="0.75">
-        <animateMotion dur="6s" begin="-4s" repeatCount="indefinite">
-          <mpath href={`#${id}-p3`} />
-        </animateMotion>
-      </circle>
-
-      {/* ── Motion paths (hidden) ── */}
-      <ellipse id={`${id}-p1`} cx="50" cy="50" rx="47" ry="15" fill="none" />
-      <ellipse id={`${id}-p2`} cx="50" cy="50" rx="47" ry="15" fill="none" transform="rotate(60 50 50)" />
-      <ellipse id={`${id}-p3`} cx="50" cy="50" rx="47" ry="15" fill="none" transform="rotate(120 50 50)" />
-
-      {/* ── Nucleus ── */}
-      {/* Outer glow halo */}
-      <circle cx="50" cy="50" r="11" fill="#1e3a8a" filter={`url(#${id}-nucleus)`} opacity="0.9" />
-      {/* Main nucleus sphere */}
-      <circle cx="50" cy="50" r="8" fill={`url(#${id}-ng)`} />
-      {/* Inner bright core */}
-      <circle cx="50" cy="50" r="3.5" fill="#ffffff" opacity="0.95" />
-      {/* Star burst highlight */}
-      <circle cx="47" cy="47" r="1.5" fill="#ffffff" opacity="0.8" />
-    </svg>
-  );
+    return (
+        // El wrapper añade un halo oscuro sutil detrás del átomo (solo visible en tema
+        // marfil/claro, vía CSS en globals.css) porque los colores neón y el brillo del
+        // logo están pensados para el fondo oscuro por defecto y casi desaparecen sobre
+        // un fondo claro sin ese contraste extra.
+        <span className="praxia-logo-halo" style={{ width: size, height: size, display: "inline-flex" }}>
+        <svg width={size} height={size} viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <linearGradient id="al-go" x1="0" y1="0" x2="72" y2="72" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stopColor="#f472b6" />
+                    <stop offset="50%" stopColor="#a78bfa" />
+                    <stop offset="100%" stopColor="#22d3ee" />
+                </linearGradient>
+                <filter id="al-fc"><feDropShadow dx="0" dy="0" stdDeviation="3" floodColor="#22d3ee" floodOpacity="1" /></filter>
+                <filter id="al-fp"><feDropShadow dx="0" dy="0" stdDeviation="3" floodColor="#f472b6" floodOpacity="1" /></filter>
+                <filter id="al-fv"><feDropShadow dx="0" dy="0" stdDeviation="3" floodColor="#a78bfa" floodOpacity="1" /></filter>
+                <filter id="al-fg"><feDropShadow dx="0" dy="0" stdDeviation="3" floodColor="#34d399" floodOpacity="1" /></filter>
+                <filter id="al-core"><feDropShadow dx="0" dy="0" stdDeviation="6" floodColor="#a78bfa" floodOpacity="0.9" /></filter>
+            </defs>
+            {/* Orbit rings */}
+            <ellipse cx="36" cy="36" rx="34" ry="11" stroke="url(#al-go)" strokeWidth="1.3" fill="none" opacity="0.45" />
+            <ellipse cx="36" cy="36" rx="34" ry="11" stroke="url(#al-go)" strokeWidth="1.3" fill="none" opacity="0.45" transform="rotate(60 36 36)" />
+            <ellipse cx="36" cy="36" rx="34" ry="11" stroke="url(#al-go)" strokeWidth="1.3" fill="none" opacity="0.45" transform="rotate(120 36 36)" />
+            {/* Nucleus */}
+            <circle cx="36" cy="36" r="5.5" fill="url(#al-go)" filter="url(#al-core)" />
+            <circle cx="36" cy="36" r="2.5" fill="white" opacity="0.95" />
+            {/* Orbit 1 — cyan */}
+            <circle fill="#22d3ee" filter="url(#al-fc)">
+                <animate attributeName="cx" dur="5s" repeatCount="indefinite" calcMode="linear" values="70;60;36;12;2;12;36;60;70" />
+                <animate attributeName="cy" dur="5s" repeatCount="indefinite" calcMode="linear" values="36;44;47;44;36;28;25;28;36" />
+                <animate attributeName="r" dur="2.1s" repeatCount="indefinite" values="2.4;4.2;2.4" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1" />
+            </circle>
+            <circle fill="#38bdf8" filter="url(#al-fc)" opacity="0.85">
+                <animate attributeName="cx" dur="5s" begin="-2.5s" repeatCount="indefinite" calcMode="linear" values="70;60;36;12;2;12;36;60;70" />
+                <animate attributeName="cy" dur="5s" begin="-2.5s" repeatCount="indefinite" calcMode="linear" values="36;44;47;44;36;28;25;28;36" />
+                <animate attributeName="r" dur="1.7s" begin="-0.9s" repeatCount="indefinite" values="1.4;3.1;1.4" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1" />
+            </circle>
+            {/* Orbit 2 — pink */}
+            <circle fill="#f472b6" filter="url(#al-fp)">
+                <animate attributeName="cx" dur="7s" repeatCount="indefinite" calcMode="linear" values="53;41;27;17;19;31;46;55;53" />
+                <animate attributeName="cy" dur="7s" repeatCount="indefinite" calcMode="linear" values="65;61;42;19;7;11;31;53;65" />
+                <animate attributeName="r" dur="2.5s" begin="-0.5s" repeatCount="indefinite" values="2.4;4.2;2.4" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1" />
+            </circle>
+            <circle fill="#e879f9" filter="url(#al-fp)" opacity="0.85">
+                <animate attributeName="cx" dur="7s" begin="-3.5s" repeatCount="indefinite" calcMode="linear" values="53;41;27;17;19;31;46;55;53" />
+                <animate attributeName="cy" dur="7s" begin="-3.5s" repeatCount="indefinite" calcMode="linear" values="65;61;42;19;7;11;31;53;65" />
+                <animate attributeName="r" dur="1.9s" begin="-1.2s" repeatCount="indefinite" values="1.4;3.1;1.4" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1" />
+            </circle>
+            {/* Orbit 3 — violet + emerald */}
+            <circle fill="#a78bfa" filter="url(#al-fv)">
+                <animate attributeName="cx" dur="6s" repeatCount="indefinite" calcMode="linear" values="19;17;27;41;53;55;46;31;19" />
+                <animate attributeName="cy" dur="6s" repeatCount="indefinite" calcMode="linear" values="65;53;31;11;7;19;42;61;65" />
+                <animate attributeName="r" dur="2.3s" begin="-1.1s" repeatCount="indefinite" values="2.4;4.2;2.4" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1" />
+            </circle>
+            <circle fill="#34d399" filter="url(#al-fg)" opacity="0.9">
+                <animate attributeName="cx" dur="6s" begin="-3s" repeatCount="indefinite" calcMode="linear" values="19;17;27;41;53;55;46;31;19" />
+                <animate attributeName="cy" dur="6s" begin="-3s" repeatCount="indefinite" calcMode="linear" values="65;53;31;11;7;19;42;61;65" />
+                <animate attributeName="r" dur="2.0s" begin="-0.3s" repeatCount="indefinite" values="1.4;3.1;1.4" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1" />
+            </circle>
+        </svg>
+        </span>
+    );
 }

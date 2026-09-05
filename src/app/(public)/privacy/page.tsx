@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { PraxiaLabLogo } from '@/components/praxia-lab-logo';
+import { ResponsivePraxiaLabLogo } from '@/components/public/responsive-logo';
 import { CONTACT_EMAIL } from '@/lib/constants';
 
 export const metadata: Metadata = {
@@ -19,7 +19,7 @@ export default function PrivacyPage() {
       <div className="max-w-3xl mx-auto px-6 py-20">
 
         <div className="flex items-center gap-3 mb-4">
-          <PraxiaLabLogo size={40} />
+          <ResponsivePraxiaLabLogo lg={40} md={34} sm={28} />
           <div>
             <h1 className="text-2xl font-black text-white">Privacy Policy</h1>
             <p className="text-sm text-gray-400">Praxia Labs · Madrid, Spain</p>

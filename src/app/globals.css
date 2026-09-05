@@ -135,6 +135,23 @@ html.ivory {
 }
 
 /* Sobreescrituras específicas en modo marfil */
+
+/* El átomo neón (PraxiaLabLogo) está diseñado para el fondo oscuro por defecto:
+   sobre el fondo claro de este tema casi no se ve. Le damos un halo oscuro y
+   difuso detrás, del tamaño del propio logo, para recuperar el contraste. */
+html.ivory .praxia-logo-halo {
+    position: relative;
+    border-radius: 9999px;
+}
+html.ivory .praxia-logo-halo::before {
+    content: "";
+    position: absolute;
+    inset: -20%;
+    z-index: -1;
+    border-radius: 9999px;
+    background: radial-gradient(circle, rgba(7,7,20,0.55) 0%, rgba(7,7,20,0.32) 55%, transparent 78%);
+}
+
 html.ivory body {
     background-image:
         radial-gradient(ellipse 80% 60% at 50% -10%, rgba(109,40,217,0.08) 0%, transparent 70%),

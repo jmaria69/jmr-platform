@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useWindowWidth } from "@/lib/use-window-width";
 import {
   LayoutDashboard,
   Users,
@@ -31,6 +32,7 @@ import {
 } from "@/components/ui/sidebar";
 import { logout } from "@/app/actions/auth";
 import { PraxiaLabLogo } from "@/components/praxia-lab-logo";
+import { ResponsivePraxiaLabLogo } from "@/components/public/responsive-logo";
 
 const menuItems = [
   { href: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -60,7 +62,7 @@ export function AdminSidebar() {
       <SidebarHeader className="border-b border-purple-500/20 px-4 py-3 bg-slate-950/50 backdrop-blur-md">
         <div className="flex items-center gap-2.5 group">
           <div className="transition-transform group-hover:scale-110 group-hover:rotate-3">
-            <PraxiaLabLogo size={32} />
+            <ResponsivePraxiaLabLogo lg={32} md={28} sm={24} />
           </div>
           <div className="flex flex-col leading-none">
             <span className="text-base font-black tracking-tight bg-gradient-to-r from-violet-300 via-white to-sky-300 bg-clip-text text-transparent">

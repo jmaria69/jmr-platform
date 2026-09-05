@@ -21,6 +21,11 @@ export interface DemoStore {
   // estado "resuelto" no puede guardarse en el propio objeto del evento
   // como con los de proxy.ts; se guarda aparte y se aplica al fusionar.
   resolvedCfIds?: string[];
+  // Ids de eventos de Cloudflare eliminados desde el panel. Igual que
+  // resolvedCfIds: esos eventos se recalculan en cada GET desde la API de
+  // Cloudflare (no se pueden borrar de verdad ahi), asi que "eliminar" un
+  // evento cf- solo significa dejar de mostrarlo aqui.
+  hiddenCfIds?: string[];
   // Timestamp (ms) del último email de alerta enviado (ver src/lib/security-email.ts).
   // Cooldown global de 5 min para no saturar el buzón durante un ataque sostenido.
   lastEmailSentAt?: number;
