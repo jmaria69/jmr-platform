@@ -95,6 +95,11 @@
     --text-main: #e8e8f0;
     --text-muted: #8888aa;
     --text-label: #a78bfa;
+
+    /* Fondo del "chip" circular detrás del átomo del logo (PraxiaLabLogo).
+       Transparente en el tema oscuro (el logo ya vive sobre --background);
+       html.ivory lo pone sólido para que el neón tenga contraste. */
+    --logo-backdrop: transparent;
 }
 
 /* ─── Tema marfil (ivory) ─── */
@@ -126,6 +131,8 @@ html.ivory {
     --sidebar-border: rgba(0, 0, 0, 0.08);
     --sidebar-ring: #0891b2;
 
+    --logo-backdrop: #0d0d2b;
+
     --accent1: #6d28d9;
     --accent2: #0891b2;
     --accent3: #059669;
@@ -135,22 +142,6 @@ html.ivory {
 }
 
 /* Sobreescrituras específicas en modo marfil */
-
-/* El átomo neón (PraxiaLabLogo) está diseñado para el fondo oscuro por defecto:
-   sobre el fondo claro de este tema casi no se ve. Le damos un halo oscuro y
-   difuso detrás, del tamaño del propio logo, para recuperar el contraste. */
-html.ivory .praxia-logo-halo {
-    position: relative;
-    border-radius: 9999px;
-}
-html.ivory .praxia-logo-halo::before {
-    content: "";
-    position: absolute;
-    inset: -20%;
-    z-index: -1;
-    border-radius: 9999px;
-    background: radial-gradient(circle, rgba(7,7,20,0.55) 0%, rgba(7,7,20,0.32) 55%, transparent 78%);
-}
 
 html.ivory body {
     background-image:

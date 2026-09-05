@@ -2,11 +2,7 @@
 
 export function PraxiaLabLogo({ size = 36 }: { size?: number }) {
     return (
-        // El wrapper añade un halo oscuro sutil detrás del átomo (solo visible en tema
-        // marfil/claro, vía CSS en globals.css) porque los colores neón y el brillo del
-        // logo están pensados para el fondo oscuro por defecto y casi desaparecen sobre
-        // un fondo claro sin ese contraste extra.
-        <span className="praxia-logo-halo" style={{ width: size, height: size, display: "inline-flex" }}>
+        <span style={{ width: size, height: size, display: "inline-flex" }}>
         <svg width={size} height={size} viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
             <defs>
                 <linearGradient id="al-go" x1="0" y1="0" x2="72" y2="72" gradientUnits="userSpaceOnUse">
@@ -20,6 +16,12 @@ export function PraxiaLabLogo({ size = 36 }: { size?: number }) {
                 <filter id="al-fg"><feDropShadow dx="0" dy="0" stdDeviation="3" floodColor="#34d399" floodOpacity="1" /></filter>
                 <filter id="al-core"><feDropShadow dx="0" dy="0" stdDeviation="6" floodColor="#a78bfa" floodOpacity="0.9" /></filter>
             </defs>
+            {/* Fondo "chip": transparente en tema oscuro, sólido en tema marfil (--logo-backdrop
+                en globals.css). El neón está pensado para verse sobre fondo oscuro, así que en
+                el tema claro le damos ese fondo oscuro propio en vez de depender del de la página
+                (un halo puesto por CSS con z-index detrás del span quedaba oculto tras el fondo
+                del propio header/footer en vez de detrás solo del logo). */}
+            <circle cx="36" cy="36" r="35" fill="var(--logo-backdrop)" />
             {/* Orbit rings */}
             <ellipse cx="36" cy="36" rx="34" ry="11" stroke="url(#al-go)" strokeWidth="1.3" fill="none" opacity="0.45" />
             <ellipse cx="36" cy="36" rx="34" ry="11" stroke="url(#al-go)" strokeWidth="1.3" fill="none" opacity="0.45" transform="rotate(60 36 36)" />

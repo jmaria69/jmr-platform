@@ -112,7 +112,7 @@ export function EditProjectDialog({ project, onSave }: EditProjectDialogProps) {
       >
         <Pencil className="h-4 w-4" />
       </DialogTrigger>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Editar Proyecto</DialogTitle>
           <DialogDescription>
@@ -322,7 +322,7 @@ export function EditProjectDialog({ project, onSave }: EditProjectDialogProps) {
           </div>
 
           {/* Metrics */}
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-3 gap-2 sm:gap-4">
             <div className="space-y-2">
               <Label htmlFor="edit-users">Usuarios</Label>
               <Input
@@ -386,16 +386,17 @@ export function EditProjectDialog({ project, onSave }: EditProjectDialogProps) {
           </div>
 
           {/* Actions */}
-          <div className="flex justify-end gap-3 pt-2">
+          <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 pt-2">
             <Button
               type="button"
               variant="outline"
               onClick={() => setOpen(false)}
               disabled={saving}
+              className="w-full sm:w-auto"
             >
               Cancelar
             </Button>
-            <Button type="submit" disabled={saving} className="gap-2">
+            <Button type="submit" disabled={saving} className="gap-2 w-full sm:w-auto">
               {saving ? (
                 <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
               ) : (

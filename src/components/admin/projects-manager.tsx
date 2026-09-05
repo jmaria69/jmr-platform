@@ -378,18 +378,18 @@ export function ProjectsManager({ isReadOnly = false }: ProjectsManagerProps) {
       {/* Delete confirmation */}
       {!isReadOnly && (
         <Dialog open={deleteTarget !== null} onOpenChange={(v) => { if (!v) setDeleteTarget(null); }}>
-          <DialogContent className="max-w-md glass-strong">
+          <DialogContent className="sm:max-w-md glass-strong">
             <DialogHeader>
               <DialogTitle>Eliminar proyecto</DialogTitle>
               <DialogDescription>
                 ¿Estás seguro de que quieres eliminar <strong>{deleteTarget?.name}</strong>? Esta acción no se puede deshacer.
               </DialogDescription>
             </DialogHeader>
-            <div className="flex justify-end gap-3 mt-4">
-              <Button variant="outline" onClick={() => setDeleteTarget(null)} disabled={isDeleting}>
+            <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 mt-4">
+              <Button variant="outline" onClick={() => setDeleteTarget(null)} disabled={isDeleting} className="w-full sm:w-auto">
                 Cancelar
               </Button>
-              <Button variant="destructive" onClick={handleDelete} disabled={isDeleting} className="gap-2">
+              <Button variant="destructive" onClick={handleDelete} disabled={isDeleting} className="gap-2 w-full sm:w-auto">
                 {isDeleting && <Loader2 className="h-4 w-4 animate-spin" />}
                 Eliminar
               </Button>

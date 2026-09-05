@@ -176,7 +176,7 @@ export function CampaignsManager({ initialCampaigns }: { initialCampaigns: Campa
                 <Input id="c-name" value={form.name} placeholder="Lanzamiento Demo CORE OPS"
                   onChange={(e) => setForm((f) => ({ ...f, name: e.target.value, slug: slugify(e.target.value) }))} />
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="c-slug">Slug (enlace corto)</Label>
                   <Input id="c-slug" value={form.slug}
@@ -281,7 +281,7 @@ export function CampaignsManager({ initialCampaigns }: { initialCampaigns: Campa
                   )}
                 </div>
 
-                <div className="flex items-center gap-6">
+                <div className="flex items-center gap-4 sm:gap-6 flex-wrap">
                   <div className="text-center">
                     <div className="text-xl font-bold">{c.stats.total}</div>
                     <div className="text-[10px] uppercase tracking-wide text-muted-foreground">Clicks</div>
