@@ -18,16 +18,6 @@ export interface SessionPayload extends JWTPayload {
   role: string;
 }
 
-function getSecret(): Uint8Array {
-  const secret = process.env.AUTH_SECRET;
-  if (!secret) {
-    throw new Error(
-      "AUTH_SECRET is not set. Generate one with: node -e \"console.log(require('crypto').randomBytes(32).toString('base64url'))\""
-    );
-  }
-  return new TextEncoder().encode(secret);
-}
-
 /**
  * Create a signed JWT and set it as an HTTP-only cookie
  */

@@ -7,7 +7,9 @@ import { headers } from "next/headers";
 import { prisma } from "../../lib/prisma";
 import { createSession, deleteSession, getSession } from "@/lib/auth";
 import { logThreatAwait, checkRateLimit } from "@/lib/security-logger";
-import { totp } from "otplib";
+import { OTP } from "otplib";
+
+const otp = new OTP();
 
 
 
@@ -204,9 +206,9 @@ export async function verify2FA(
       return { error: "2FA no habilitado para este usuario" };
     }
 
-    const verified = totp.check(token, admin.totpSecret);
+    const result = await otp.verify({ secret: admin.totpSecret, token, epochTolerance: 1 });
 
-    if (!verified) {
+    if (!result.valid) {
       await logThreatAwait({
         type: "suspicious",
         ip,

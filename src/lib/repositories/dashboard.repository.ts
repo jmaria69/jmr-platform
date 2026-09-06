@@ -26,7 +26,10 @@ export async function getRealDashboardStats(): Promise<DashboardStats> {
     // Obtener métricas de GA4 en paralelo
     console.log("📍 getGAMetrics + getGAAggregateStats iniciados");
     const [gaData, gaAggregate] = await Promise.all([
-      getGAMetrics(),
+      getGAMetrics().catch(err => {
+        console.warn("⚠️ getGAMetrics falló, usando fallback:", err);
+        return null;
+      }),
       getGAAggregateStats().catch(err => {
         console.warn("⚠️ getGAAggregateStats falló, usando fallback:", err);
         return null;
@@ -73,7 +76,7 @@ export async function getRealDashboardStats(): Promise<DashboardStats> {
     // así que agregamos visitantes por fecha y nos quedamos con los ÚLTIMOS 30
     // días (antes se cogían los 30 primeros → el gráfico no llegaba a hoy).
     const visitorsByDate = new Map<string, number>();
-    for (const row of gaData.rows ?? []) {
+    for (const row of gaData?.rows ?? []) {
       const raw = row.dimensionValues?.[0]?.value || "";
       if (!/^\d{8}$/.test(raw)) continue;
       const date = `${raw.slice(0, 4)}-${raw.slice(4, 6)}-${raw.slice(6, 8)}`;
@@ -86,8 +89,8 @@ export async function getRealDashboardStats(): Promise<DashboardStats> {
       .slice(-30);
 
     // Procesar datos de tráfico por mes
-    const trafficByMonth = gaData.rows
-      ?.reduce(
+    const trafficByMonth = (gaData?.rows ?? [])
+      .reduce(
         (acc, row) => {
           const date = row.dimensionValues?.[0]?.value || "Unknown";
           const month = date.slice(0, 6); // YYYYMM
@@ -106,8 +109,8 @@ export async function getRealDashboardStats(): Promise<DashboardStats> {
       .sort((a, b) => a.label.localeCompare(b.label)) || [];
 
     // Procesar datos de tráfico por año
-    const trafficByYear = gaData.rows
-      ?.reduce(
+    const trafficByYear = (gaData?.rows ?? [])
+      .reduce(
         (acc, row) => {
           const date = row.dimensionValues?.[0]?.value || "Unknown";
           const year = date.slice(0, 4); // YYYY
@@ -130,8 +133,8 @@ export async function getRealDashboardStats(): Promise<DashboardStats> {
     console.log("✅ trafficByYear procesado:", trafficByYear.length, "años");
 
     // Procesar datos por dispositivo
-    const deviceData = gaData.rows
-      ?.reduce(
+    const deviceData = (gaData?.rows ?? [])
+      .reduce(
         (acc, row) => {
           const device = row.dimensionValues?.[1]?.value || "Unknown";
           const count = parseInt(row.metricValues?.[0]?.value || "0", 10);
@@ -149,8 +152,8 @@ export async function getRealDashboardStats(): Promise<DashboardStats> {
       .sort((a, b) => b.count - a.count) || [];
 
     // Procesar datos por SO
-    const osData = gaData.rows
-      ?.reduce(
+    const osData = (gaData?.rows ?? [])
+      .reduce(
         (acc, row) => {
           const os = row.dimensionValues?.[2]?.value || "Unknown";
           const count = parseInt(row.metricValues?.[0]?.value || "0", 10);
