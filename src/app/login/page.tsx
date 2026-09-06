@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
-import { login, type AuthState } from "@/app/actions/auth";
+import { login, verify2FA, type AuthState } from "@/app/actions/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,6 +11,10 @@ import Link from "next/link";
 export default function LoginPage() {
   const [state, action, pending] = useActionState<AuthState | undefined, FormData>(
     login,
+    undefined
+  );
+  const [state2FA, action2FA, pending2FA] = useActionState<AuthState | undefined, FormData>(
+    verify2FA,
     undefined
   );
 
@@ -37,80 +41,146 @@ export default function LoginPage() {
           </p>
         </div>
 
-        {/* Login form */}
-        <div className="rounded-2xl glass-strong border-gradient p-8">
-          <form action={action} className="space-y-6">
-            {/* Error message */}
-            {state?.error && (
-              <div className="flex items-center gap-2 text-sm text-red-400 bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3">
-                <AlertCircle className="h-4 w-4 shrink-0" />
-                <span>{state.error}</span>
-              </div>
-            )}
+        {state?.requires2FA ? (
+          // 2FA Verification Form
+          <div className="rounded-2xl glass-strong border-gradient p-8">
+            <form action={action2FA} className="space-y-6">
+              {/* Error message */}
+              {state2FA?.error && (
+                <div className="flex items-center gap-2 text-sm text-red-400 bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3">
+                  <AlertCircle className="h-4 w-4 shrink-0" />
+                  <span>{state2FA.error}</span>
+                </div>
+              )}
+              {/* Success message */}
+              {state2FA?.success && (
+                <div className="flex items-center gap-2 text-sm text-green-400 bg-green-500/10 border border-green-500/20 rounded-xl px-4 py-3">
+                  <ShieldCheck className="h-4 w-4 shrink-0" />
+                  <span>Verificación exitosa. Redirigiendo...</span>
+                </div>
+              )}
 
-            {/* Email */}
-            <div className="space-y-2">
-              <Label htmlFor="email" className="text-sm font-medium">
-                Email
-              </Label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  placeholder="admin@praxialabs.com"
-                  required
-                  autoComplete="email"
-                  className="pl-10 h-11 bg-white/3 border-white/10 focus:border-indigo-500/50 rounded-xl"
-                />
+              <div className="space-y-2">
+                <Label htmlFor="token" className="text-sm font-medium">
+                  Código de verificación
+                </Label>
+                <div className="relative">
+                  <Input
+                    id="token"
+                    name="token"
+                    type="text"
+                    placeholder="Ingrese el código 2FA"
+                    required
+                    autoComplete="one-time-code"
+                    className="pl-10 h-11 bg-white/3 border-white/10 focus:border-indigo-500/50 rounded-xl"
+                  />
+                  {/* Hidden userId */}
+                  <input type="hidden" name="userId" defaultValue={state?.userId ?? ""} />
+                </div>
               </div>
-            </div>
 
-            {/* Password */}
-            <div className="space-y-2">
-              <Label htmlFor="password" className="text-sm font-medium">
-                Contraseña
-              </Label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  id="password"
-                  name="password"
-                  type="password"
-                  placeholder="••••••••"
-                  required
-                  autoComplete="current-password"
-                  className="pl-10 h-11 bg-white/3 border-white/10 focus:border-indigo-500/50 rounded-xl"
-                />
+              {/* Buttons */}
+              <div className="flex gap-3">
+                <Button
+                  type="submit"
+                  disabled={pending2FA}
+                  className="flex-1 h-11 shimmer-btn font-semibold rounded-xl"
+                >
+                  {pending2FA ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                      Verificando...
+                    </>
+                  ) : (
+                    "Verificar"
+                  )}
+                </Button>
+                <Link
+                  href="/login"
+                  className="flex items-center justify-center h-11 px-4 rounded-xl border border-white/10 hover:border-indigo-500/50 hover:bg-white/5 transition font-semibold text-sm"
+                >
+                  <ArrowLeft className="h-4 w-4" />
+                  Volver
+                </Link>
               </div>
-            </div>
+            </form>
+          </div>
+        ) : (
+          // Login Form
+          <div className="rounded-2xl glass-strong border-gradient p-8">
+            <form action={action} className="space-y-6">
+              {/* Error message */}
+              {state?.error && (
+                <div className="flex items-center gap-2 text-sm text-red-400 bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3">
+                  <AlertCircle className="h-4 w-4 shrink-0" />
+                  <span>{state.error}</span>
+                </div>
+              )}
 
-            {/* Buttons */}
-            <div className="flex gap-3">
-              <Button
-                type="submit"
-                disabled={pending}
-                className="flex-1 h-11 shimmer-btn font-semibold rounded-xl"
-              >
-                {pending ? (
-                  <>
-                    <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                    Iniciando sesión...
-                  </>
-                ) : (
-                  "Iniciar sesión"
-                )}
-              </Button>
-              <Link
-                href="/"
-                className="flex items-center justify-center h-11 px-4 rounded-xl border border-white/10 hover:border-indigo-500/50 hover:bg-white/5 transition font-semibold text-sm"
-              >
-                <ArrowLeft className="h-4 w-4" />
-              </Link>
-            </div>
-          </form>
-        </div>
+              {/* Email */}
+              <div className="space-y-2">
+                <Label htmlFor="email" className="text-sm font-medium">
+                  Email
+                </Label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    id="email"
+                    name="email"
+                    type="email"
+                    placeholder="admin@praxialabs.com"
+                    required
+                    autoComplete="email"
+                    className="pl-10 h-11 bg-white/3 border-white/10 focus:border-indigo-500/50 rounded-xl"
+                  />
+                </div>
+              </div>
+
+              {/* Password */}
+              <div className="space-y-2">
+                <Label htmlFor="password" className="text-sm font-medium">
+                  Contraseña
+                </Label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    id="password"
+                    name="password"
+                    type="password"
+                    placeholder="••••••••"
+                    required
+                    autoComplete="current-password"
+                    className="pl-10 h-11 bg-white/3 border-white/10 focus:border-indigo-500/50 rounded-xl"
+                  />
+                </div>
+              </div>
+
+              {/* Buttons */}
+              <div className="flex gap-3">
+                <Button
+                  type="submit"
+                  disabled={pending}
+                  className="flex-1 h-11 shimmer-btn font-semibold rounded-xl"
+                >
+                  {pending ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                      Iniciando sesión...
+                    </>
+                  ) : (
+                    "Iniciar sesión"
+                  )}
+                </Button>
+                <Link
+                  href="/"
+                  className="flex items-center justify-center h-11 px-4 rounded-xl border border-white/10 hover:border-indigo-500/50 hover:bg-white/5 transition font-semibold text-sm"
+                >
+                  <ArrowLeft className="h-4 w-4" />
+                </Link>
+              </div>
+            </form>
+          </div>
+        )}
 
         {/* Footer */}
         <p className="text-center text-xs text-muted-foreground mt-6">

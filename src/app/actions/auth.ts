@@ -7,6 +7,7 @@ import { headers } from "next/headers";
 import { prisma } from "../../lib/prisma";
 import { createSession, deleteSession, getSession } from "@/lib/auth";
 import { logThreatAwait, checkRateLimit } from "@/lib/security-logger";
+import { totp } from "otplib";
 
 
 
@@ -32,6 +33,8 @@ const changePasswordSchema = z.object({
 export interface AuthState {
   error?: string;
   success?: boolean;
+  requires2FA?: boolean;
+  userId?: string;
 }
 
 // ─── DB access helpers ───
@@ -118,6 +121,16 @@ export async function login(
       return { error: "Credenciales inválidas" };
     }
 
+    // Check if 2FA is enabled for this user
+    if (admin.totpEnabled && admin.totpSecret) {
+      // Require 2FA verification
+      return {
+        requires2FA: true,
+        userId: admin.id,
+        success: false // Not fully authenticated yet
+      };
+    }
+
     await createSession({
       userId: admin.id,
       email: admin.email,
@@ -139,6 +152,86 @@ export async function login(
 export async function logout() {
   await deleteSession();
   redirect("/login");
+}
+
+// ─── Change password ───
+
+export async function verify2FA(
+  _prevState: AuthState | undefined,
+  formData: FormData
+) {
+  const raw = {
+    userId: formData.get("userId") as string,
+    token: formData.get("token") as string,
+  };
+
+  const userId = raw.userId;
+  const token = raw.token;
+
+  if (!userId || !token) {
+    return { error: "Datos incompletos" };
+  }
+
+  const hdrs = await headers();
+  const ip = hdrs.get("x-forwarded-for")?.split(",")[0]?.trim()
+    || hdrs.get("x-real-ip") || "unknown";
+  const ua = hdrs.get("user-agent") || "";
+
+  try {
+    const admin = await prisma.adminUser.findUnique({
+      where: { id: userId },
+    });
+
+    if (!admin) {
+      await logThreatAwait({
+        type: "suspicious",
+        ip,
+        path: "/verify-2fa",
+        userAgent: ua,
+        details: `2FA fallido: usuario no encontrado (ID: ${userId})`,
+      });
+      return { error: "Usuario no encontrado" };
+    }
+
+    if (!admin.totpEnabled || !admin.totpSecret) {
+      await logThreatAwait({
+        type: "suspicious",
+        ip,
+        path: "/verify-2fa",
+        userAgent: ua,
+        details: `2FA fallido: 2FA no habilitado para usuario ${admin.email.slice(0, 3)}***`,
+      });
+      return { error: "2FA no habilitado para este usuario" };
+    }
+
+    const verified = totp.check(token, admin.totpSecret);
+
+    if (!verified) {
+      await logThreatAwait({
+        type: "suspicious",
+        ip,
+        path: "/verify-2fa",
+        userAgent: ua,
+        details: `Código 2FA incorrecto para usuario ${admin.email.slice(0, 3)}***`,
+      });
+      return { error: "Código 2FA incorrecto" };
+    }
+
+    // Create session
+    await createSession({
+      userId: admin.id,
+      email: admin.email,
+      name: admin.name,
+      role: admin.role,
+    });
+
+    await updateLastLogin(admin.id);
+
+    return { success: true };
+  } catch (err) {
+    console.error("2FA verification error:", err);
+    return { error: "Error interno. Inténtalo de nuevo." };
+  }
 }
 
 // ─── Change password ───

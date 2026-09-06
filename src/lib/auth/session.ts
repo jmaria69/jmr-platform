@@ -89,4 +89,17 @@ export async function verifyToken(token: string): Promise<SessionPayload | null>
   }
 }
 
+/**
+ * Get the signing secret for JWTs
+ */
+export function getSecret(): Uint8Array {
+  const secret = process.env.AUTH_SECRET;
+  if (!secret) {
+    throw new Error(
+      "AUTH_SECRET is not set. Generate one with: node -e \"console.log(require('crypto').randomBytes(32).toString('base64url'))\""
+    );
+  }
+  return new TextEncoder().encode(secret);
+}
+
 export { SESSION_COOKIE };

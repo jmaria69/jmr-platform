@@ -13,6 +13,9 @@ model AdminUser {
   passwordHash  String
   name          String
   role          String    @default("admin")
+  totpEnabled   Boolean   @default(false)
+  totpSecret    String?   // encrypted secret
+  recoveryCodes Json?     // array of strings, encrypted? we'll store as Json (plain) but could encrypt
   lastLoginAt   DateTime?
   createdAt     DateTime  @default(now()) @map("created_at")
 
@@ -105,6 +108,7 @@ model Interaction {
 
   @@map("interactions")
 }
+
 model Campaign {
   id          String          @id @default(uuid())
   slug        String          @unique
