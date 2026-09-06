@@ -51,7 +51,7 @@ export function DemoSidebar() {
             <span className="text-base font-black tracking-tight bg-gradient-to-r from-violet-300 via-white to-sky-300 bg-clip-text text-transparent">
               Praxia<span className="text-sky-400">Lab</span>
             </span>
-            <span className="text-[9px] font-semibold text-amber-400/70 uppercase tracking-[0.2em]">
+            <span className="text-[9px] font-semibold text-sky-400 uppercase tracking-[0.2em]">
               Demo
             </span>
           </div>

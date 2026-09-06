@@ -100,6 +100,23 @@
        Transparente en el tema oscuro (el logo ya vive sobre --background);
        html.ivory lo pone sólido para que el neón tenga contraste. */
     --logo-backdrop: transparent;
+
+    /* Colores del logotipo para tema oscuro (neón sobre fondo oscuro) */
+    --logo-gradient-stop-0: #f472b6;
+    --logo-gradient-stop-50: #a78bfa;
+    --logo-gradient-stop-100: #22d3ee;
+    --logo-nucleus-center: #ffffff;
+    --logo-nucleus-center-opacity: 0.95;
+    --logo-electron-1: #22d3ee;
+    --logo-electron-2: #f472b6;
+    --logo-electron-3a: #a78bfa;
+    --logo-electron-3b: #34d399;
+    /* Colores para los filtros de brillo (neón) */
+    --logo-filter-fc: #22d3ee;  /* electron 1 glow */
+    --logo-filter-fp: #f472b6;  /* electron 2 glow */
+    --logo-filter-fv: #a78bfa;  /* electron 3a glow */
+    --logo-filter-fg: #34d399;  /* electron 3b glow */
+    --logo-filter-core: #a78bfa; /* nucleus glow */
 }
 
 /* ─── Tema marfil (ivory) ─── */
@@ -131,7 +148,24 @@ html.ivory {
     --sidebar-border: rgba(0, 0, 0, 0.08);
     --sidebar-ring: #0891b2;
 
-    --logo-backdrop: #0d0d2b;
+    --logo-backdrop: transparent;
+
+    /* Colores del logotipo para tema claro (colores oscuros sobre fondo claro) */
+    --logo-gradient-stop-0: #0284c7;
+    --logo-gradient-stop-50: #0369a1;
+    --logo-gradient-stop-100: #075985;
+    --logo-nucleus-center: #0c4a6e;
+    --logo-nucleus-center-opacity: 1.0;
+    --logo-electron-1: #0369a1;
+    --logo-electron-2: #0284c7;
+    --logo-electron-3a: #075985;
+    --logo-electron-3b: #0c4a6e;
+    /* Colores para los filtros de brillo (neón) en tema claro */
+    --logo-filter-fc: #0369a1;  /* electron 1 glow */
+    --logo-filter-fp: #0284c7;  /* electron 2 glow */
+    --logo-filter-fv: #075985;  /* electron 3a glow */
+    --logo-filter-fg: #0c4a6e;  /* electron 3b glow */
+    --logo-filter-core: #0284c7; /* nucleus glow */
 
     --accent1: #6d28d9;
     --accent2: #0891b2;

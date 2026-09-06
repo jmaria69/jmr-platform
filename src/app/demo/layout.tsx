@@ -15,7 +15,7 @@ export default function DemoLayout({ children }: { children: React.ReactNode }) 
             <Separator orientation="vertical" className="h-6 bg-purple-500/20" />
             <h1 className="text-sm font-semibold text-purple-100">Panel de Demostración</h1>
           </div>
-          <Badge variant="outline" className="border-amber-500/30 text-amber-400 text-xs gap-1.5">
+          <Badge variant="outline" className="bg-slate-900/50 text-sky-400 text-xs gap-1.5">
             <Eye className="h-3 w-3" />
             Modo Demo — Datos simulados
           </Badge>

@@ -46,20 +46,20 @@ export const ORG_JSON_LD = {
 const LOGO_SVG = `<svg width="30" height="30" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0">
   <defs>
     <linearGradient id="flg" x1="0" y1="0" x2="72" y2="72" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#f472b6" /><stop offset="50%" stop-color="#a78bfa" /><stop offset="100%" stop-color="#22d3ee" />
+      <stop offset="0%" stop-color="#0284c7" /><stop offset="50%" stop-color="#0369a1" /><stop offset="100%" stop-color="#075985" />
     </linearGradient>
-    <filter id="flg-fc"><feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#22d3ee" flood-opacity="1" /></filter>
-    <filter id="flg-fp"><feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#f472b6" flood-opacity="1" /></filter>
-    <filter id="flg-fv"><feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#a78bfa" flood-opacity="1" /></filter>
+    <filter id="flg-fc"><feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#0369a1" flood-opacity="1" /></filter>
+    <filter id="flg-fp"><feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#0284c7" flood-opacity="1" /></filter>
+    <filter id="flg-fv"><feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#075985" flood-opacity="1" /></filter>
     <filter id="flg-fg"><feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#34d399" flood-opacity="1" /></filter>
-    <filter id="flg-core"><feDropShadow dx="0" dy="0" stdDeviation="6" flood-color="#a78bfa" flood-opacity="0.9" /></filter>
+    <filter id="flg-core"><feDropShadow dx="0" dy="0" stdDeviation="6" flood-color="#0284c7" flood-opacity="0.9" /></filter>
   </defs>
   <ellipse cx="36" cy="36" rx="34" ry="11" stroke="url(#flg)" stroke-width="1.3" fill="none" opacity="0.45" />
   <ellipse cx="36" cy="36" rx="34" ry="11" stroke="url(#flg)" stroke-width="1.3" fill="none" opacity="0.45" transform="rotate(60 36 36)" />
   <ellipse cx="36" cy="36" rx="34" ry="11" stroke="url(#flg)" stroke-width="1.3" fill="none" opacity="0.45" transform="rotate(120 36 36)" />
   <circle cx="36" cy="36" r="5.5" fill="url(#flg)" filter="url(#flg-core)" />
   <circle cx="36" cy="36" r="2.5" fill="white" opacity="0.95" />
-  <circle fill="#22d3ee" filter="url(#flg-fc)">
+  <circle fill="#0369a1" filter="url(#flg-fc)">
     <animate attributeName="cx" dur="5s" repeatCount="indefinite" calcMode="linear" values="70;60;36;12;2;12;36;60;70" />
     <animate attributeName="cy" dur="5s" repeatCount="indefinite" calcMode="linear" values="36;44;47;44;36;28;25;28;36" />
     <animate attributeName="r" dur="2.1s" repeatCount="indefinite" values="2.4;4.2;2.4" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1" />
@@ -84,7 +84,7 @@ const LOGO_SVG = `<svg width="30" height="30" viewBox="0 0 72 72" fill="none" xm
     <animate attributeName="cy" dur="6s" repeatCount="indefinite" calcMode="linear" values="65;53;31;11;7;19;42;61;65" />
     <animate attributeName="r" dur="2.3s" begin="-1.1s" repeatCount="indefinite" values="2.4;4.2;2.4" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1" />
   </circle>
-  <circle fill="#34d399" filter="url(#flg-fg)" opacity="0.9">
+  <circle fill="#0c4a6e" filter="url(#flg-fg)" opacity="0.9">
     <animate attributeName="cx" dur="6s" begin="-3s" repeatCount="indefinite" calcMode="linear" values="19;17;27;41;53;55;46;31;19" />
     <animate attributeName="cy" dur="6s" begin="-3s" repeatCount="indefinite" calcMode="linear" values="65;53;31;11;7;19;42;61;65" />
     <animate attributeName="r" dur="2.0s" begin="-0.3s" repeatCount="indefinite" values="1.4;3.1;1.4" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1" />
