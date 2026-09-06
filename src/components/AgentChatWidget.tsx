@@ -35,9 +35,9 @@ export default function AgentChatWidget() {
     setInput("");
     setLoading(true);
     try {
-      const r = await fetch(`${AGENT_URL}/chat`, {
+      const r = await fetch("/api/chat", {
         method: "POST",
-        headers: { "Content-Type": "application/json", "Bypass-Tunnel-Reminder": "true" },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ telefono: telRef.current, mensaje: texto }),
       });
       const data = await r.json();
