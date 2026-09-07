@@ -7,11 +7,72 @@ import { headers } from "next/headers";
 import { prisma } from "../../lib/prisma";
 import { createSession, deleteSession, getSession } from "@/lib/auth";
 import { logThreatAwait, checkRateLimit } from "@/lib/security-logger";
-import { OTP } from "otplib";
+import { createHmac, timingSafeEqual } from "node:crypto";
 
-const otp = new OTP();
+// ─── TOTP helpers (RFC 6238) ───
 
+function isValidBase32(str: string): boolean {
+  return /^[A-Z2-7]+=*$/.test(str.toUpperCase());
+}
 
+function base32Decode(encoded: string): Buffer {
+  const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
+  const clean = encoded.toUpperCase().replace(/=+$/, "").replace(/[^A-Z2-7]/g, "");
+  if (clean.length === 0) return Buffer.alloc(0);
+
+  let bits = 0;
+  let value = 0;
+  const output: number[] = [];
+
+  for (const char of clean) {
+    const idx = alphabet.indexOf(char);
+    if (idx === -1) continue;
+    value = (value << 5) | idx;
+    bits += 5;
+    if (bits >= 8) {
+      bits -= 8;
+      output.push((value >>> bits) & 0xff);
+    }
+  }
+  return Buffer.from(output);
+}
+
+function generateTOTP(secret: string, epoch: number, period = 30, digits = 6): string {
+  const key = base32Decode(secret);
+  const counter = Math.floor(epoch / period);
+  const counterBuf = Buffer.alloc(8);
+  counterBuf.writeUInt32BE(Math.floor(counter / 0x100000000), 0);
+  counterBuf.writeUInt32BE(counter % 0x100000000, 4);
+
+  const hmac = createHmac("sha1", key).update(counterBuf).digest();
+  const offset = hmac[hmac.length - 1] & 0x0f;
+  const code =
+    ((hmac[offset] & 0x7f) << 24) |
+    ((hmac[offset + 1] & 0xff) << 16) |
+    ((hmac[offset + 2] & 0xff) << 8) |
+    (hmac[offset + 3] & 0xff);
+  return (code % 10 ** digits).toString().padStart(digits, "0");
+}
+
+function verifyTOTP(secret: string, token: string, window = 2): boolean {
+  const cleanToken = token.trim();
+  if (!/^\d{6}$/.test(cleanToken)) return false;
+
+  const now = Math.floor(Date.now() / 1000);
+  for (let delta = -window; delta <= window; delta++) {
+    try {
+      const expected = generateTOTP(secret, now + delta * 30);
+      if (expected.length === cleanToken.length) {
+        if (timingSafeEqual(Buffer.from(expected), Buffer.from(cleanToken))) {
+          return true;
+        }
+      }
+    } catch {
+      continue;
+    }
+  }
+  return false;
+}
 
 // ─── Validation schemas ───
 
@@ -206,9 +267,14 @@ export async function verify2FA(
       return { error: "2FA no habilitado para este usuario" };
     }
 
-    const result = await otp.verify({ secret: admin.totpSecret, token, epochTolerance: 1 });
+    if (!isValidBase32(admin.totpSecret)) {
+      console.error(`Secret inválido para usuario ${admin.email}: ${admin.totpSecret.slice(0, 5)}...`);
+      return { error: "Error de configuración 2FA. Contacta al administrador." };
+    }
 
-    if (!result.valid) {
+    const isValid = verifyTOTP(admin.totpSecret, token, 1);
+
+    if (!isValid) {
       await logThreatAwait({
         type: "suspicious",
         ip,
@@ -228,12 +294,16 @@ export async function verify2FA(
     });
 
     await updateLastLogin(admin.id);
-
-    return { success: true };
   } catch (err) {
+    // Re-throw Next.js redirect errors so they work properly
+    if (err instanceof Error && err.message === "NEXT_REDIRECT") {
+      throw err;
+    }
     console.error("2FA verification error:", err);
     return { error: "Error interno. Inténtalo de nuevo." };
   }
+
+  redirect("/admin/dashboard");
 }
 
 // ─── Change password ───
