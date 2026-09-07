@@ -9,8 +9,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import Link from 'next/link';
 
 export default function AdminLoginPage() {
-    const [loginState, loginAction, loginPending] = useFormState(login, { error: '' });
-    const [verifyState, verifyAction, verifyPending] = useFormState(verify2FA, { error: '' });
+    const [loginState, loginAction, loginPending] = useFormState<AuthState | undefined, FormData>(login, undefined);
+    const [verifyState, verifyAction, verifyPending] = useFormState<AuthState | undefined, FormData>(verify2FA, undefined);
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-transparent">
