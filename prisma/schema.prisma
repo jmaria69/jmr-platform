@@ -13,10 +13,10 @@ model AdminUser {
   passwordHash  String
   name          String
   role          String    @default("admin")
-  totpEnabled   Boolean   @default(false)
-  totpSecret    String?   // encrypted secret
-  recoveryCodes Json?     // array of strings, encrypted? we'll store as Json (plain) but could encrypt
-  lastLoginAt   DateTime?
+  totpEnabled   Boolean   @default(false) @map("totp_enabled")
+  totpSecret    String?   @map("totp_secret") // encrypted secret
+  recoveryCodes Json?     @map("recovery_codes") // array of strings
+  lastLoginAt   DateTime? @map("last_login_at")
   createdAt     DateTime  @default(now()) @map("created_at")
 
   @@map("admin_users")
