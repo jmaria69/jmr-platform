@@ -129,10 +129,12 @@ export async function login(
   _prevState: AuthState | undefined,
   formData: FormData
 ) {
+  console.log("[LOGIN] Action called");
   const raw = {
     email: formData.get("email") as string,
     password: formData.get("password") as string,
   };
+  console.log(`[LOGIN] Email received: ${raw.email?.slice(0, 3)}***`);
 
   const validated = loginSchema.safeParse(raw);
   if (!validated.success) {
@@ -185,14 +187,19 @@ export async function login(
     }
 
     // Check if 2FA is enabled for this user
+    console.log(`[LOGIN] User ${admin.email} - totpEnabled: ${admin.totpEnabled}, hasSecret: ${!!admin.totpSecret}`);
+    
     if (admin.totpEnabled && admin.totpSecret) {
       // Require 2FA verification
+      console.log(`[LOGIN] Returning requires2FA for user ${admin.id}`);
       return {
         requires2FA: true,
         userId: admin.id,
         success: false // Not fully authenticated yet
       };
     }
+    
+    console.log(`[LOGIN] No 2FA, creating session for ${admin.email}`);
 
     await createSession({
       userId: admin.id,
@@ -223,6 +230,7 @@ export async function verify2FA(
   _prevState: AuthState | undefined,
   formData: FormData
 ) {
+  console.log("[VERIFY_2FA] Action called");
   const raw = {
     userId: formData.get("userId") as string,
     token: formData.get("token") as string,
@@ -230,6 +238,7 @@ export async function verify2FA(
 
   const userId = raw.userId;
   const token = raw.token;
+  console.log(`[VERIFY_2FA] Token: ${token?.slice(0, 2)}***, UserId: ${userId?.slice(0, 8)}...`);
 
   if (!userId || !token) {
     return { error: "Datos incompletos" };
