@@ -1,7 +1,6 @@
 'use client';
 
-import { useState } from 'react';
-import { useFormState } from 'react-dom';
+import { useActionState } from 'react';
 import { login, verify2FA, type AuthState } from '@/app/actions/auth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,8 +8,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import Link from 'next/link';
 
 export default function AdminLoginPage() {
-    const [loginState, loginAction, loginPending] = useFormState<AuthState | undefined, FormData>(login, undefined);
-    const [verifyState, verifyAction, verifyPending] = useFormState<AuthState | undefined, FormData>(verify2FA, undefined);
+    const [loginState, loginAction, loginPending] = useActionState<AuthState | undefined, FormData>(login, undefined);
+    const [verifyState, verifyAction, verifyPending] = useActionState<AuthState | undefined, FormData>(verify2FA, undefined);
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-transparent">
