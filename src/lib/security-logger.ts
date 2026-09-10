@@ -1,4 +1,5 @@
 import { readStore, writeStore, type SecurityEvent } from "./security-store";
+import { maybeSendSecurityAlertEmail } from "./security-email";
 
 export type ThreatType = SecurityEvent["type"];
 
@@ -53,6 +54,11 @@ async function logThreatAsync(info: ThreatInfo): Promise<void> {
   store.events.unshift(event);
   if (store.events.length > 200) store.events.splice(200);
 
+  // Alerta por email (EmailJS) para amenazas reales -- este es el camino que
+  // usan proxy.ts y auth.ts. Antes solo se enviaba desde el handler POST de
+  // /api/security/events, al que nada en producción llama.
+  await maybeSendSecurityAlertEmail(store, event);
+
   await writeStore(store);
 }
 
@@ -65,15 +71,17 @@ interface RateEntry {
 
 const rateMaps = {
   login: new Map<string, RateEntry>(),
+  twoFactor: new Map<string, RateEntry>(),
   api: new Map<string, RateEntry>(),
 };
 
 const LIMITS = {
   login: { max: 5, windowMs: 60_000 },
+  twoFactor: { max: 5, windowMs: 5 * 60_000 },
   api: { max: 60, windowMs: 60_000 },
 };
 
-export function checkRateLimit(ip: string, kind: "login" | "api"): { blocked: boolean; count: number } {
+export function checkRateLimit(ip: string, kind: "login" | "twoFactor" | "api"): { blocked: boolean; count: number } {
   const map = rateMaps[kind];
   const limit = LIMITS[kind];
   const now = Date.now();

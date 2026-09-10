@@ -1,4 +1,4 @@
-import type { SecurityEvent } from "@/lib/security-store";
+import type { DemoStore, SecurityEvent } from "@/lib/security-store";
 
 // Envía la alerta por email vía EmailJS (REST API, uso server-side con
 // accessToken privado -- ver https://www.emailjs.com/docs/rest-api/send/).
@@ -110,4 +110,25 @@ export async function sendSecurityAlertEmail(event: SecurityEvent): Promise<void
   } catch (err) {
     console.error("[security-email]", err instanceof Error ? err.message : String(err));
   }
+}
+
+const SEVERITY_RANK: Record<SecurityEvent["severity"], number> = { low: 0, medium: 1, high: 2, critical: 3 };
+const EMAIL_COOLDOWN_MS = 5 * 60 * 1000;
+
+// Punto único de decisión "¿toca enviar email?" -- severidad media o
+// superior, con cooldown global de 5 min para no saturar el buzón durante
+// un ataque sostenido. Antes esta lógica solo vivía inline en el handler
+// POST de /api/security/events, que ningún detector real llama: proxy.ts
+// y auth.ts registran las amenazas de verdad a través de logThreatAsync
+// (security-logger.ts), que escribía directo al store sin pasar por aquí
+// -- por eso no llegaban alertas de ataques reales. Mutamos `store` in situ
+// (lastEmailSentAt) para que el caller lo persista con el resto del evento.
+export async function maybeSendSecurityAlertEmail(store: DemoStore, event: SecurityEvent): Promise<void> {
+  if (SEVERITY_RANK[event.severity] < SEVERITY_RANK.medium) return;
+
+  const now = Date.now();
+  if (store.lastEmailSentAt && now - store.lastEmailSentAt < EMAIL_COOLDOWN_MS) return;
+
+  store.lastEmailSentAt = now;
+  await sendSecurityAlertEmail(event);
 }
