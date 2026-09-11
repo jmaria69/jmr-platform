@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="800" height="450">
+  <defs>
+    <radialGradient id="bg-fraj" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" stop-color="#0e1424"/>
+      <stop offset="100%" stop-color="#07080f"/>
+    </radialGradient>
+    <radialGradient id="glow-gold" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#c9a84c" stop-opacity="0.28"/>
+      <stop offset="100%" stop-color="#c9a84c" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glow-navy" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#1e3a8a" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#1e3a8a" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="800" height="450" fill="url(#bg-fraj)"/>
+  <ellipse cx="400" cy="225" rx="280" ry="180" fill="url(#glow-navy)"/>
+  <ellipse cx="600" cy="120" rx="170" ry="130" fill="url(#glow-gold)"/>
+
+  <g stroke="#c9a84c" stroke-opacity="0.07" stroke-width="1">
+    <line x1="0" y1="75" x2="800" y2="75"/>
+    <line x1="0" y1="150" x2="800" y2="150"/>
+    <line x1="0" y1="225" x2="800" y2="225"/>
+    <line x1="0" y1="300" x2="800" y2="300"/>
+    <line x1="0" y1="375" x2="800" y2="375"/>
+    <line x1="100" y1="0" x2="100" y2="450"/>
+    <line x1="200" y1="0" x2="200" y2="450"/>
+    <line x1="300" y1="0" x2="300" y2="450"/>
+    <line x1="400" y1="0" x2="400" y2="450"/>
+    <line x1="500" y1="0" x2="500" y2="450"/>
+    <line x1="600" y1="0" x2="600" y2="450"/>
+    <line x1="700" y1="0" x2="700" y2="450"/>
+  </g>
+
+  <circle cx="360" cy="215" r="120" fill="none" stroke="#c9a84c" stroke-opacity="0.22" stroke-width="1"/>
+  <circle cx="360" cy="215" r="145" fill="none" stroke="#c9a84c" stroke-opacity="0.13" stroke-width="1" stroke-dasharray="8 4"/>
+
+  <!-- Dog silhouette -->
+  <g transform="translate(320, 235)" fill="#c9a84c" fill-opacity="0.85">
+    <path d="M-60 20 C-64 -6 -46 -30 -18 -34 C-6 -36 4 -30 10 -22 C22 -24 34 -18 38 -6 C48 -4 56 6 54 18 C60 20 64 28 60 36 C56 44 46 44 40 40 L34 46 L24 40 C10 46 -8 46 -22 40 L-30 48 L-40 40 C-52 36 -60 28 -60 20 Z" stroke="#c9a84c" stroke-width="1" stroke-opacity="0.4"/>
+    <path d="M-18 -34 C-24 -44 -22 -54 -12 -56 C-6 -57 -2 -52 -2 -46" fill="none" stroke="#c9a84c" stroke-width="4" stroke-linecap="round" stroke-opacity="0.85"/>
+    <circle cx="34" cy="-6" r="3" fill="#0e1424"/>
+  </g>
+
+  <!-- Laurel / medal (Juez internacional) -->
+  <g transform="translate(500, 175)">
+    <circle cx="0" cy="0" r="34" fill="none" stroke="#c9a84c" stroke-width="2" stroke-opacity="0.8"/>
+    <circle cx="0" cy="0" r="24" fill="#c9a84c" fill-opacity="0.1" stroke="#c9a84c" stroke-width="1" stroke-opacity="0.5"/>
+    <path d="M0 -12 L4 -2 L14 -2 L6 4 L9 14 L0 8 L-9 14 L-6 4 L-14 -2 L-4 -2 Z" fill="#c9a84c" fill-opacity="0.85"/>
+    <path d="M-4 34 L-14 60" stroke="#c9a84c" stroke-width="6" stroke-linecap="round" stroke-opacity="0.7"/>
+    <path d="M4 34 L14 60" stroke="#c9a84c" stroke-width="6" stroke-linecap="round" stroke-opacity="0.7"/>
+  </g>
+
+  <!-- Credential panel -->
+  <g transform="translate(555, 255)">
+    <rect x="0" y="0" width="185" height="70" rx="10" fill="#07080f" fill-opacity="0.92" stroke="#c9a84c" stroke-opacity="0.25" stroke-width="1"/>
+    <text x="12" y="20" font-family="monospace" font-size="8.5" fill="#c9a84c" font-weight="bold" letter-spacing="1">INSTRUCTOR RSCE</text>
+    <text x="12" y="35" font-family="sans-serif" font-size="8" fill="#9ca3af">Juez Internacional de Trabajo</text>
+    <text x="12" y="50" font-family="sans-serif" font-size="8" fill="#9ca3af">+18 años de experiencia</text>
+  </g>
+
+  <text x="400" y="345" font-family="serif" font-size="28" font-weight="900" fill="#f2e6c4" text-anchor="middle" letter-spacing="3">FRAJAMO MADRID</text>
+  <text x="400" y="368" font-family="sans-serif" font-size="11" fill="#8a8672" text-anchor="middle" letter-spacing="2">ADIESTRAMIENTO CANINO PROFESIONAL</text>
+
+  <rect x="318" y="380" width="164" height="22" rx="11" fill="#c9a84c" fill-opacity="0.12" stroke="#c9a84c" stroke-opacity="0.4" stroke-width="1"/>
+  <text x="400" y="394" font-family="sans-serif" font-size="9" fill="#e7cf8f" text-anchor="middle" font-weight="bold" letter-spacing="2">RECONOCIDO · COM. DE MADRID</text>
+</svg>
