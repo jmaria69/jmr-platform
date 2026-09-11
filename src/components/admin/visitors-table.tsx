@@ -28,7 +28,7 @@ const deviceIcon = {
   tablet: Tablet,
 };
 
-const REFRESH_MS = 5000;
+const REFRESH_MS = 30000;
 
 export function VisitorsTable() {
   const [visitors, setVisitors] = useState<RealtimeVisitor[]>([]);
@@ -36,8 +36,11 @@ export function VisitorsTable() {
 
   useEffect(() => {
     let alive = true;
+    let loading = false;
 
     const load = async () => {
+      if (loading) return;
+      loading = true;
       try {
         const res = await fetch("/api/visitors", { cache: "no-store" });
         if (!res.ok) return;
@@ -46,6 +49,7 @@ export function VisitorsTable() {
       } catch {
         // Mantener el último estado si falla una petición puntual.
       } finally {
+        loading = false;
         if (alive) setLoaded(true);
       }
     };
@@ -66,7 +70,7 @@ export function VisitorsTable() {
         <div>
           <h3 className="text-lg font-semibold">Visitantes en Tiempo Real</h3>
           <p className="text-sm text-muted-foreground">
-            {totalActive} {totalActive === 1 ? "usuario activo" : "usuarios activos"} · actualización cada 5 s
+            {totalActive} {totalActive === 1 ? "usuario activo" : "usuarios activos"} · actualización cada 30 s
           </p>
         </div>
         <div className="flex items-center gap-2 glass rounded-full px-3 py-1.5">

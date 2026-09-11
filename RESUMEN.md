@@ -145,3 +145,13 @@
 3. **Página /proyectos:** Si existe, revisar que use el mismo sistema de diseño
 4. **Testimoniales reales:** Cuando los tengas, añadir una sección en el hero o entre proyectos y contacto
 5. **Métricas reales:** Actualizar `src/lib/projects.ts` con usuarios reales cuando crezcan
+
+---
+
+## Cambios recientes — autenticación y demo
+
+- Se añadió `/reset-password` con validación Zod del correo, respuesta genérica para no revelar cuentas, token aleatorio almacenado como hash, caducidad de 30 minutos y uso único.
+- El enlace de recuperación se envía mediante Resend desde `noreply@praxialabs.com`. Requiere `RESEND_API_KEY`, `NEXT_PUBLIC_SITE_URL` y el dominio verificado en Resend.
+- La migración `20260908000000_add_password_reset_tokens` crea `password_reset_tokens` y está aplicada en producción.
+- La tarjeta de `SaludOS` apunta a su landing independiente en `https://saludapp-xi.vercel.app/marketing`; desde allí el CTA entra al dashboard.
+- La publicación actual de producción se sirve en `https://praxialabs.com` mediante Vercel y usa el proyecto Neon `mio`.

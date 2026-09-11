@@ -142,7 +142,7 @@ export default async function Home() {
     <span class="item"><b>Sistemas propios en producción</b>, no plantillas</span>
     <span class="item">De idea a agente en <span class="mono">&lt;48 h</span></span>
     <span class="item">Soporte real en <span class="mono">&lt;2 h</span></span>
-    <span class="item">Cumplimiento <span class="mono">NIS2</span> incluido</span>
+    <span class="item"><a href="/seguridad" style="color:inherit;text-decoration:underline">RGPD + NIS2</a> desde el diseño</span>
   </div></div></div>`;
 
   const problema = !S.problema ? "" : `
@@ -205,7 +205,7 @@ export default async function Home() {
       </div>
       <div class="fcol">
         <h3>Praxia</h3>
-        <a href="#servicios">Qué automatizamos</a><a href="#como">Por qué nosotros</a><a href="/precios">Precios</a><a href="/acerca-de">Acerca de</a><a href="/contacto">Contacto</a>
+        <a href="#servicios">Qué automatizamos</a><a href="#como">Por qué nosotros</a><a href="/seguridad">Seguridad y privacidad</a><a href="/precios">Precios</a><a href="/acerca-de">Acerca de</a><a href="/contacto">Contacto</a>
       </div>
       <div class="fcol">
         <h3>Contacto</h3>

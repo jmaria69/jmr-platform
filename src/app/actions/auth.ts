@@ -6,8 +6,11 @@ import { z } from "zod";
 import { headers } from "next/headers";
 import { prisma } from "../../lib/prisma";
 import { createSession, deleteSession, getSession } from "@/lib/auth";
+import { getSecret } from "@/lib/auth/session";
 import { logThreatAwait, checkRateLimit } from "@/lib/security-logger";
-import { createHmac, timingSafeEqual } from "node:crypto";
+import { createHmac, createHash, randomBytes, timingSafeEqual } from "node:crypto";
+import { SignJWT, jwtVerify } from "jose";
+import { Resend } from "resend";
 
 // ─── TOTP helpers (RFC 6238) ───
 
@@ -97,7 +100,61 @@ export interface AuthState {
   error?: string;
   success?: boolean;
   requires2FA?: boolean;
-  userId?: string;
+  challenge?: string;
+}
+
+const TWO_FACTOR_CHALLENGE = "2fa-challenge";
+const TWO_FACTOR_CHALLENGE_TTL = "5 minutes";
+const RESET_TOKEN_TTL_MS = 30 * 60 * 1000;
+
+const resetPasswordSchema = z.object({
+  email: z.string().email("Email inválido"),
+});
+
+const completeResetSchema = z.object({
+  token: z.string().min(32),
+  newPassword: changePasswordSchema.shape.newPassword,
+  confirmPassword: z.string(),
+});
+
+function hashResetToken(token: string): string {
+  return createHash("sha256").update(token).digest("hex");
+}
+
+async function sendPasswordResetEmail(email: string, token: string): Promise<void> {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) throw new Error("RESEND_API_KEY no configurada");
+  const resend = new Resend(apiKey);
+  const resetUrl = `${process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3001"}/reset-password?token=${encodeURIComponent(token)}`;
+  await resend.emails.send({
+    from: "Praxia Labs <noreply@praxialabs.com>",
+    to: email,
+    subject: "Restablece tu contraseña de Praxia Labs",
+    text: `Solicitaste restablecer tu contraseña. Abre este enlace antes de 30 minutos:\n\n${resetUrl}\n\nSi no lo solicitaste, ignora este correo.`,
+  });
+}
+
+async function createTwoFactorChallenge(userId: string): Promise<string> {
+  return new SignJWT({ userId, purpose: TWO_FACTOR_CHALLENGE })
+    .setProtectedHeader({ alg: "HS256" })
+    .setIssuedAt()
+    .setExpirationTime(TWO_FACTOR_CHALLENGE_TTL)
+    .sign(getSecret());
+}
+
+async function verifyTwoFactorChallenge(challenge: string): Promise<string | null> {
+  try {
+    const { payload } = await jwtVerify(
+      challenge,
+      getSecret()
+    );
+    if (payload.purpose !== TWO_FACTOR_CHALLENGE || typeof payload.userId !== "string") {
+      return null;
+    }
+    return payload.userId;
+  } catch {
+    return null;
+  }
 }
 
 // ─── DB access helpers ───
@@ -187,19 +244,13 @@ export async function login(
     }
 
     // Check if 2FA is enabled for this user
-    console.log(`[LOGIN] User ${admin.email} - totpEnabled: ${admin.totpEnabled}, hasSecret: ${!!admin.totpSecret}`);
-    
     if (admin.totpEnabled && admin.totpSecret) {
-      // Require 2FA verification
-      console.log(`[LOGIN] Returning requires2FA for user ${admin.id}`);
       return {
         requires2FA: true,
-        userId: admin.id,
+        challenge: await createTwoFactorChallenge(admin.id),
         success: false // Not fully authenticated yet
       };
     }
-    
-    console.log(`[LOGIN] No 2FA, creating session for ${admin.email}`);
 
     await createSession({
       userId: admin.id,
@@ -232,13 +283,12 @@ export async function verify2FA(
 ) {
   console.log("[VERIFY_2FA] Action called");
   const raw = {
-    userId: formData.get("userId") as string,
+    challenge: formData.get("challenge") as string,
     token: formData.get("token") as string,
   };
 
-  const userId = raw.userId;
+  const userId = raw.challenge ? await verifyTwoFactorChallenge(raw.challenge) : null;
   const token = raw.token;
-  console.log(`[VERIFY_2FA] Token: ${token?.slice(0, 2)}***, UserId: ${userId?.slice(0, 8)}...`);
 
   if (!userId || !token) {
     return { error: "Datos incompletos" };
@@ -248,6 +298,18 @@ export async function verify2FA(
   const ip = hdrs.get("x-forwarded-for")?.split(",")[0]?.trim()
     || hdrs.get("x-real-ip") || "unknown";
   const ua = hdrs.get("user-agent") || "";
+
+  const { blocked, count } = checkRateLimit(ip, "twoFactor");
+  if (blocked) {
+    await logThreatAwait({
+      type: "brute_force",
+      ip,
+      path: "/verify-2fa",
+      userAgent: ua,
+      details: `Demasiados intentos 2FA: ${count} en 5 min`,
+    });
+    return { error: "Demasiados intentos. Espera 5 minutos." };
+  }
 
   try {
     const admin = await prisma.adminUser.findUnique({
@@ -277,7 +339,7 @@ export async function verify2FA(
     }
 
     if (!isValidBase32(admin.totpSecret)) {
-      console.error(`Secret inválido para usuario ${admin.email}: ${admin.totpSecret.slice(0, 5)}...`);
+      console.error("Secret TOTP inválido para la cuenta de administración");
       return { error: "Error de configuración 2FA. Contacta al administrador." };
     }
 
@@ -362,4 +424,74 @@ export async function changePassword(
     console.error("Change password error:", err);
     return { error: "Error interno. Inténtalo de nuevo." };
   }
+}
+
+export async function requestPasswordReset(
+  _prevState: AuthState | undefined,
+  formData: FormData
+) {
+  const hdrs = await headers();
+  const ip = hdrs.get("x-forwarded-for")?.split(",")[0]?.trim()
+    || hdrs.get("x-real-ip") || "unknown";
+  const { blocked } = checkRateLimit(ip, "login");
+  if (blocked) return { success: true };
+
+  const parsed = resetPasswordSchema.safeParse({ email: formData.get("email") });
+  const generic = { success: true };
+  if (!parsed.success) return generic;
+
+  try {
+    const admin = await getAdminByEmail(parsed.data.email);
+    if (!admin) return generic;
+
+    await prisma.passwordResetToken.deleteMany({ where: { userId: admin.id } });
+    const token = randomBytes(32).toString("hex");
+    await prisma.passwordResetToken.create({
+      data: {
+        userId: admin.id,
+        tokenHash: hashResetToken(token),
+        expiresAt: new Date(Date.now() + RESET_TOKEN_TTL_MS),
+      },
+    });
+    await sendPasswordResetEmail(admin.email, token);
+  } catch (err) {
+    console.error("Password reset request error:", err instanceof Error ? err.message : String(err));
+  }
+
+  return generic;
+}
+
+export async function resetPassword(
+  _prevState: AuthState | undefined,
+  formData: FormData
+) {
+  const parsed = completeResetSchema.safeParse({
+    token: formData.get("token"),
+    newPassword: formData.get("newPassword"),
+    confirmPassword: formData.get("confirmPassword"),
+  });
+  if (!parsed.success) return { error: parsed.error.issues[0].message };
+  if (parsed.data.newPassword !== parsed.data.confirmPassword) {
+    return { error: "Las contraseñas no coinciden" };
+  }
+
+  const resetToken = await prisma.passwordResetToken.findUnique({
+    where: { tokenHash: hashResetToken(parsed.data.token) },
+  });
+  if (!resetToken || resetToken.usedAt || resetToken.expiresAt <= new Date()) {
+    return { error: "El enlace no es válido o ha caducado" };
+  }
+
+  await prisma.$transaction([
+    prisma.adminUser.update({
+      where: { id: resetToken.userId },
+      data: { passwordHash: await hash(parsed.data.newPassword, 12) },
+    }),
+    prisma.passwordResetToken.update({
+      where: { id: resetToken.id },
+      data: { usedAt: new Date() },
+    }),
+  ]);
+
+  return { success: true };
 }

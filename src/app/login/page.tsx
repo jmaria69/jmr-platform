@@ -74,9 +74,14 @@ export default function LoginPage() {
                     autoComplete="one-time-code"
                     className="pl-10 h-11 bg-white/3 border-white/10 focus:border-indigo-500/50 rounded-xl"
                   />
-                  {/* Hidden userId */}
-                  <input type="hidden" name="userId" defaultValue={state?.userId ?? ""} />
+                  <input type="hidden" name="challenge" defaultValue={state?.challenge ?? ""} />
                 </div>
+              </div>
+
+              <div className="text-center">
+                <Link href="/reset-password" className="text-sm text-indigo-400 hover:text-indigo-300">
+                  ¿Has olvidado tu contraseña?
+                </Link>
               </div>
 
               {/* Buttons */}
@@ -153,6 +158,12 @@ export default function LoginPage() {
                     className="pl-10 h-11 bg-white/3 border-white/10 focus:border-indigo-500/50 rounded-xl"
                   />
                 </div>
+              </div>
+
+              <div className="text-center">
+                <Link href="/reset-password" className="text-sm text-indigo-400 hover:text-indigo-300">
+                  ¿Has olvidado tu contraseña?
+                </Link>
               </div>
 
               {/* Buttons */}

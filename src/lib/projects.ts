@@ -167,6 +167,7 @@ export const projects: Project[] = [
     tech: ["Next.js 15", "TypeScript", "Python", "FastAPI", "Claude API", "PostgreSQL", "Twilio", "Resend", "Vercel"],
     status: "beta",
     category: "ai",
+    url: "https://saludapp-xi.vercel.app/marketing",
     image: "/projects/saludapp.svg",
     color: "#06b6d4",
   },

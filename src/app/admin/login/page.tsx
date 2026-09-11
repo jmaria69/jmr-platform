@@ -48,8 +48,7 @@ export default function AdminLoginPage() {
                                     autoComplete="one-time-code"
                                     className="border-slate-700 focus:border-purple-500"
                                 />
-                                {/* Hidden userId */}
-                                <input type="hidden" name="userId" defaultValue={loginState?.userId ?? ""} />
+                                <input type="hidden" name="challenge" defaultValue={loginState?.challenge ?? ""} />
                             </div>
 
                             <Button
@@ -96,6 +95,12 @@ export default function AdminLoginPage() {
                                     className="border-slate-700 focus:border-purple-500"
                                     required
                                 />
+                            </div>
+
+                            <div className="text-center">
+                                <Link href="/reset-password" className="text-sm text-purple-400 hover:text-purple-300">
+                                    ¿Has olvidado tu contraseña?
+                                </Link>
                             </div>
 
                             {loginState?.error && (
