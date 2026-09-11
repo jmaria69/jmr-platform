@@ -209,7 +209,10 @@ export function ThreatMap() {
     useEffect(() => {
         if (!enabled) { if (intervalRef.current) clearInterval(intervalRef.current); return; }
         fetchAndGeolocate();
-        intervalRef.current = setInterval(fetchAndGeolocate, 30_000);
+        // 60s en vez de 30s -- mismo motivo que el poll de /admin/seguridad:
+        // cada llamada lee Vercel Blob (Advanced Operation, cuota limitada
+        // en el plan Hobby) a través de /api/security/events.
+        intervalRef.current = setInterval(fetchAndGeolocate, 60_000);
         return () => { if (intervalRef.current) clearInterval(intervalRef.current); };
     }, [enabled, fetchAndGeolocate]);
 

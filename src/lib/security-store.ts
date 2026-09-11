@@ -33,17 +33,31 @@ export interface DemoStore {
 
 const BLOB_KEY = "security-events.json";
 
+// Cache en memoria de corta duración -- el panel /admin/seguridad y el
+// threat-map sondean este store cada pocos segundos, y cada lectura es una
+// "Advanced Operation" facturable en Vercel Blob (plan Hobby: 2k/mes). Sin
+// esto, dos peticiones casi simultáneas a la misma instancia caliente
+// (varias pestañas, o el panel + el mapa) pagaban una lectura de Blob cada
+// una. Con TTL de 5s se colapsan en una sola lectura real por ráfaga; no
+// sirve entre instancias serverless distintas, pero reduce mucho el
+// consumo dentro de la misma instancia caliente, que es el caso común.
+let storeCache: { data: DemoStore; fetchedAt: number } | null = null;
+const CACHE_TTL_MS = 5_000;
+
 export async function readStore(): Promise<DemoStore> {
+  if (storeCache && Date.now() - storeCache.fetchedAt < CACHE_TTL_MS) {
+    return storeCache.data;
+  }
+
   try {
     const result = await get(BLOB_KEY, {
       access: "private",
       token: process.env.BLOB_READ_WRITE_TOKEN,
       useCache: false,
     });
-    if (!result) return { events: [], rateLimitMap: {} };
-
-    const text = await new Response(result.stream).text();
-    return JSON.parse(text) as DemoStore;
+    const data = result ? (JSON.parse(await new Response(result.stream).text()) as DemoStore) : { events: [], rateLimitMap: {} };
+    storeCache = { data, fetchedAt: Date.now() };
+    return data;
   } catch (err) {
     console.warn("[readStore] Error:", err instanceof Error ? err.message : String(err));
     return { events: [], rateLimitMap: {} };
@@ -56,12 +70,16 @@ export async function writeStore(store: DemoStore): Promise<void> {
     return;
   }
 
-  const result = await put(BLOB_KEY, JSON.stringify(store), {
-    token: process.env.BLOB_READ_WRITE_TOKEN,
-    access: "private",
-    contentType: "application/json",
-    addRandomSuffix: false,
-    allowOverwrite: true,
-  });
-  console.log("[writeStore] OK —", store.events.length, "events saved to", result.pathname);
+  try {
+    const result = await put(BLOB_KEY, JSON.stringify(store), {
+      token: process.env.BLOB_READ_WRITE_TOKEN,
+      access: "private",
+      contentType: "application/json",
+      addRandomSuffix: false,
+      allowOverwrite: true,
+    });
+    console.log("[writeStore] OK —", store.events.length, "events saved to", result.pathname);
+  } catch (err) {
+    console.warn("[writeStore] Storage unavailable:", err instanceof Error ? err.message : String(err));
+  }
 }

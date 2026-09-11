@@ -140,7 +140,10 @@ export default function SeguridadPage() {
 
   useEffect(() => {
     if (!autoRefresh) return;
-    const interval = setInterval(fetchData, 10_000); // poll every 10s
+    // 60s en vez de 10s -- cada poll es una lectura de Vercel Blob (Advanced
+    // Operation, 2k/mes en el plan Hobby); a 10s este panel solo ya agotaba
+    // la cuota en horas con una pestaña abierta.
+    const interval = setInterval(fetchData, 60_000);
     return () => clearInterval(interval);
   }, [autoRefresh, fetchData]);
 
