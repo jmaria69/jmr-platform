@@ -68,7 +68,10 @@
     "vitest": "^4.1.10"
   },
   "browserslist": [
-    "> 0.3%",
+    "chrome >= 96",
+    "edge >= 96",
+    "firefox >= 90",
+    "safari >= 15",
     "not dead",
     "not op_mini all"
   ]
