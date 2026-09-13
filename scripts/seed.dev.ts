@@ -191,7 +191,7 @@ async function main() {
             tech: ["Python", "FastAPI", "Claude API", "PostgreSQL", "WebSocket", "React 18", "TypeScript", "Redis", "Docker"],
             status: "beta",
             category: "ai",
-            image: "/projects/siam.svg",
+            image: "/projects/siam.jpg",
             color: "#dc2626",
         },
         {
