@@ -3,6 +3,22 @@ import type { ReactNode } from "react";
 import { ArrowRight, ExternalLink } from "lucide-react";
 import type { Product } from "@/content/products";
 
+const BASE_URL = "https://praxialabs.com";
+
+function buildServiceJsonLd(product: Product, lang: "es" | "en", canonicalPath: string) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: product.nombre,
+    serviceType: product.badge,
+    description: product.bajada,
+    url: `${BASE_URL}${canonicalPath}`,
+    inLanguage: lang,
+    areaServed: "ES",
+    provider: { "@type": "Organization", name: "Praxia Labs", url: BASE_URL },
+  };
+}
+
 const STRINGS = {
   es: {
     fuente: "Fuente",
@@ -30,14 +46,22 @@ export function ProductLanding({
   product,
   children,
   lang = "es",
+  canonicalPath,
 }: {
   product: Product;
   children?: ReactNode;
   lang?: "es" | "en";
+  /** Ruta canónica de la página, usada en el JSON-LD del Service. Por defecto se deriva del slug. */
+  canonicalPath?: string;
 }) {
   const t = STRINGS[lang];
+  const path = canonicalPath ?? (lang === "en" ? `/en/${product.slug}` : `/${product.slug}`);
   return (
     <div className="min-h-screen bg-transparent">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(buildServiceJsonLd(product, lang, path)) }}
+      />
       <section className="relative pt-32 pb-16 px-6">
         <div className="max-w-4xl mx-auto space-y-8">
           <div

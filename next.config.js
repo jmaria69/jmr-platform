@@ -31,6 +31,14 @@ const securityHeaders = [
 
 const nextConfig = {
   poweredByHeader: false,
+  images: {
+    // Único host remoto real de imágenes: las capturas de proyecto que sube
+    // /api/projects/[id]/screenshot vía Vercel Blob. Todo lo demás (portadas
+    // por defecto) es local en /public/projects.
+    remotePatterns: [
+      { protocol: "https", hostname: "*.public.blob.vercel-storage.com" },
+    ],
+  },
   async headers() {
     return [
       {

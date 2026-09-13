@@ -75,6 +75,28 @@ describe("ProductLanding", () => {
     }
   });
 
+  it("incluye JSON-LD de tipo Service con la URL canónica de cada producto", () => {
+    for (const p of PRODUCTS) {
+      const { container, unmount } = render(
+        <ProductLanding product={p} canonicalPath={`/${p.slug}`} />
+      );
+      const script = container.querySelector('script[type="application/ld+json"]');
+      expect(script, `falta JSON-LD para ${p.slug}`).toBeTruthy();
+      const data = JSON.parse(script!.innerHTML);
+      expect(data["@type"]).toBe("Service");
+      expect(data.name).toBe(p.nombre);
+      expect(data.url).toBe(`https://praxialabs.com/${p.slug}`);
+      unmount();
+    }
+  });
+
+  it("deriva la URL canónica del slug cuando no se pasa canonicalPath", () => {
+    const { container } = render(<ProductLanding product={siam} lang="en" />);
+    const script = container.querySelector('script[type="application/ld+json"]');
+    const data = JSON.parse(script!.innerHTML);
+    expect(data.url).toBe(`https://praxialabs.com/en/${siam.slug}`);
+  });
+
   it('con lang="en" traduce el chrome estático (CTA, encabezados, enlace de contacto)', () => {
     render(<ProductLanding product={siam} lang="en" />);
     expect(screen.getByRole("link", { name: /See the app live/i })).toBeInTheDocument();

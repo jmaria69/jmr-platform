@@ -19,7 +19,7 @@ export default function SiamPage() {
   if (!product) notFound();
 
   return (
-    <ProductLanding product={product}>
+    <ProductLanding product={product} canonicalPath="/siam">
       <section id="nis2-calculadora" className="py-16 px-6 border-t border-purple-500/20 scroll-mt-24">
         <div className="max-w-2xl mx-auto">
           <h2 className="font-display text-2xl text-foreground mb-3">

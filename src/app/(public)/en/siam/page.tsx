@@ -20,7 +20,7 @@ export default function SiamPageEn() {
 
   return (
     <div lang="en">
-      <ProductLanding product={product} lang="en">
+      <ProductLanding product={product} lang="en" canonicalPath="/en/siam">
         <section className="py-16 px-6 border-t border-purple-500/20 text-center">
           <div className="max-w-2xl mx-auto">
             <h2 className="font-display text-2xl text-foreground mb-3">

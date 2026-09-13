@@ -18,7 +18,7 @@ export default function CoreOpsPageEn() {
   if (!product) notFound();
   return (
     <div lang="en">
-      <ProductLanding product={product} lang="en" />
+      <ProductLanding product={product} lang="en" canonicalPath="/en/core-ops" />
     </div>
   );
 }

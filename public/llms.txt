@@ -48,8 +48,7 @@ Note: the project catalog ([/proyectos](https://praxialabs.com/proyectos)) is on
 - [SIAM](https://praxialabs.com/siam): agente de ciberseguridad.
 - [Core OPS](https://praxialabs.com/core-ops): operaciones IT unificadas.
 - [AdminApp](https://praxialabs.com/adminapp): administración y facturación.
-- [Laboratorio](https://praxialabs.com/laboratorio): productos en desarrollo.
-- [Proyectos](https://praxialabs.com/proyectos): catálogo completo de casos reales.
+- [Laboratorio](https://praxialabs.com/laboratorio): catálogo completo de casos reales, en producción y en desarrollo (`/proyectos` redirige aquí).
 - [Precios](https://praxialabs.com/precios): planes y tarifas.
 - [Acerca de](https://praxialabs.com/acerca-de): quiénes somos.
 - [Contacto](https://praxialabs.com/contacto): diagnóstico gratuito de 15 min.

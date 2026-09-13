@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, ExternalLink } from "lucide-react";
 import { Project } from "@/types";
@@ -37,8 +38,11 @@ const FALLBACK_COVER = "/projects/default.svg";
  * La imagen sale de `project.image` (la misma fuente que ya usa la home en
  * `neural-timeline.ts` y que el admin puede refrescar con una captura real
  * desde `/admin/proyectos`); el texto alternativo sale de `getProjectCoverAlt`.
- * Si la imagen tarda, carga con `loading="lazy"`; si falla, cae a una portada
- * de reserva neutra y, si esa también fallara, se oculta sin romper el layout.
+ * Se sirve con `next/image` (lazy por defecto): las capturas remotas vienen de
+ * Vercel Blob (ver `remotePatterns` en next.config.js) y pasan por el optimizador;
+ * las portadas locales son SVG y se marcan `unoptimized` porque Next no
+ * transforma SVGs. Si la imagen falla, cae a una portada de reserva neutra y,
+ * si esa también fallara, se oculta sin romper el layout.
  */
 export function LabProjectCard({ project, lang }: { project: Project; lang: Lang }) {
   const [coverSrc, setCoverSrc] = useState(project.image || FALLBACK_COVER);
@@ -60,12 +64,12 @@ export function LabProjectCard({ project, lang }: { project: Project; lang: Lang
     <div className="project-card-v2 group rounded-2xl transition-all overflow-hidden">
       {!coverFailed && (
         <div className="relative aspect-video w-full overflow-hidden border-b border-white/5 bg-black/20">
-          {/* eslint-disable-next-line @next/next/no-img-element -- next/image is not configured in this app (see neural-timeline.ts, which uses the same plain <img> pattern) */}
-          <img
+          <Image
             src={coverSrc}
             alt={alt}
-            loading="lazy"
-            decoding="async"
+            fill
+            sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+            unoptimized={coverSrc.endsWith(".svg")}
             onError={handleImgError}
             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
           />

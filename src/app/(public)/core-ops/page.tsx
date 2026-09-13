@@ -16,5 +16,5 @@ export const metadata: Metadata = {
 export default function CoreOpsPage() {
   const product = getProduct("core-ops");
   if (!product) notFound();
-  return <ProductLanding product={product} />;
+  return <ProductLanding product={product} canonicalPath="/core-ops" />;
 }

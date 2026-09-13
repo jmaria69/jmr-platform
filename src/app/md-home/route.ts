@@ -12,7 +12,6 @@ const KEY_PAGES = [
   { href: "/adminapp", label: "AdminApp" },
   { href: "/laboratorio", label: "Laboratorio" },
   { href: "/precios", label: "Precios" },
-  { href: "/proyectos", label: "Proyectos" },
   { href: "/acerca-de", label: "Acerca de" },
   { href: "/contacto", label: "Contacto" },
   { href: "/politica-privacidad", label: "Política de privacidad" },

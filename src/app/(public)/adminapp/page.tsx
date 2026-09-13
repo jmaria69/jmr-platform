@@ -16,5 +16,5 @@ export const metadata: Metadata = {
 export default function AdminAppPage() {
   const product = getProduct("adminapp");
   if (!product) notFound();
-  return <ProductLanding product={product} />;
+  return <ProductLanding product={product} canonicalPath="/adminapp" />;
 }
