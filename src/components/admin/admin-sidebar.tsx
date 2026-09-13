@@ -16,6 +16,7 @@ import {
   Gauge,
   Shield,
   Palette,
+  MessageCircle,
 } from "lucide-react";
 import {
   Sidebar,
@@ -37,6 +38,7 @@ import { ResponsivePraxiaLabLogo } from "@/components/public/responsive-logo";
 const menuItems = [
   { href: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/admin/crm", label: "CRM", icon: Users },
+  { href: "/admin/conversaciones", label: "Conversaciones", icon: MessageCircle },
   { href: "/admin/analytics", label: "Analytics", icon: BarChart3 },
   { href: "/admin/campanas", label: "Campañas", icon: Megaphone },
   { href: "/admin/proyectos", label: "Proyectos", icon: FolderKanban },
