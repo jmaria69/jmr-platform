@@ -103,10 +103,11 @@ export function ContactForm({ lang = "es" }: { lang?: "es" | "en" }) {
     <form onSubmit={handleSubmit} className="space-y-4" suppressHydrationWarning>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <label className="block text-xs font-semibold text-gray-400 mb-1.5 uppercase tracking-wider">
+          <label htmlFor="cf-nombre" className="block text-xs font-semibold text-gray-400 mb-1.5 uppercase tracking-wider">
             {t.name}
           </label>
           <input
+            id="cf-nombre"
             type="text"
             placeholder={t.namePh}
             value={form.nombre}
@@ -117,10 +118,11 @@ export function ContactForm({ lang = "es" }: { lang?: "es" | "en" }) {
           />
         </div>
         <div>
-          <label className="block text-xs font-semibold text-gray-400 mb-1.5 uppercase tracking-wider">
+          <label htmlFor="cf-email" className="block text-xs font-semibold text-gray-400 mb-1.5 uppercase tracking-wider">
             {t.email}
           </label>
           <input
+            id="cf-email"
             type="email"
             placeholder={t.emailPh}
             value={form.email}
@@ -132,10 +134,11 @@ export function ContactForm({ lang = "es" }: { lang?: "es" | "en" }) {
         </div>
       </div>
       <div>
-        <label className="block text-xs font-semibold text-gray-400 mb-1.5 uppercase tracking-wider">
+        <label htmlFor="cf-empresa" className="block text-xs font-semibold text-gray-400 mb-1.5 uppercase tracking-wider">
           {t.company}
         </label>
         <input
+          id="cf-empresa"
           type="text"
           placeholder={t.companyPh}
           value={form.empresa}
@@ -145,10 +148,11 @@ export function ContactForm({ lang = "es" }: { lang?: "es" | "en" }) {
         />
       </div>
       <div>
-        <label className="block text-xs font-semibold text-gray-400 mb-1.5 uppercase tracking-wider">
+        <label htmlFor="cf-proyecto" className="block text-xs font-semibold text-gray-400 mb-1.5 uppercase tracking-wider">
           {t.projectLabel}
         </label>
         <select
+          id="cf-proyecto"
           value={form.proyecto}
           onChange={(e) => setForm((f) => ({ ...f, proyecto: e.target.value }))}
           required
@@ -161,10 +165,11 @@ export function ContactForm({ lang = "es" }: { lang?: "es" | "en" }) {
         </select>
       </div>
       <div>
-        <label className="block text-xs font-semibold text-gray-400 mb-1.5 uppercase tracking-wider">
+        <label htmlFor="cf-mensaje" className="block text-xs font-semibold text-gray-400 mb-1.5 uppercase tracking-wider">
           {t.messageLabel}
         </label>
         <textarea
+          id="cf-mensaje"
           placeholder={t.messagePh}
           value={form.mensaje}
           onChange={(e) => setForm((f) => ({ ...f, mensaje: e.target.value }))}

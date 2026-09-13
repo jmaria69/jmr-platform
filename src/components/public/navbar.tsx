@@ -95,7 +95,7 @@ export function Navbar() {
           <ThemeToggle />
           <Sheet open={open} onOpenChange={setOpen}>
           <SheetTrigger
-            render={<Button variant="ghost" size="icon" />}
+            render={<Button variant="ghost" size="icon" aria-label={isEn ? "Open menu" : "Abrir menú"} />}
           >
             <Menu className="h-5 w-5" />
           </SheetTrigger>
