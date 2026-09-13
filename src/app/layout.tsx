@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, Space_Grotesk } from "next/font/google";
-import { TooltipProvider } from "@/components/ui/tooltip";
 import { GoogleAnalytics } from "@/components/analytics/google-analytics";
 import AgentChatWidget from "@/components/AgentChatWidget";
 import "./globals.css";
@@ -80,11 +79,9 @@ export default function RootLayout({
       <head />
       <body className="praxia-body grain min-h-full flex flex-col">
         <GoogleAnalytics />
-        <TooltipProvider>
-          <main className="flex-1">
-            {children}
-          </main>
-        </TooltipProvider>
+        <main className="flex-1">
+          {children}
+        </main>
         <AgentChatWidget />
       </body>
     </html>
