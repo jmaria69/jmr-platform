@@ -36,11 +36,11 @@ export default function ConversacionesPage() {
       if (!res.ok) {
         setError("No se pudo cargar — comprueba que el agente esté encendido y AGENT_ADMIN_KEY configurado.");
         setConversaciones([]);
-        return;
+      } else {
+        const data = await res.json();
+        setConversaciones(data.conversaciones ?? []);
+        setError(null);
       }
-      const data = await res.json();
-      setConversaciones(data.conversaciones ?? []);
-      setError(null);
     } catch {
       setError("No se pudo conectar con el agente.");
     } finally {
@@ -96,10 +96,10 @@ export default function ConversacionesPage() {
               ) : (
                 hilo.map((m, i) => (
                   <div key={i} className={`flex gap-2 ${m.role === "user" ? "flex-row-reverse" : ""}`}>
-                    <div className={`shrink-0 h-7 w-7 rounded-full flex items-center justify-center ${m.role === "user" ? "bg-indigo-500/20 text-indigo-300" : "bg-muted/40 text-muted-foreground"}`}>
+                    <div className={`shrink-0 h-7 w-7 rounded-full flex items-center justify-center ${m.role === "user" ? "bg-indigo-500/20 text-indigo-300" : "bg-muted/40 text-muted-foreground`}">
                       {m.role === "user" ? <User className="h-3.5 w-3.5" /> : <Bot className="h-3.5 w-3.5" />}
                     </div>
-                    <div className={`max-w-[80%] rounded-xl px-3 py-2 text-sm whitespace-pre-wrap break-words ${m.role === "user" ? "bg-indigo-600/20 text-indigo-100" : "bg-muted/30"}`}>
+                    <div className={`max-w-[80%] rounded-xl px-3 py-2 text-sm whitespace-pre-wrap break-words ${m.role === "user" ? "bg-indigo-600/20 text-indigo-100" : "bg-muted/30`}>
                       {m.content}
                       {m.timestamp && (
                         <div className="text-[10px] text-muted-foreground mt-1">
