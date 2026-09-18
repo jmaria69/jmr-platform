@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { MessageCircle, Phone, Globe, RefreshCw, X, User, Bot } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,8 @@ interface ConversacionResumen {
   ultimo_mensaje: string;
   ultimo_rol: string;
   ultimo_timestamp: string | null;
+  producto: string;
+  producto_nombre: string;
 }
 
 interface MensajeHilo {
@@ -21,11 +23,33 @@ interface MensajeHilo {
   timestamp: string | null;
 }
 
+interface Producto {
+  id: string;
+  nombre: string;
+}
+
+interface FalloAgente {
+  producto: string;
+  nombre: string;
+  motivo: string;
+}
+
+// Cada producto con su color para distinguirlos de un vistazo en la lista.
+const COLOR_PRODUCTO: Record<string, string> = {
+  praxialabs: "bg-indigo-500/15 text-indigo-300 border-indigo-500/30",
+  adminapp: "bg-sky-500/15 text-sky-300 border-sky-500/30",
+  saludapp: "bg-emerald-500/15 text-emerald-300 border-emerald-500/30",
+  marketing40: "bg-fuchsia-500/15 text-fuchsia-300 border-fuchsia-500/30",
+};
+
 export default function ConversacionesPage() {
   const [conversaciones, setConversaciones] = useState<ConversacionResumen[]>([]);
+  const [productos, setProductos] = useState<Producto[]>([]);
+  const [fallos, setFallos] = useState<FalloAgente[]>([]);
+  const [filtro, setFiltro] = useState<string>("todos");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [seleccionada, setSeleccionada] = useState<string | null>(null);
+  const [seleccionada, setSeleccionada] = useState<ConversacionResumen | null>(null);
   const [hilo, setHilo] = useState<MensajeHilo[]>([]);
   const [cargandoHilo, setCargandoHilo] = useState(false);
 
@@ -39,6 +63,8 @@ export default function ConversacionesPage() {
       } else {
         const data = await res.json();
         setConversaciones(data.conversaciones ?? []);
+        setProductos(data.productos ?? []);
+        setFallos(data.fallos ?? []);
         setError(null);
       }
     } catch {
@@ -52,11 +78,27 @@ export default function ConversacionesPage() {
     fetchConversaciones();
   }, [fetchConversaciones]);
 
-  const abrirConversacion = async (telefono: string) => {
-    setSeleccionada(telefono);
+  const conteoPorProducto = useMemo(() => {
+    const conteo: Record<string, number> = {};
+    for (const c of conversaciones) {
+      conteo[c.producto] = (conteo[c.producto] ?? 0) + 1;
+    }
+    return conteo;
+  }, [conversaciones]);
+
+  const visibles = useMemo(
+    () => (filtro === "todos" ? conversaciones : conversaciones.filter((c) => c.producto === filtro)),
+    [conversaciones, filtro]
+  );
+
+  const abrirConversacion = async (conversacion: ConversacionResumen) => {
+    setSeleccionada(conversacion);
+    setHilo([]);
     setCargandoHilo(true);
     try {
-      const res = await fetch(`/api/admin/conversaciones/${encodeURIComponent(telefono)}`);
+      const res = await fetch(
+        `/api/admin/conversaciones/${encodeURIComponent(conversacion.telefono)}?producto=${encodeURIComponent(conversacion.producto)}`
+      );
       const data = await res.json();
       setHilo(data.mensajes ?? []);
     } finally {
@@ -77,8 +119,11 @@ export default function ConversacionesPage() {
           >
             <div className="flex items-center justify-between px-5 py-4 border-b border-border shrink-0">
               <div className="flex items-center gap-2 font-semibold text-sm">
-                {seleccionada.startsWith("web-") ? <Globe className="h-4 w-4 text-cyan-400" /> : <Phone className="h-4 w-4 text-green-400" />}
-                {seleccionada}
+                {seleccionada.canal === "web" ? <Globe className="h-4 w-4 text-cyan-400" /> : <Phone className="h-4 w-4 text-green-400" />}
+                {seleccionada.telefono}
+                <Badge variant="outline" className={`text-xs ${COLOR_PRODUCTO[seleccionada.producto] ?? ""}`}>
+                  {seleccionada.producto_nombre}
+                </Badge>
               </div>
               <button
                 onClick={() => setSeleccionada(null)}
@@ -122,7 +167,7 @@ export default function ConversacionesPage() {
             Conversaciones
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
-            Lo que están escribiendo por el chat web y por WhatsApp (Praxia Assist)
+            Lo que están escribiendo por el chat web y por WhatsApp, agrupado por producto
           </p>
         </div>
         <Button variant="outline" size="sm" onClick={fetchConversaciones} disabled={loading}>
@@ -130,27 +175,57 @@ export default function ConversacionesPage() {
         </Button>
       </div>
 
+      {productos.length > 1 && (
+        <div className="flex items-center gap-2 flex-wrap">
+          <button
+            onClick={() => setFiltro("todos")}
+            className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${filtro === "todos" ? "bg-muted/40 border-border text-foreground" : "border-border/50 text-muted-foreground hover:bg-muted/20"}`}
+          >
+            Todos ({conversaciones.length})
+          </button>
+          {productos.map((p) => (
+            <button
+              key={p.id}
+              onClick={() => setFiltro(p.id)}
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${filtro === p.id ? COLOR_PRODUCTO[p.id] ?? "bg-muted/40 border-border" : "border-border/50 text-muted-foreground hover:bg-muted/20"}`}
+            >
+              {p.nombre} ({conteoPorProducto[p.id] ?? 0})
+            </button>
+          ))}
+        </div>
+      )}
+
       {error && (
         <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl px-4 py-3 text-amber-300 text-sm">
           {error}
         </div>
       )}
 
+      {fallos.length > 0 && (
+        <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl px-4 py-3 text-amber-300 text-sm">
+          Sin datos de: {fallos.map((f) => `${f.nombre} (${f.motivo})`).join(", ")}. El resto se muestra igual.
+        </div>
+      )}
+
       {loading ? (
         <div className="text-center py-16 text-muted-foreground">Cargando conversaciones...</div>
-      ) : conversaciones.length === 0 ? (
+      ) : visibles.length === 0 ? (
         <Card className="rounded-2xl glass border-gradient overflow-hidden">
           <CardContent className="flex flex-col items-center gap-3 py-16">
             <MessageCircle className="h-12 w-12 text-muted-foreground opacity-40" />
-            <p className="text-muted-foreground">Todavía no hay conversaciones registradas.</p>
+            <p className="text-muted-foreground">
+              {filtro === "todos"
+                ? "Todavía no hay conversaciones registradas."
+                : "Este producto todavía no tiene conversaciones."}
+            </p>
           </CardContent>
         </Card>
       ) : (
         <div className="space-y-2">
-          {conversaciones.map((c) => (
+          {visibles.map((c) => (
             <div
-              key={c.telefono}
-              onClick={() => abrirConversacion(c.telefono)}
+              key={`${c.producto}:${c.telefono}`}
+              onClick={() => abrirConversacion(c)}
               className="flex items-start gap-3 p-4 rounded-xl border border-border bg-muted/10 cursor-pointer transition-all hover:bg-muted/20"
             >
               <div className="p-2 rounded-lg bg-muted/30 shrink-0">
@@ -158,6 +233,9 @@ export default function ConversacionesPage() {
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap mb-1">
+                  <Badge variant="outline" className={`text-xs ${COLOR_PRODUCTO[c.producto] ?? ""}`}>
+                    {c.producto_nombre}
+                  </Badge>
                   <span className="font-semibold text-sm font-mono">{c.telefono}</span>
                   <Badge variant="outline" className="text-xs">
                     {c.canal === "web" ? "Web" : "WhatsApp"}

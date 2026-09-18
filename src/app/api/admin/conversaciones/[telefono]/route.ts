@@ -1,11 +1,9 @@
 import { getSession } from "@/lib/auth/session";
 import { NextResponse } from "next/server";
-
-const AGENT_URL = process.env.AGENT_BACKEND_URL || process.env.NEXT_PUBLIC_AGENT_URL || "http://127.0.0.1:8010";
-const AGENT_ADMIN_KEY = process.env.AGENT_ADMIN_KEY || "";
+import { buscarAgente, agentesConfigurados, pedirAlAgente } from "@/lib/agents";
 
 export async function GET(
-  _req: Request,
+  req: Request,
   { params }: { params: Promise<{ telefono: string }> }
 ) {
   const session = await getSession();
@@ -15,11 +13,17 @@ export async function GET(
 
   const { telefono } = await params;
 
+  // Los cuatro widgets generan el id igual ("web-" + 8 aleatorios), así que el
+  // teléfono por sí solo no identifica el hilo: hace falta saber de qué agente
+  // viene. Sin ?producto se usa el primero configurado (comportamiento previo).
+  const producto = new URL(req.url).searchParams.get("producto");
+  const agente = producto ? buscarAgente(producto) : agentesConfigurados()[0];
+  if (!agente) {
+    return NextResponse.json({ error: "Agente desconocido" }, { status: 404 });
+  }
+
   try {
-    const res = await fetch(`${AGENT_URL}/conversaciones/${encodeURIComponent(telefono)}`, {
-      headers: { "x-admin-key": AGENT_ADMIN_KEY },
-      cache: "no-store",
-    });
+    const res = await pedirAlAgente(agente, `/conversaciones/${encodeURIComponent(telefono)}`);
     if (!res.ok) {
       return NextResponse.json({ error: "El agente no respondió correctamente" }, { status: 502 });
     }

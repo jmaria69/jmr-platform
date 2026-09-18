@@ -1,8 +1,6 @@
 import { getSession } from "@/lib/auth/session";
 import { NextResponse } from "next/server";
-
-const AGENT_URL = process.env.AGENT_BACKEND_URL || process.env.NEXT_PUBLIC_AGENT_URL || "http://127.0.0.1:8010";
-const AGENT_ADMIN_KEY = process.env.AGENT_ADMIN_KEY || "";
+import { agentesConfigurados, pedirAlAgente } from "@/lib/agents";
 
 export async function GET() {
   const session = await getSession();
@@ -10,17 +8,49 @@ export async function GET() {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  try {
-    const res = await fetch(`${AGENT_URL}/conversaciones`, {
-      headers: { "x-admin-key": AGENT_ADMIN_KEY },
-      cache: "no-store",
-    });
-    if (!res.ok) {
-      return NextResponse.json({ error: "El agente no respondió correctamente" }, { status: 502 });
-    }
-    const data = await res.json();
-    return NextResponse.json(data);
-  } catch {
-    return NextResponse.json({ error: "No se pudo conectar con el agente" }, { status: 502 });
+  const agentes = agentesConfigurados();
+  if (agentes.length === 0) {
+    return NextResponse.json(
+      { error: "No hay ningún agente configurado (falta AGENT_BACKEND_URL)" },
+      { status: 503 }
+    );
   }
+
+  const resultados = await Promise.all(
+    agentes.map(async (agente) => {
+      try {
+        const res = await pedirAlAgente(agente, "/conversaciones");
+        if (!res.ok) {
+          return { agente, error: `respondió ${res.status}` };
+        }
+        const data = await res.json();
+        return { agente, conversaciones: data.conversaciones ?? [] };
+      } catch {
+        return { agente, error: "no responde" };
+      }
+    })
+  );
+
+  // Se etiqueta cada conversación con su producto de origen y se mezclan todas
+  // en una sola lista cronológica; el filtro por producto vive en el cliente.
+  const conversaciones = resultados
+    .flatMap((r) =>
+      (r.conversaciones ?? []).map((c: Record<string, unknown>) => ({
+        ...c,
+        producto: r.agente.id,
+        producto_nombre: r.agente.nombre,
+      }))
+    )
+    .sort((a, b) => String(b.ultimo_timestamp ?? "").localeCompare(String(a.ultimo_timestamp ?? "")));
+
+  // Un agente caído se reporta aparte: el panel sigue mostrando los demás.
+  const fallos = resultados
+    .filter((r) => r.error)
+    .map((r) => ({ producto: r.agente.id, nombre: r.agente.nombre, motivo: r.error }));
+
+  return NextResponse.json({
+    conversaciones,
+    productos: agentes.map((a) => ({ id: a.id, nombre: a.nombre })),
+    fallos,
+  });
 }
