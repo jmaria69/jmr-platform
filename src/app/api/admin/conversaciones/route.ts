@@ -1,6 +1,21 @@
 import { getSession } from "@/lib/auth/session";
 import { NextResponse } from "next/server";
 import { agentesConfigurados, pedirAlAgente } from "@/lib/agents";
+import { msFechaAgente } from "@/lib/fecha-agente";
+
+interface ConversacionAgente {
+  telefono: string;
+  canal: string;
+  total_mensajes: number;
+  ultimo_mensaje: string;
+  ultimo_rol: string;
+  ultimo_timestamp: string | null;
+}
+
+// Se consulta a varios agentes en paralelo: con el límite por defecto (10s) un
+// solo agente colgado podía agotar la función entera y devolver 504, dejando
+// sin panel también a los productos sanos.
+export const maxDuration = 20;
 
 export async function GET() {
   const session = await getSession();
@@ -11,7 +26,7 @@ export async function GET() {
   const agentes = agentesConfigurados();
   if (agentes.length === 0) {
     return NextResponse.json(
-      { error: "No hay ningún agente configurado (falta AGENT_BACKEND_URL)" },
+      { error: "No hay ningún agente configurado: falta AGENT_BACKEND_URL (o AGENT_<PRODUCTO>_URL)" },
       { status: 503 }
     );
   }
@@ -35,13 +50,13 @@ export async function GET() {
   // en una sola lista cronológica; el filtro por producto vive en el cliente.
   const conversaciones = resultados
     .flatMap((r) =>
-      (r.conversaciones ?? []).map((c: Record<string, unknown>) => ({
+      (r.conversaciones ?? []).map((c: ConversacionAgente) => ({
         ...c,
         producto: r.agente.id,
         producto_nombre: r.agente.nombre,
       }))
     )
-    .sort((a, b) => String(b.ultimo_timestamp ?? "").localeCompare(String(a.ultimo_timestamp ?? "")));
+    .sort((a, b) => msFechaAgente(b.ultimo_timestamp) - msFechaAgente(a.ultimo_timestamp));
 
   // Un agente caído se reporta aparte: el panel sigue mostrando los demás.
   const fallos = resultados
@@ -50,7 +65,7 @@ export async function GET() {
 
   return NextResponse.json({
     conversaciones,
-    productos: agentes.map((a) => ({ id: a.id, nombre: a.nombre })),
+    productos: agentes.map((a) => ({ id: a.id, nombre: a.nombre, color: a.color })),
     fallos,
   });
 }

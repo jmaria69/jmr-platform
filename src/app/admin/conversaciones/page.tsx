@@ -1,10 +1,12 @@
 "use client";
 
-import { useEffect, useState, useCallback, useMemo } from "react";
-import { MessageCircle, Phone, Globe, RefreshCw, X, User, Bot } from "lucide-react";
+import { useEffect, useState, useCallback, useMemo, useRef } from "react";
+import { MessageCircle, Phone, Globe, RefreshCw, User, Bot } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { formatearFechaAgente } from "@/lib/fecha-agente";
 
 interface ConversacionResumen {
   telefono: string;
@@ -26,6 +28,7 @@ interface MensajeHilo {
 interface Producto {
   id: string;
   nombre: string;
+  color: string;
 }
 
 interface FalloAgente {
@@ -33,14 +36,6 @@ interface FalloAgente {
   nombre: string;
   motivo: string;
 }
-
-// Cada producto con su color para distinguirlos de un vistazo en la lista.
-const COLOR_PRODUCTO: Record<string, string> = {
-  praxialabs: "bg-indigo-500/15 text-indigo-300 border-indigo-500/30",
-  adminapp: "bg-sky-500/15 text-sky-300 border-sky-500/30",
-  saludapp: "bg-emerald-500/15 text-emerald-300 border-emerald-500/30",
-  marketing40: "bg-fuchsia-500/15 text-fuchsia-300 border-fuchsia-500/30",
-};
 
 export default function ConversacionesPage() {
   const [conversaciones, setConversaciones] = useState<ConversacionResumen[]>([]);
@@ -52,23 +47,36 @@ export default function ConversacionesPage() {
   const [seleccionada, setSeleccionada] = useState<ConversacionResumen | null>(null);
   const [hilo, setHilo] = useState<MensajeHilo[]>([]);
   const [cargandoHilo, setCargandoHilo] = useState(false);
+  const [errorHilo, setErrorHilo] = useState<string | null>(null);
+
+  // Identifica la última petición de hilo lanzada: si el usuario abre otra
+  // conversación antes de que llegue la anterior, la respuesta tardía se
+  // descarta en vez de pintarse bajo la cabecera equivocada.
+  const peticionHilo = useRef(0);
 
   const fetchConversaciones = useCallback(async () => {
     setLoading(true);
     try {
       const res = await fetch("/api/admin/conversaciones");
+      const data = await res.json().catch(() => null);
       if (!res.ok) {
-        setError("No se pudo cargar — comprueba que el agente esté encendido y AGENT_ADMIN_KEY configurado.");
+        // El servidor distingue "no hay agentes configurados" de "el agente no
+        // responde"; perder ese detalle deja al admin sin saber qué mirar.
+        setError(data?.error ?? "No se pudo cargar la lista de conversaciones.");
         setConversaciones([]);
+        setProductos([]);
+        setFallos([]);
       } else {
-        const data = await res.json();
         setConversaciones(data.conversaciones ?? []);
         setProductos(data.productos ?? []);
         setFallos(data.fallos ?? []);
         setError(null);
       }
     } catch {
-      setError("No se pudo conectar con el agente.");
+      setError("No se pudo conectar con el servidor.");
+      setConversaciones([]);
+      setProductos([]);
+      setFallos([]);
     } finally {
       setLoading(false);
     }
@@ -77,6 +85,19 @@ export default function ConversacionesPage() {
   useEffect(() => {
     fetchConversaciones();
   }, [fetchConversaciones]);
+
+  // Si el producto filtrado desaparece (se quita su variable de entorno, por
+  // ejemplo), el filtro dejaría la lista vacía sin botón con el que volver.
+  useEffect(() => {
+    if (filtro !== "todos" && !productos.some((p) => p.id === filtro)) {
+      setFiltro("todos");
+    }
+  }, [productos, filtro]);
+
+  const colorProducto = useCallback(
+    (id: string) => productos.find((p) => p.id === id)?.color ?? "",
+    [productos]
+  );
 
   const conteoPorProducto = useMemo(() => {
     const conteo: Record<string, number> = {};
@@ -92,73 +113,80 @@ export default function ConversacionesPage() {
   );
 
   const abrirConversacion = async (conversacion: ConversacionResumen) => {
+    const peticion = ++peticionHilo.current;
     setSeleccionada(conversacion);
     setHilo([]);
+    setErrorHilo(null);
     setCargandoHilo(true);
     try {
       const res = await fetch(
         `/api/admin/conversaciones/${encodeURIComponent(conversacion.telefono)}?producto=${encodeURIComponent(conversacion.producto)}`
       );
-      const data = await res.json();
-      setHilo(data.mensajes ?? []);
+      const data = await res.json().catch(() => null);
+      if (peticion !== peticionHilo.current) return;
+      if (!res.ok) {
+        // Sin esto, un 502 se vería como una conversación vacía.
+        setErrorHilo(data?.error ?? "No se pudo cargar la conversación.");
+      } else {
+        setHilo(data.mensajes ?? []);
+      }
+    } catch {
+      if (peticion === peticionHilo.current) {
+        setErrorHilo("No se pudo cargar la conversación.");
+      }
     } finally {
-      setCargandoHilo(false);
+      if (peticion === peticionHilo.current) setCargandoHilo(false);
     }
   };
 
   return (
     <div className="space-y-6">
-      {seleccionada && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
-          onClick={() => setSeleccionada(null)}
-        >
-          <Card
-            onClick={(e) => e.stopPropagation()}
-            className="relative rounded-2xl glass border-gradient max-w-xl w-full max-h-[85vh] flex flex-col overflow-hidden"
-          >
-            <div className="flex items-center justify-between px-5 py-4 border-b border-border shrink-0">
-              <div className="flex items-center gap-2 font-semibold text-sm">
-                {seleccionada.canal === "web" ? <Globe className="h-4 w-4 text-cyan-400" /> : <Phone className="h-4 w-4 text-green-400" />}
-                {seleccionada.telefono}
-                <Badge variant="outline" className={`text-xs ${COLOR_PRODUCTO[seleccionada.producto] ?? ""}`}>
+      <Dialog open={seleccionada !== null} onOpenChange={(abierto) => !abierto && setSeleccionada(null)}>
+        <DialogContent className="max-w-[calc(100%-2rem)] sm:max-w-xl p-0 gap-0 max-h-[85dvh] flex flex-col overflow-hidden">
+          <div className="flex items-start justify-between gap-2 px-4 py-3 sm:px-5 sm:py-4 border-b border-border shrink-0">
+            <DialogTitle className="flex items-center gap-2 flex-wrap min-w-0 pr-6 text-sm font-semibold">
+              {seleccionada?.canal === "web" ? (
+                <Globe className="h-4 w-4 shrink-0 text-cyan-400" />
+              ) : (
+                <Phone className="h-4 w-4 shrink-0 text-green-400" />
+              )}
+              <span className="font-mono truncate">{seleccionada?.telefono}</span>
+              {seleccionada && (
+                <Badge variant="outline" className={`text-xs ${colorProducto(seleccionada.producto)}`}>
                   {seleccionada.producto_nombre}
                 </Badge>
-              </div>
-              <button
-                onClick={() => setSeleccionada(null)}
-                aria-label="Cerrar"
-                className="text-muted-foreground hover:text-foreground transition-colors rounded-lg p-1 hover:bg-muted/40"
-              >
-                <X className="h-4 w-4" />
-              </button>
-            </div>
-            <div className="flex-1 overflow-y-auto p-4 space-y-3">
-              {cargandoHilo ? (
-                <div className="text-center py-10 text-muted-foreground text-sm">Cargando...</div>
-              ) : hilo.length === 0 ? (
-                <div className="text-center py-10 text-muted-foreground text-sm">Sin mensajes.</div>
-              ) : (
-                hilo.map((m, i) => (
-                  <div key={i} className={`flex gap-2 ${m.role === "user" ? "flex-row-reverse" : ""}`}>
-                    <div className={`shrink-0 h-7 w-7 rounded-full flex items-center justify-center ${m.role === "user" ? "bg-indigo-500/20 text-indigo-300" : "bg-muted/40 text-muted-foreground"}`}>
-                      {m.role === "user" ? <User className="h-3.5 w-3.5" /> : <Bot className="h-3.5 w-3.5" />}
-                    </div>
-                    <div className={`max-w-[80%] rounded-xl px-3 py-2 text-sm whitespace-pre-wrap break-words ${m.role === "user" ? "bg-indigo-600/20 text-indigo-100" : "bg-muted/30"}`}>
-                      {m.content}
-                      {m.timestamp && (
-                        <div className="text-[10px] text-muted-foreground mt-1">
-                          {new Date(m.timestamp).toLocaleString("es-ES")}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                ))
               )}
-            </div>
-          </Card>
-        </div>
-      )}
+            </DialogTitle>
+          </div>
+          <div className="flex-1 overflow-y-auto overscroll-contain p-4 space-y-3">
+            {cargandoHilo ? (
+              <div className="text-center py-10 text-muted-foreground text-sm">Cargando...</div>
+            ) : errorHilo ? (
+              <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl px-4 py-3 text-amber-300 text-sm">
+                {errorHilo}
+              </div>
+            ) : hilo.length === 0 ? (
+              <div className="text-center py-10 text-muted-foreground text-sm">Sin mensajes.</div>
+            ) : (
+              hilo.map((m, i) => (
+                <div key={i} className={`flex gap-2 ${m.role === "user" ? "flex-row-reverse" : ""}`}>
+                  <div className={`shrink-0 h-7 w-7 rounded-full flex items-center justify-center ${m.role === "user" ? "bg-indigo-500/20 text-indigo-300" : "bg-muted/40 text-muted-foreground"}`}>
+                    {m.role === "user" ? <User className="h-3.5 w-3.5" /> : <Bot className="h-3.5 w-3.5" />}
+                  </div>
+                  <div className={`max-w-[80%] rounded-xl px-3 py-2 text-sm whitespace-pre-wrap break-words ${m.role === "user" ? "bg-indigo-600/20 text-indigo-100" : "bg-muted/30"}`}>
+                    {m.content}
+                    {m.timestamp && (
+                      <div className="text-[10px] text-muted-foreground mt-1">
+                        {formatearFechaAgente(m.timestamp)}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
 
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
@@ -178,7 +206,9 @@ export default function ConversacionesPage() {
       {productos.length > 1 && (
         <div className="flex items-center gap-2 flex-wrap">
           <button
+            type="button"
             onClick={() => setFiltro("todos")}
+            aria-pressed={filtro === "todos"}
             className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${filtro === "todos" ? "bg-muted/40 border-border text-foreground" : "border-border/50 text-muted-foreground hover:bg-muted/20"}`}
           >
             Todos ({conversaciones.length})
@@ -186,8 +216,10 @@ export default function ConversacionesPage() {
           {productos.map((p) => (
             <button
               key={p.id}
+              type="button"
               onClick={() => setFiltro(p.id)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${filtro === p.id ? COLOR_PRODUCTO[p.id] ?? "bg-muted/40 border-border" : "border-border/50 text-muted-foreground hover:bg-muted/20"}`}
+              aria-pressed={filtro === p.id}
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${filtro === p.id ? p.color : "border-border/50 text-muted-foreground hover:bg-muted/20"}`}
             >
               {p.nombre} ({conteoPorProducto[p.id] ?? 0})
             </button>
@@ -213,7 +245,7 @@ export default function ConversacionesPage() {
         <Card className="rounded-2xl glass border-gradient overflow-hidden">
           <CardContent className="flex flex-col items-center gap-3 py-16">
             <MessageCircle className="h-12 w-12 text-muted-foreground opacity-40" />
-            <p className="text-muted-foreground">
+            <p className="text-muted-foreground text-center px-4">
               {filtro === "todos"
                 ? "Todavía no hay conversaciones registradas."
                 : "Este producto todavía no tiene conversaciones."}
@@ -223,20 +255,21 @@ export default function ConversacionesPage() {
       ) : (
         <div className="space-y-2">
           {visibles.map((c) => (
-            <div
+            <button
               key={`${c.producto}:${c.telefono}`}
+              type="button"
               onClick={() => abrirConversacion(c)}
-              className="flex items-start gap-3 p-4 rounded-xl border border-border bg-muted/10 cursor-pointer transition-all hover:bg-muted/20"
+              className="w-full text-left flex items-start gap-3 p-3 sm:p-4 rounded-xl border border-border bg-muted/10 cursor-pointer transition-all hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               <div className="p-2 rounded-lg bg-muted/30 shrink-0">
                 {c.canal === "web" ? <Globe className="h-4 w-4 text-cyan-400" /> : <Phone className="h-4 w-4 text-green-400" />}
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap mb-1">
-                  <Badge variant="outline" className={`text-xs ${COLOR_PRODUCTO[c.producto] ?? ""}`}>
+                  <Badge variant="outline" className={`text-xs ${colorProducto(c.producto)}`}>
                     {c.producto_nombre}
                   </Badge>
-                  <span className="font-semibold text-sm font-mono">{c.telefono}</span>
+                  <span className="font-semibold text-sm font-mono truncate max-w-full">{c.telefono}</span>
                   <Badge variant="outline" className="text-xs">
                     {c.canal === "web" ? "Web" : "WhatsApp"}
                   </Badge>
@@ -245,13 +278,20 @@ export default function ConversacionesPage() {
                 <p className="text-xs text-muted-foreground truncate">
                   {c.ultimo_rol === "user" ? "Cliente: " : "Bot: "}{c.ultimo_mensaje}
                 </p>
+                {/* En móvil la fecha va aquí dentro: como columna propia dejaba
+                    la fila sin ancho para las etiquetas. */}
+                {c.ultimo_timestamp && (
+                  <span className="sm:hidden block text-xs text-muted-foreground mt-1">
+                    {formatearFechaAgente(c.ultimo_timestamp)}
+                  </span>
+                )}
               </div>
               {c.ultimo_timestamp && (
-                <span className="text-xs text-muted-foreground shrink-0">
-                  {new Date(c.ultimo_timestamp).toLocaleString("es-ES")}
+                <span className="hidden sm:block text-xs text-muted-foreground shrink-0">
+                  {formatearFechaAgente(c.ultimo_timestamp)}
                 </span>
               )}
-            </div>
+            </button>
           ))}
         </div>
       )}
