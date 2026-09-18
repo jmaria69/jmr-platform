@@ -64,6 +64,7 @@ next-env.d.ts
 # generated
 /src/generated/prisma
 .env*
+.tmp-*
 
 # graphify (artefacto local, 6.8M)
 /graphify-out

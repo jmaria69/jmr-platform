@@ -17,6 +17,15 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     return NextResponse.redirect(new URL("/", request.url), 302);
   }
 
+  // Destino vacío o mal formado (campaña a medio crear) → a la home, igual
+  // que un slug desconocido. Antes esto reventaba el enlace con un 500.
+  let destino: URL;
+  try {
+    destino = new URL(campaign.targetUrl);
+  } catch {
+    return NextResponse.redirect(new URL("/", request.url), 302);
+  }
+
   const ua = request.headers.get("user-agent") || "";
   const referer = request.headers.get("referer") || "";
   const ip =
@@ -32,10 +41,9 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     await recordClick(campaign.id, { referer, userAgent: ua, ipHash });
   }
 
-  const url = new URL(campaign.targetUrl);
-  if (campaign.utmSource) url.searchParams.set("utm_source", campaign.utmSource);
-  if (campaign.utmMedium) url.searchParams.set("utm_medium", campaign.utmMedium);
-  if (campaign.utmCampaign) url.searchParams.set("utm_campaign", campaign.utmCampaign);
+  if (campaign.utmSource) destino.searchParams.set("utm_source", campaign.utmSource);
+  if (campaign.utmMedium) destino.searchParams.set("utm_medium", campaign.utmMedium);
+  if (campaign.utmCampaign) destino.searchParams.set("utm_campaign", campaign.utmCampaign);
 
-  return NextResponse.redirect(url.toString(), 302);
+  return NextResponse.redirect(destino.toString(), 302);
 }
