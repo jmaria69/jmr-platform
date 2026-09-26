@@ -69,6 +69,8 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
+import StructuredData from '@/components/structured-data';
+
 export default function RootLayout({
   children,
 }: {
@@ -76,7 +78,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="es" className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} dark`}>
-      <head />
+      <head>
+        <StructuredData />
+      </head>
       <body className="praxia-body grain min-h-full flex flex-col">
         <GoogleAnalytics />
         <main className="flex-1">

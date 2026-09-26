@@ -449,7 +449,8 @@ export default function SeguridadPage() {
               </CardContent>
             </Card>
           ) : (
-            filtered.map((event, index) => {
+            <div className="max-h-[600px] overflow-y-auto pr-2">
+              {filtered.map((event, index) => {
               const cfg = TYPE_CONFIG[event.type] ?? TYPE_CONFIG.suspicious;
               const sev = SEVERITY_CONFIG[event.severity] ?? SEVERITY_CONFIG.low;
               const Icon = cfg.icon;
