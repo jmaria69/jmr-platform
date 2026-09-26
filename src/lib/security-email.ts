@@ -74,12 +74,27 @@ export async function sendSecurityAlertEmail(event: SecurityEvent): Promise<void
   const publicKey = process.env.EMAILJS_PUBLIC_KEY;
   const privateKey = process.env.EMAILJS_PRIVATE_KEY;
 
+  // Debug: log if env vars are present (without values)
+  console.log("[security-email] Env vars check:", {
+    serviceId: !!serviceId,
+    templateId: !!templateId,
+    publicKey: !!publicKey,
+    privateKey: !!privateKey,
+  });
+
   // Integración opcional -- igual que fetchCloudflareWafEvents, nunca debe
   // tumbar la creación del evento si no está configurada o falla.
   if (!serviceId || !templateId || !publicKey || !privateKey) {
     console.warn("[security-email] EmailJS no configurado, alerta omitida");
     return;
   }
+
+  console.log("[security-email] Preparing to send email for event:", {
+    id: event.id,
+    type: event.type,
+    severity: event.severity,
+    ip: event.ip,
+  });
 
   const panelUrl = `${process.env.NEXT_PUBLIC_SITE_URL ?? "https://praxialabs.com"}/admin/seguridad`;
 
@@ -104,11 +119,15 @@ export async function sendSecurityAlertEmail(event: SecurityEvent): Promise<void
         },
       }),
     });
+    console.log("[security-email] EmailJS response status:", res.status);
     if (!res.ok) {
-      console.error("[security-email] EmailJS respondió con error:", res.status, await res.text());
+      const text = await res.text();
+      console.error("[security-email] EmailJS respondió con error:", res.status, text);
+    } else {
+      console.log("[security-email] Email sent successfully");
     }
   } catch (err) {
-    console.error("[security-email]", err instanceof Error ? err.message : String(err));
+    console.error("[security-email] Failed to send email:", err instanceof Error ? err.message : String(err));
   }
 }
 

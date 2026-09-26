@@ -90,7 +90,7 @@ const SOLUTIONS: Record<string, { title: string; steps: string[] }> = {
     title: "Actividad anómala detectada",
     steps: [
       "Revisa los detalles del evento para entender el contexto.",
-      "Comprueba si la IP tiene historial de ataques (use ipinfo.io o abuseipdb.com).",
+      "Comprueba si la IP tiene historial de ataques (use ipinfo.io or abuseipdb.com).",
       "Si el patrón es recurrente, bloquea la IP en Vercel Firewall.",
     ],
   },
@@ -449,54 +449,53 @@ export default function SeguridadPage() {
               </CardContent>
             </Card>
           ) : (
-            <div className="max-h-[600px] overflow-y-auto pr-2">
+            <div className="h-[600px] overflow-y-auto pr-2">
               {filtered.map((event, index) => {
-              const cfg = TYPE_CONFIG[event.type] ?? TYPE_CONFIG.suspicious;
-              const sev = SEVERITY_CONFIG[event.severity] ?? SEVERITY_CONFIG.low;
-              const Icon = cfg.icon;
-              return (
-                <div
-                  key={`${event.id}-${index}`}
-                  onClick={() => setSelectedEvent(event)}
-                  className={`flex items-start gap-3 p-4 rounded-xl border cursor-pointer transition-all hover:opacity-90 ${event.resolved ? "opacity-40" : ""
-                    } ${selectedEvent?.id === event.id ? "ring-2 ring-indigo-500" : ""} ${cfg.border} ${cfg.bg}`}
-                >
-                  <input
-                    type="checkbox"
-                    checked={selectedIds.has(event.id)}
-                    onClick={e => e.stopPropagation()}
-                    onChange={() => toggleSelect(event.id)}
-                    className="mt-1 h-3.5 w-3.5 shrink-0"
-                  />
-                  <div className={`p-2 rounded-lg ${cfg.bg}`}>
-                    <Icon className={`h-4 w-4 ${cfg.color}`} />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap mb-1">
-                      <span className="font-semibold text-sm">{cfg.label}</span>
-                      <Badge className={`text-xs ${sev.class}`}>{sev.label}</Badge>
-                      {event.resolved && <Badge className="text-xs bg-green-500/15 text-green-400 border-green-500/30">Resuelto</Badge>}
+                const cfg = TYPE_CONFIG[event.type] ?? TYPE_CONFIG.suspicious;
+                const sev = SEVERITY_CONFIG[event.severity] ?? SEVERITY_CONFIG.low;
+                const Icon = cfg.icon;
+                const resolvedClass = event.resolved ? "opacity-40" : "";
+                const selectedClass = selectedEvent?.id === event.id ? "ring-2 ring-indigo-500" : "";
+                const divClassName = `flex items-start gap-3 p-4 rounded-xl border cursor-pointer transition-all hover:opacity-90 ${resolvedClass} ${selectedClass} ${cfg.border} ${cfg.bg}`;
+                return (
+                  <div key={`${event.id}-${index}`} onClick={() => setSelectedEvent(event)} className={divClassName}>
+                    <input
+                      type="checkbox"
+                      checked={selectedIds.has(event.id)}
+                      onClick={e => e.stopPropagation()}
+                      onChange={() => toggleSelect(event.id)}
+                      className="mt-1 h-3.5 w-3.5 shrink-0"
+                    />
+                    <div className={`p-2 rounded-lg ${cfg.bg}`}>
+                      <Icon className={`h-4 w-4 ${cfg.color}`} />
                     </div>
-                    <p className="text-xs text-muted-foreground truncate">{event.details}</p>
-                    <div className="flex items-center gap-3 mt-1.5">
-                      <span className="text-xs text-muted-foreground font-mono">{event.ip}</span>
-                      <span className="text-xs text-muted-foreground">{new Date(event.timestamp).toLocaleString("es-ES")}</span>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap mb-1">
+                        <span className="font-semibold text-sm">{cfg.label}</span>
+                        <Badge className={`text-xs ${sev.class}`}>{sev.label}</Badge>
+                        {event.resolved && <Badge className="text-xs bg-green-500/15 text-green-400 border-green-500/30">Resuelto</Badge>}
+                      </div>
+                      <p className="text-xs text-muted-foreground truncate">{event.details}</p>
+                      <div className="flex items-center gap-3 mt-1.5">
+                        <span className="text-xs text-muted-foreground font-mono">{event.ip}</span>
+                        <span className="text-xs text-muted-foreground">{new Date(event.timestamp).toLocaleString("es-ES")}</span>
+                      </div>
                     </div>
+                    {!event.resolved && (
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={e => { e.stopPropagation(); resolveEvent(event.id); }}
+                        className="shrink-0 h-7 text-xs text-green-400 hover:text-green-300"
+                      >
+                        <CheckCircle className="h-3.5 w-3.5 mr-1" />
+                        Resolver
+                      </Button>
+                    )}
                   </div>
-                  {!event.resolved && (
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={e => { e.stopPropagation(); resolveEvent(event.id); }}
-                      className="shrink-0 h-7 text-xs text-green-400 hover:text-green-300"
-                    >
-                      <CheckCircle className="h-3.5 w-3.5 mr-1" />
-                      Resolver
-                    </Button>
-                  )}
-                </div>
-              );
-            })
+                );
+              })}
+            </div>
           )}
         </div>
 
