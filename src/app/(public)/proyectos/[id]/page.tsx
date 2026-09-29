@@ -36,7 +36,7 @@ export async function generateMetadata({
 export default async function ProjectDetailPage({
     params,
 }: {
-    params: { id: string };
+    params: Promise<{ id: string }>;
 }) {
     const { id } = await params;
     const project = await findProjectById(id);

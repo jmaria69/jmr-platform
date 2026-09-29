@@ -26,6 +26,17 @@ const BASE_URL = "https://praxialabs.com";
 
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
+  alternates: {
+    canonical: "./",
+    languages: {
+      "es-ES": "/",
+      "en-US": "/en",
+      "x-default": "/",
+    },
+  },
+  verification: {
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || process.env.GOOGLE_SITE_VERIFICATION,
+  },
   title: {
     default: "Praxia Labs | Automatizacion con IA para empresas",
     template: "%s | Praxia Labs",
@@ -54,7 +65,13 @@ export const metadata: Metadata = {
   robots: {
     index: true,
     follow: true,
-    googleBot: { index: true, follow: true, "max-image-preview": "large" },
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
   },
   icons: {
     icon: [

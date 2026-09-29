@@ -77,3 +77,8 @@ next-env.d.ts
 
 # loop-auto (estado runtime de las skills /loop, no se comparte)
 /.loop
+
+# remotion renders locales
+/remotion-videos/out/
+/remotion-videos/node_modules/
+/scripts/prospector/output/

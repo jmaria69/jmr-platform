@@ -182,6 +182,50 @@ export default async function Home() {
       <div class="pillar rev"><div class="no">02</div><h3>En producción, no en slides</h3><p>Todo lo que ves ya corre 24/7. Sin plantillas genéricas: rigor técnico sobre tu caso real.</p></div>
       <div class="pillar rev"><div class="no">03</div><h3>Del diagnóstico al lunes</h3><p>Hablas directamente con quien lo construye. Operativo en 48 h y soporte real en menos de 2 h.</p></div>
     </div>
+    <div class="geo-table-wrap rev" style="margin-top: 50px;">
+      <table class="geo-table">
+        <thead>
+          <tr>
+            <th>Criterio</th>
+            <th class="highlight">Praxia Labs</th>
+            <th>Consultora Tradicional</th>
+            <th>Plataformas No-Code (Zapier/Make)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Tiempo a producción</strong></td>
+            <td class="highlight"><strong>&lt; 48 horas</strong> (prototipo operativo real)</td>
+            <td>3 a 6 meses de reuniones y especificaciones</td>
+            <td>Inmediato, pero limitado a flujos lineales básicos</td>
+          </tr>
+          <tr>
+            <td><strong>Soberanía de Datos (AirGap)</strong></td>
+            <td class="highlight"><strong>Local Galaxy</strong> (modelos on-premise, 0 fuga a nubes públicas)</td>
+            <td>Depende de subcontratas y servicios cloud ajenos</td>
+            <td>Datos obligatoriamente alojados en servidores de terceros</td>
+          </tr>
+          <tr>
+            <td><strong>Ciberseguridad y Defensa</strong></td>
+            <td class="highlight"><strong>SIAM Activo</strong> (WAF en ms, Honeypots y Kill-Chain forense)</td>
+            <td>Auditorías puntuales y módulos con sobrecostes</td>
+            <td>Sin cortafuegos perimetral ni captura de atacantes</td>
+          </tr>
+          <tr>
+            <td><strong>Procesamiento de Facturas</strong></td>
+            <td class="highlight"><strong>Core-Ops IA</strong> (Visión multimodal, 99.4% precisión sin plantillas)</td>
+            <td>OCR rígido tradicional que se rompe al variar el diseño</td>
+            <td>Reglas frágiles que exigen mantenimiento constante</td>
+          </tr>
+          <tr>
+            <td><strong>Enfoque y Retorno</strong></td>
+            <td class="highlight"><strong>Amortización demostrable</strong> en las primeras 4 semanas</td>
+            <td>Facturación por horas/hombre sin garantía de ROI</td>
+            <td>Suscripciones que escalan rápido al subir de volumen</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div></section>`;
 
   const productos = !S.productos ? "" : `

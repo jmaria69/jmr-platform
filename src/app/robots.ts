@@ -8,7 +8,13 @@ export default function robots(): MetadataRoute.Robots {
         allow: "/",
         disallow: ["/admin/", "/api/", "/md-home", "/md-404"],
       },
+      {
+        userAgent: "Googlebot",
+        allow: "/",
+        disallow: ["/admin/", "/api/", "/md-home", "/md-404"],
+      },
     ],
     sitemap: "https://praxialabs.com/sitemap.xml",
+    host: "https://praxialabs.com",
   };
 }

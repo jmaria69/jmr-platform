@@ -1,0 +1,461 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>AdminApp Dossier</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --bg:#0e1a28; --bg-raised:#142a3d; --bg-raised-2:#1b3550;
+    --grid:rgba(154,196,230,0.07); --line:#274563;
+    --ink:#efe7d8; --ink-dim:#93a8be; --ink-faint:#5e7690;
+    --brass:#c68f4d; --brass-bright:#e3ad6e;
+    --teal:#5fc2ac; --alert:#dd6b4c;
+    --font-display:"Fraunces",Georgia,serif;
+    --font-body:"IBM Plex Sans",-apple-system,Segoe UI,sans-serif;
+    --font-mono:"IBM Plex Mono",Consolas,monospace;
+  }
+  *{box-sizing:border-box;}
+  body{
+    background:var(--bg); color:var(--ink); font-family:var(--font-body);
+    margin:0; line-height:1.55;
+    background-image:
+      linear-gradient(var(--grid) 1px,transparent 1px),
+      linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+    background-size:40px 40px;
+  }
+  h1,h2,h3{font-family:var(--font-display); text-wrap:balance; margin:0;}
+  p{margin:0;}
+  .mono{font-family:var(--font-mono);}
+  .eyebrow{
+    font-family:var(--font-mono); font-size:0.72rem; letter-spacing:0.12em;
+    text-transform:uppercase; color:var(--brass);
+  }
+  section{padding:88px 24px; border-top:1px solid var(--line);}
+  section:first-of-type{border-top:none;}
+  .wrap{max-width:880px; margin:0 auto;}
+  .wrap-wide{max-width:1120px; margin:0 auto;}
+</style>
+<nav id="directory" style="position:sticky; top:0; z-index:20; background:rgba(14,26,40,0.92); backdrop-filter:blur(6px); border-bottom:1px solid var(--line); overflow-x:auto;">
+  <div class="wrap-wide" style="display:flex; gap:2px; padding:0 24px;">
+    <a href="#hero" class="dir-tab" data-tab="hero">AdminApp</a>
+    <a href="#problema" class="dir-tab" data-tab="problema">PB · Problema</a>
+    <a href="#solucion" class="dir-tab" data-tab="solucion">1 · Solución</a>
+    <a href="#ia" class="dir-tab" data-tab="ia">2 · Equipo IA</a>
+    <a href="#traccion" class="dir-tab" data-tab="traccion">3 · Tracción</a>
+    <a href="#seguridad" class="dir-tab" data-tab="seguridad">4 · Seguridad</a>
+    <a href="#arquitectura" class="dir-tab" data-tab="arquitectura">5 · Arquitectura</a>
+    <a href="#mercado" class="dir-tab" data-tab="mercado">6 · Mercado</a>
+    <a href="#ruta" class="dir-tab" data-tab="ruta">7 · Hoja de ruta</a>
+    <a href="#propuesta" class="dir-tab" data-tab="propuesta">8 · Propuesta</a>
+  </div>
+</nav>
+<style>
+  .dir-tab{
+    font-family:var(--font-mono); font-size:0.74rem; color:var(--ink-dim);
+    text-decoration:none; white-space:nowrap; padding:14px 12px;
+    border-bottom:2px solid transparent;
+  }
+  .dir-tab:first-child{color:var(--brass-bright); font-weight:600;}
+  .dir-tab:hover, .dir-tab:focus-visible{color:var(--ink);}
+  .dir-tab.active{color:var(--teal); border-bottom-color:var(--teal);}
+</style>
+<section id="hero" style="padding-top:72px;">
+  <div class="wrap">
+    <p class="eyebrow">DOSSIER · SEPTIEMBRE 2026</p>
+    <h1 style="font-size:clamp(3rem,9vw,5.6rem); font-weight:600; font-style:italic; margin-top:18px; color:var(--ink);">AdminApp</h1>
+    <p style="font-size:1.3rem; color:var(--ink-dim); max-width:640px; margin-top:20px; font-weight:300;">
+      La conserjería de una comunidad de vecinos, llevada por software —
+      con un motor de captación de clientes que ya está funcionando, no solo en el plan.
+    </p>
+    <div class="mono" style="margin-top:36px; font-size:0.82rem; color:var(--ink-faint); display:flex; flex-wrap:wrap; gap:10px 24px;">
+      <span>4 roles RBAC</span><span>·</span>
+      <span>Multi-tenant RGPD</span><span>·</span>
+      <span>Orquestador IA: VERA</span><span>·</span>
+      <span>Producción en Vercel</span>
+    </div>
+    <a href="#problema" class="mono" style="display:inline-block; margin-top:48px; color:var(--brass-bright); text-decoration:none; border:1px solid var(--brass); padding:10px 18px; font-size:0.8rem; letter-spacing:0.04em;">RECORRIDO EN 8 TRAMOS ↓</a>
+  </div>
+</section>
+
+<section id="problema">
+  <div class="wrap">
+    <p class="eyebrow">PB · El problema</p>
+    <h2 style="font-size:clamp(1.8rem,4vw,2.6rem); margin-top:14px; font-weight:500;">Un sector que sus propios clientes puntúan con un 3,13 sobre 5</h2>
+    <p style="color:var(--ink-dim); margin-top:18px; max-width:640px;">
+      Antes de escribir una línea de producto, escaneamos con la API de Google Places
+      a administradores de fincas reales en las 15 ciudades principales de España,
+      buscando señales de dolor en sus propias reseñas públicas. Esto es lo que encontramos
+      en las 45 empresas que calificamos.
+    </p>
+  </div>
+  <div class="wrap-wide" style="margin-top:48px; display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:1px; background:var(--line); border:1px solid var(--line);">
+    <div style="background:var(--bg); padding:24px;">
+      <p class="mono" style="font-size:2.4rem; color:var(--alert); font-variant-numeric:tabular-nums;">3.13<span style="font-size:1.1rem; color:var(--ink-faint);">/5</span></p>
+      <p style="color:var(--ink-dim); font-size:0.85rem; margin-top:6px;">nota media de las 45 administradoras analizadas</p>
+    </div>
+    <div style="background:var(--bg); padding:24px;">
+      <p class="mono" style="font-size:2.4rem; color:var(--alert); font-variant-numeric:tabular-nums;">56%</p>
+      <p style="color:var(--ink-dim); font-size:0.85rem; margin-top:6px;">de las reseñas mencionan meses de espera sin respuesta</p>
+    </div>
+    <div style="background:var(--bg); padding:24px;">
+      <p class="mono" style="font-size:2.4rem; color:var(--alert); font-variant-numeric:tabular-nums;">42%</p>
+      <p style="color:var(--ink-dim); font-size:0.85rem; margin-top:6px;">describen descontrol o falta de claridad en las cuentas</p>
+    </div>
+    <div style="background:var(--bg); padding:24px;">
+      <p class="mono" style="font-size:2.4rem; color:var(--alert); font-variant-numeric:tabular-nums;">20%</p>
+      <p style="color:var(--ink-dim); font-size:0.85rem; margin-top:6px;">relatan una avería o "desastre" sin resolver</p>
+    </div>
+  </div>
+
+  <div class="wrap-wide" style="margin-top:56px;">
+    <p class="mono" style="font-size:0.75rem; color:var(--ink-faint); margin-bottom:16px; letter-spacing:0.06em;">SEÑALES DE DOLOR DETECTADAS · Nº DE EMPRESAS (de 45)</p>
+    <div class="bar-chart">
+      <div class="bar-row"><span class="bar-label">meses de espera</span><div class="bar-track"><div class="bar-fill" style="width:55.6%;"></div></div><span class="bar-value">25</span></div>
+      <div class="bar-row"><span class="bar-label">descontrol de cuentas</span><div class="bar-track"><div class="bar-fill" style="width:42.2%;"></div></div><span class="bar-value">19</span></div>
+      <div class="bar-row"><span class="bar-label">avería sin resolver</span><div class="bar-track"><div class="bar-fill" style="width:20%;"></div></div><span class="bar-value">9</span></div>
+      <div class="bar-row"><span class="bar-label">"desastre" (testimonio literal)</span><div class="bar-track"><div class="bar-fill" style="width:20%;"></div></div><span class="bar-value">9</span></div>
+      <div class="bar-row"><span class="bar-label">esperas largas al teléfono</span><div class="bar-track"><div class="bar-fill" style="width:11.1%;"></div></div><span class="bar-value">5</span></div>
+      <div class="bar-row"><span class="bar-label">precio percibido como caro</span><div class="bar-track"><div class="bar-fill" style="width:11.1%;"></div></div><span class="bar-value">5</span></div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .bar-chart{display:flex; flex-direction:column; gap:12px;}
+  .bar-row{display:grid; grid-template-columns:200px 1fr 32px; align-items:center; gap:14px;}
+  .bar-label{font-size:0.85rem; color:var(--ink-dim);}
+  .bar-track{background:var(--bg-raised); height:10px; border-radius:0; position:relative;}
+  .bar-fill{background:var(--alert); height:100%; border-radius:0 4px 4px 0;}
+  .bar-value{font-family:var(--font-mono); font-size:0.85rem; color:var(--ink); text-align:right; font-variant-numeric:tabular-nums;}
+  @media (max-width:640px){
+    .bar-row{grid-template-columns:120px 1fr 28px; gap:8px;}
+    .bar-label{font-size:0.75rem;}
+  }
+</style>
+
+<section id="solucion">
+  <div class="wrap">
+    <p class="eyebrow">1 · La solución</p>
+    <h2 style="font-size:clamp(1.8rem,4vw,2.6rem); margin-top:14px; font-weight:500;">Un panel único, cuatro maneras de entrar por la puerta</h2>
+    <p style="color:var(--ink-dim); margin-top:18px; max-width:640px;">
+      AdminApp reparte el control por rol, no por privilegio genérico: cada persona ve
+      exactamente lo que su función necesita, y nada más — ese aislamiento es la base
+      del cumplimiento RGPD que se detalla en el tramo 4.
+    </p>
+  </div>
+  <div class="wrap-wide" style="margin-top:44px; display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:1px; background:var(--line); border:1px solid var(--line);">
+    <div class="plaque">
+      <p class="mono plaque-tag">01</p>
+      <h3 style="font-size:1.15rem; font-weight:600; margin-top:10px;">Super Admin</h3>
+      <p style="color:var(--ink-dim); font-size:0.85rem; margin-top:8px;">Control total: ERP, finanzas, CRM y alta de comunidades.</p>
+    </div>
+    <div class="plaque">
+      <p class="mono plaque-tag">02</p>
+      <h3 style="font-size:1.15rem; font-weight:600; margin-top:10px;">Conserje</h3>
+      <p style="color:var(--ink-dim); font-size:0.85rem; margin-top:8px;">Seguridad, incidencias del día a día y reservas de espacios comunes.</p>
+    </div>
+    <div class="plaque">
+      <p class="mono plaque-tag">03</p>
+      <h3 style="font-size:1.15rem; font-weight:600; margin-top:10px;">Técnico</h3>
+      <p style="color:var(--ink-dim); font-size:0.85rem; margin-top:8px;">Mantenimiento y acceso a la bóveda documental técnica.</p>
+    </div>
+    <div class="plaque">
+      <p class="mono plaque-tag">04</p>
+      <h3 style="font-size:1.15rem; font-weight:600; margin-top:10px;">Vecino</h3>
+      <p style="color:var(--ink-dim); font-size:0.85rem; margin-top:8px;">Su propio dashboard, avisos de la comunidad y reservas.</p>
+    </div>
+  </div>
+
+  <div class="wrap-wide" style="margin-top:56px; display:flex; flex-wrap:wrap; gap:10px;">
+    <span class="feature-chip">Incidencias en tablero Kanban</span>
+    <span class="feature-chip">Reservas con cobro y expiración automática al minuto</span>
+    <span class="feature-chip">Bóveda documental</span>
+    <span class="feature-chip">Gestión de residentes</span>
+    <span class="feature-chip">Telemetría del sistema en vivo</span>
+    <span class="feature-chip">Avisos por comunidad</span>
+    <span class="feature-chip">App responsive de punta a punta</span>
+  </div>
+</section>
+
+<style>
+  .plaque{background:var(--bg); padding:26px 24px;}
+  .plaque-tag{font-size:0.7rem; color:var(--brass); letter-spacing:0.1em;}
+  .feature-chip{
+    font-family:var(--font-mono); font-size:0.78rem; color:var(--ink-dim);
+    border:1px solid var(--line); padding:8px 14px; background:var(--bg-raised);
+  }
+</style>
+
+<section id="ia">
+  <div class="wrap">
+    <p class="eyebrow">2 · El equipo de IA</p>
+    <h2 style="font-size:clamp(1.8rem,4vw,2.6rem); margin-top:14px; font-weight:500;">Un orquestador con memoria, no un chatbot suelto</h2>
+    <p style="color:var(--ink-dim); margin-top:18px; max-width:640px;">
+      VERA es el agente que hoy está activo en producción: mantiene memoria vectorial
+      persistente en Qdrant, responde comandos con scoping RGPD por rol y comunidad
+      — nunca ve datos de una comunidad ajena — y, en el caso más delicado, la morosidad,
+      <strong style="color:var(--ink);"> redacta un borrador editable que la administración revisa y aprueba antes de enviarlo. Nunca envía sola.</strong>
+    </p>
+  </div>
+  <div class="wrap-wide" style="margin-top:44px; display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:1px; background:var(--line); border:1px solid var(--line);">
+    <div class="plaque" style="border-left:2px solid var(--teal);">
+      <p class="mono plaque-tag" style="color:var(--teal);">ACTIVA</p>
+      <h3 style="font-size:1.15rem; font-weight:600; margin-top:10px;">VERA</h3>
+      <p style="color:var(--ink-dim); font-size:0.85rem; margin-top:8px;">Orquestador soberano. Memoria RAG en Qdrant, detección de riesgo de impago, redacción asistida con contexto real de gastos y recibos.</p>
+    </div>
+    <div class="plaque" style="border-left:2px solid var(--teal);">
+      <p class="mono plaque-tag" style="color:var(--teal);">ACTIVA</p>
+      <h3 style="font-size:1.15rem; font-weight:600; margin-top:10px;">ARIA</h3>
+      <p style="color:var(--ink-dim); font-size:0.85rem; margin-top:8px;">Registro financiero. Anota pagos de recibos y deja rastro auditable en el log de operaciones.</p>
+    </div>
+    <div class="plaque" style="border-left:2px solid var(--ink-faint);">
+      <p class="mono plaque-tag" style="color:var(--ink-faint);">EN ROSTER</p>
+      <h3 style="font-size:1.15rem; font-weight:600; margin-top:10px;">QUENTIN</h3>
+      <p style="color:var(--ink-dim); font-size:0.85rem; margin-top:8px;">Plaza reservada en la arquitectura multiagente. Especialización pendiente de priorizar.</p>
+    </div>
+    <div class="plaque" style="border-left:2px solid var(--ink-faint);">
+      <p class="mono plaque-tag" style="color:var(--ink-faint);">EN ROSTER</p>
+      <h3 style="font-size:1.15rem; font-weight:600; margin-top:10px;">OSCAR</h3>
+      <p style="color:var(--ink-dim); font-size:0.85rem; margin-top:8px;">Plaza reservada en la arquitectura multiagente. Especialización pendiente de priorizar.</p>
+    </div>
+  </div>
+  <p class="wrap" style="margin-top:24px; color:var(--ink-faint); font-size:0.82rem;">
+    Dicho sin adornos: hoy trabajan de verdad dos agentes. El diseño está pensado para
+    sumar los otros dos sin rehacer nada — es una decisión de arquitectura, no una promesa.
+  </p>
+</section>
+
+<section id="traccion">
+  <div class="wrap">
+    <p class="eyebrow">3 · Tracción ya validada</p>
+    <h2 style="font-size:clamp(1.8rem,4vw,2.6rem); margin-top:14px; font-weight:500;">No vendemos una idea: ya construimos la máquina que consigue clientes</h2>
+    <p style="color:var(--ink-dim); margin-top:18px; max-width:640px;">
+      El mismo escaneo que reveló el problema en el tramo PB alimenta un sistema de
+      captación B2B propio: detecta el dolor, cualifica al prospecto y dispara una
+      secuencia de correo personalizada, con seguimiento automático por lead.
+    </p>
+  </div>
+
+  <div class="wrap-wide" style="margin-top:48px;">
+    <p class="mono" style="font-size:0.75rem; color:var(--ink-faint); margin-bottom:16px; letter-spacing:0.06em;">EMBUDO DE CAPTACIÓN · Nº DE EMPRESAS</p>
+    <div class="funnel">
+      <div class="funnel-row">
+        <span class="funnel-label">Cualificadas por dolor real</span>
+        <div class="funnel-track"><div class="funnel-fill" style="width:100%;">45</div></div>
+      </div>
+      <div class="funnel-row">
+        <span class="funnel-label">Correo #1 enviado</span>
+        <div class="funnel-track"><div class="funnel-fill" style="width:82.2%;">37</div></div>
+      </div>
+      <div class="funnel-row">
+        <span class="funnel-label">En cola para correo #2 (seguimiento)</span>
+        <div class="funnel-track"><div class="funnel-fill" style="width:66.7%;">30</div></div>
+      </div>
+    </div>
+    <p style="color:var(--ink-faint); font-size:0.8rem; margin-top:16px;">15 ciudades principales de España escaneadas vía Google Places API · SMTP propio verificado · seguimiento por lead en <span class="mono">tracking_envios.json</span></p>
+  </div>
+
+  <div class="wrap-wide" style="margin-top:56px;">
+    <p class="mono" style="font-size:0.75rem; color:var(--ink-faint); margin-bottom:16px; letter-spacing:0.06em;">MUESTRA REAL DEL PIPELINE (reseñas públicas de Google)</p>
+    <div class="lead-strip">
+      <span class="lead-chip">Colegio de Administradores de Fincas de Madrid <em>2.6★</em></span>
+      <span class="lead-chip">Crefincas, Sevilla <em>3.6★</em></span>
+      <span class="lead-chip">Angel Calavia, Zaragoza <em>1.9★</em></span>
+      <span class="lead-chip">Fincas Terrasa, Palma <em>3.5★</em></span>
+      <span class="lead-chip">IGAM Administradores, Vigo <em>—</em></span>
+      <span class="lead-chip">Masercon, Murcia <em>3.1★</em></span>
+    </div>
+  </div>
+</section>
+
+<style>
+  .funnel{display:flex; flex-direction:column; gap:14px;}
+  .funnel-row{display:grid; grid-template-columns:220px 1fr; align-items:center; gap:14px;}
+  .funnel-label{font-size:0.85rem; color:var(--ink-dim);}
+  .funnel-track{background:var(--bg-raised); height:38px;}
+  .funnel-fill{
+    background:var(--teal); height:100%; display:flex; align-items:center; justify-content:flex-end;
+    padding-right:12px; font-family:var(--font-mono); font-weight:600; color:var(--bg);
+    font-variant-numeric:tabular-nums;
+  }
+  .lead-strip{display:flex; flex-wrap:wrap; gap:10px;}
+  .lead-chip{
+    font-size:0.8rem; color:var(--ink-dim); border:1px solid var(--line);
+    padding:8px 14px; background:var(--bg-raised);
+  }
+  .lead-chip em{font-style:normal; color:var(--brass-bright); font-family:var(--font-mono); margin-left:6px;}
+  @media (max-width:640px){
+    .funnel-row{grid-template-columns:1fr; gap:6px;}
+  }
+</style>
+
+<section id="seguridad">
+  <div class="wrap">
+    <p class="eyebrow">4 · Seguridad y cumplimiento</p>
+    <h2 style="font-size:clamp(1.8rem,4vw,2.6rem); margin-top:14px; font-weight:500;">El aislamiento RGPD no es una casilla, es la arquitectura</h2>
+    <p style="color:var(--ink-dim); margin-top:18px; max-width:640px;">
+      Cada entidad — incidencias, residentes, recibos, reservas — está aislada por
+      comunidad a nivel de datos, no solo ocultada en la interfaz. Un conserje de un
+      edificio no puede ver, ni por error, la morosidad de otro, ni la última acción
+      global del sistema. Esto no es una declaración de intenciones: es el registro
+      real de los commits que lo endurecen.
+    </p>
+  </div>
+  <div class="wrap-wide" style="margin-top:40px; background:var(--bg-raised); border:1px solid var(--line); padding:22px 26px; overflow-x:auto;">
+    <p class="mono" style="font-size:0.72rem; color:var(--ink-faint); margin-bottom:14px;">git log --oneline --grep=rgpd -i (selección, más reciente primero)</p>
+    <div class="mono" style="font-size:0.82rem; display:flex; flex-direction:column; gap:9px; white-space:nowrap;">
+      <p><span style="color:var(--brass-bright);">746c448</span> <span style="color:var(--ink);">fix(rgpd): sanitizar /status por rol — el conserje ya no ve la última acción global ni respuestas de comandos de otros usuarios</span></p>
+      <p><span style="color:var(--brass-bright);">303844d</span> <span style="color:var(--ink);">feat: app responsive completa, VERA con contexto de gastos/recibos, mejoras RGPD y tipado</span></p>
+      <p><span style="color:var(--brass-bright);">d8c1700</span> <span style="color:var(--ink);">fix-rgpd-portero-sin-morosidad-vecinos-reservas</span></p>
+      <p><span style="color:var(--brass-bright);">c6b80c0</span> <span style="color:var(--ink);">feat: demo segura y tracking campañas outbound</span></p>
+      <p><span style="color:var(--brass-bright);">a2604d6</span> <span style="color:var(--ink);">feat: RGPD security — multi-tenant isolation for all entities</span></p>
+    </div>
+  </div>
+</section>
+
+<section id="arquitectura">
+  <div class="wrap">
+    <p class="eyebrow">5 · Arquitectura</p>
+    <h2 style="font-size:clamp(1.8rem,4vw,2.6rem); margin-top:14px; font-weight:500;">Producción real, no una maqueta local</h2>
+    <p style="color:var(--ink-dim); margin-top:18px; max-width:640px;">
+      Despliegue automático: cada <span class="mono">git push</span> a main construye
+      y publica en Vercel. Sin túneles temporales, sin servidor casero expuesto.
+    </p>
+  </div>
+  <div class="wrap-wide" style="margin-top:44px; overflow-x:auto;">
+    <div class="arch-diagram">
+      <div class="arch-box">
+        <p class="mono plaque-tag">FRONTEND</p>
+        <p style="font-weight:600; margin-top:6px;">Next.js 14 · React 18</p>
+        <p style="color:var(--ink-faint); font-size:0.78rem; margin-top:4px;">Tailwind · Framer Motion — Vercel</p>
+      </div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-box">
+        <p class="mono plaque-tag">BACKEND</p>
+        <p style="font-weight:600; margin-top:6px;">Flask + SQLAlchemy</p>
+        <p style="color:var(--ink-faint); font-size:0.78rem; margin-top:4px;">agents/main.py — puerto 5011</p>
+      </div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-box">
+        <p class="mono plaque-tag">DATOS</p>
+        <p style="font-weight:600; margin-top:6px;">SQLite + Qdrant</p>
+        <p style="color:var(--ink-faint); font-size:0.78rem; margin-top:4px;">memoria vectorial — puerto 6333</p>
+      </div>
+    </div>
+  </div>
+  <p class="wrap" style="margin-top:28px; color:var(--ink-faint); font-size:0.82rem;">
+    Centro de operaciones propio (<span class="mono">maestro_ops.bat</span>): arranque,
+    parada y snapshot de todo el stack — frontend, backend y memoria vectorial — con un
+    solo comando.
+  </p>
+  <div class="wrap-wide" style="margin-top:40px; background:var(--bg-raised); border:1px solid var(--line); padding:22px 26px; overflow-x:auto;">
+    <p class="mono" style="font-size:0.72rem; color:var(--ink-faint); margin-bottom:14px;">git log --oneline -5 · ritmo de iteración real</p>
+    <div class="mono" style="font-size:0.82rem; display:flex; flex-direction:column; gap:9px; white-space:nowrap;">
+      <p><span style="color:var(--brass-bright);">51bbb9e</span> <span style="color:var(--ink);">feat(booking): expira reservas de pago no pagadas en 1 minuto</span></p>
+      <p><span style="color:var(--brass-bright);">65afaac</span> <span style="color:var(--ink);">docs: documenta el nuevo flujo de reservas (pago semi-preparado / email)</span></p>
+      <p><span style="color:var(--brass-bright);">abf1f30</span> <span style="color:var(--ink);">feat(booking): reservas ya no se confirman al pinchar — pago/email primero</span></p>
+      <p><span style="color:var(--brass-bright);">db245db</span> <span style="color:var(--ink);">fix(bookings): elimina cabecera duplicada en admin/bookings</span></p>
+      <p><span style="color:var(--brass-bright);">11658a9</span> <span style="color:var(--ink);">fix(login): quita la etiqueta de rol duplicada en accesos rápidos</span></p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .arch-diagram{display:flex; align-items:center; gap:0; min-width:640px;}
+  .arch-box{background:var(--bg-raised); border:1px solid var(--line); padding:20px 22px; flex:1;}
+  .arch-arrow{color:var(--brass); font-size:1.4rem; padding:0 18px; flex-shrink:0;}
+</style>
+
+<section id="mercado">
+  <div class="wrap">
+    <p class="eyebrow">6 · Mercado y modelo</p>
+    <h2 style="font-size:clamp(1.8rem,4vw,2.6rem); margin-top:14px; font-weight:500;">Se vende a quien manda, lo usa todo el edificio</h2>
+    <p style="color:var(--ink-dim); margin-top:18px; max-width:640px;">
+      España tiene decenas de miles de administradores de fincas colegiados y más de
+      un millón de comunidades de propietarios que dependen de ellos. Nuestro escaneo
+      cubre ya 15 de las principales ciudades — el pipeline del tramo 3 es una muestra
+      de ese universo, no el universo entero.
+    </p>
+    <p style="color:var(--ink-dim); margin-top:16px; max-width:640px;">
+      Modelo SaaS B2B2C: se contrata a nivel de administración (Super Admin) y se paga
+      por comunidad gestionada, con la bóveda documental y el cobro de morosidad como
+      módulos de expansión. Hoy el producto funciona y el motor de captación está
+      activo — <strong style="color:var(--ink);">sin contrato firmado todavía</strong>.
+      Esa es exactamente la fase en la que una ronda semilla tiene más apalancamiento:
+      financia al equipo comercial que cierra los primeros clientes de este pipeline.
+    </p>
+  </div>
+</section>
+
+<section id="ruta">
+  <div class="wrap">
+    <p class="eyebrow">7 · Hoja de ruta</p>
+    <h2 style="font-size:clamp(1.8rem,4vw,2.6rem); margin-top:14px; font-weight:500;">Lo que falta, dicho sin maquillaje</h2>
+  </div>
+  <div class="wrap" style="margin-top:36px; display:flex; flex-direction:column; gap:1px; background:var(--line); border:1px solid var(--line);">
+    <div class="road-row">
+      <p class="mono road-num">01</p>
+      <p>Lanzar el envío real del correo #2 a los 30 leads en cola de seguimiento.</p>
+    </div>
+    <div class="road-row">
+      <p class="mono road-num">02</p>
+      <p>Conectar un proveedor de pago real (Stripe Checkout o Redsys) en las reservas de pago por uso: hoy el cobro es un STUB simulado — la reserva ya expira sola al minuto si no se paga, pero el cargo en sí todavía no ocurre.</p>
+    </div>
+    <div class="road-row">
+      <p class="mono road-num">03</p>
+      <p>Verificar un dominio propio en Resend y fijar <span class="mono">EMAIL_FROM</span> + <span class="mono">EMAIL_TEST_MODE=false</span> en producción: el borrador de morosidad que VERA redacta y el admin revisa y edita ya funciona de punta a punta, solo falta activar el envío real al buzón del vecino.</p>
+    </div>
+    <div class="road-row">
+      <p class="mono road-num">04</p>
+      <p>Conectar un proveedor de pagos con webhooks (Stripe, GoCardless o Redsys) para la detección automática de morosos: hoy la conciliación es manual — el admin pega los movimientos del banco y el sistema cruza por importe y comunidad.</p>
+    </div>
+    <div class="road-row">
+      <p class="mono road-num">05</p>
+      <p>Refactorizar el dashboard: separar los componentes de <span class="mono">page.tsx</span> para escalar el equipo de frontend.</p>
+    </div>
+  </div>
+</section>
+
+<section id="propuesta" style="border-bottom:1px solid var(--line);">
+  <div class="wrap">
+    <p class="eyebrow">8 · La propuesta</p>
+    <h2 style="font-size:clamp(2rem,5vw,3.2rem); margin-top:14px; font-weight:500; font-style:italic; font-family:var(--font-display);">Un producto que funciona, un motor de ventas que ya arrancó.</h2>
+    <p style="color:var(--ink-dim); margin-top:22px; max-width:640px; font-size:1.05rem;">
+      No pedimos financiar una idea de pizarra: pedimos acelerar algo que ya corre en
+      producción y ya tiene 45 puertas reales tocadas. El siguiente paso natural es una
+      demo en vivo y hablar de una ronda semilla dimensionada al equipo comercial que
+      falta para cerrar esos primeros clientes.
+    </p>
+    <div class="mono" style="margin-top:40px; font-size:0.8rem; color:var(--ink-faint); display:flex; flex-wrap:wrap; gap:8px 20px;">
+      <span>adminapp-maestro.vercel.app</span><span>·</span>
+      <span>github.com/jmaria69/adminapp-maestro</span>
+    </div>
+  </div>
+</section>
+
+<style>
+  .road-row{background:var(--bg); padding:20px 24px; display:grid; grid-template-columns:44px 1fr; gap:16px; align-items:baseline;}
+  .road-num{color:var(--brass); font-size:0.78rem;}
+  .road-row p:last-child{color:var(--ink-dim); font-size:0.92rem;}
+</style>
+
+<script>
+(function(){
+  var tabs = document.querySelectorAll('.dir-tab[data-tab]');
+  var sections = Array.prototype.slice.call(tabs).map(function(t){
+    return document.getElementById(t.getAttribute('data-tab'));
+  }).filter(Boolean);
+  if (!('IntersectionObserver' in window)) return;
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      var tab = document.querySelector('.dir-tab[data-tab="' + entry.target.id + '"]');
+      if (!tab) return;
+      if (entry.isIntersecting) {
+        tabs.forEach(function(t){ t.classList.remove('active'); });
+        tab.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-45% 0px -50% 0px' });
+  sections.forEach(function(s){ io.observe(s); });
+})();
+</script>
+
+</body></html>

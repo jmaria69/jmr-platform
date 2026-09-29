@@ -43,10 +43,7 @@ export function GoogleAnalytics() {
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-      gtag('config', 'G-CQ6W47R42W', {
-        transport_url: 'https://praxialabs.com',
-        first_party_collection: true,
-      });
+      gtag('config', 'G-CQ6W47R42W');
     `,
         }}
       />

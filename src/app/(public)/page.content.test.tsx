@@ -47,7 +47,7 @@ describe("SSR de la home para agentes sin JS", () => {
   it("renderiza un único <h1> con el titular real en el HTML crudo", async () => {
     const element = await Home();
     const html = renderToStaticMarkup(element);
-    const matches = html.match(/<h1[^>]*>.*?<\/h1>/gs) ?? [];
+    const matches = html.match(/<h1[^>]*>[\s\S]*?<\/h1>/g) ?? [];
     expect(matches).toHaveLength(1);
     expect(matches[0]).toContain("El trabajo que haces a mano");
   });

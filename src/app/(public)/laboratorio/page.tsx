@@ -4,13 +4,25 @@ import { LabProjectCard } from "@/components/public/lab-project-card";
 
 export const dynamic = "force-dynamic";
 
+const BASE_URL = "https://praxialabs.com";
+
 export const metadata: Metadata = {
-  title: "Laboratorio",
+  title: "Laboratorio de Proyectos de IA | Praxia Labs",
   description:
-    "Sistemas que he construido: producción, betas y experimentos. La prueba de que lo que prometo se entrega.",
+    "Sistemas de IA e infraestructura que hemos construido: producción, betas y experimentos operativos reales.",
   alternates: {
-    canonical: "/laboratorio",
-    languages: { en: "/en/lab", "x-default": "/laboratorio" },
+    canonical: `${BASE_URL}/laboratorio`,
+    languages: {
+      es: `${BASE_URL}/laboratorio`,
+      en: `${BASE_URL}/en/lab`,
+      "x-default": `${BASE_URL}/laboratorio`,
+    },
+  },
+  openGraph: {
+    title: "Laboratorio de Proyectos de IA | Praxia Labs",
+    description: "Sistemas reales en producción y proyectos de IA creados por Praxia Labs.",
+    url: `${BASE_URL}/laboratorio`,
+    type: "website",
   },
 };
 
@@ -23,6 +35,30 @@ export default async function LaboratorioPage() {
   return (
     <div className="min-h-screen bg-transparent pt-32 pb-24 px-6">
       <div className="max-w-6xl mx-auto">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "CollectionPage",
+              name: "Laboratorio de Proyectos de IA",
+              url: `${BASE_URL}/laboratorio`,
+              description: "Proyectos y experimentos de Inteligencia Artificial desarrollados por Praxia Labs.",
+              inLanguage: "es",
+              mainEntity: {
+                "@type": "ItemList",
+                itemListElement: proyectos.map((p, index) => ({
+                  "@type": "ListItem",
+                  position: index + 1,
+                  name: p.name,
+                  description: p.description,
+                  url: `${BASE_URL}/proyectos/${p.id}`,
+                })),
+              },
+            }),
+          }}
+        />
+
         <div className="max-w-2xl mb-14">
           <h1 className="font-display text-4xl text-gray-900 dark:text-white mb-4">
             Laboratorio

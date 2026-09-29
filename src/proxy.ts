@@ -12,6 +12,8 @@ import { prefersMarkdown, withMarkdownVary } from "@/lib/markdown-negotiation";
 const KNOWN_TOP_SEGMENTS = new Set([
   "acerca-de", "adminapp", "contacto", "core-ops", "laboratorio",
   "politica-privacidad", "precios", "proyectos", "siam",
+  "automatizar-facturas-ia", "soc-virtual-pymes", "ia-privada-local",
+  "automatizacion-ia-madrid", "ciberseguridad-empresas-madrid", "automatizacion-ia-barcelona",
   "about", "contact", "privacy", "en",
   "admin", "api", "c", "demo", "login", "md-home", "md-404",
   "apple-icon", "opengraph-image",
@@ -100,7 +102,7 @@ export async function proxy(request: NextRequest) {
   }
 
   // ─── 3. Auth admin + detección de tokens inválidos ───
-  if (pathname.startsWith("/admin")) {
+  if (pathname === "/admin" || pathname.startsWith("/admin/")) {
     const token = request.cookies.get(SESSION_COOKIE)?.value;
 
     if (!token) {

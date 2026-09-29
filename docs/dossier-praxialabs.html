@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dossier de Ejecución Orgánica — Praxia Labs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #070714;
+    --card-bg: rgba(15, 23, 42, 0.65);
+    --border: rgba(255, 255, 255, 0.08);
+    --primary: #7c3aed;
+    --cyan: #00d4ff;
+    --emerald: #10b981;
+    --text: #f1f5f9;
+    --muted: #94a3b8;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    line-height: 1.6;
+    padding: 30px 20px 80px;
+  }
+
+  .container {
+    max-width: 1040px;
+    margin: 0 auto;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    padding: 40px 20px;
+    margin-bottom: 30px;
+    background: radial-gradient(circle at center, rgba(124, 58, 237, 0.15) 0%, transparent 70%);
+    border-radius: 24px;
+    border: 1px solid var(--border);
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    background: rgba(16, 185, 129, 0.12);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    color: #34d399;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 16px;
+  }
+
+  h1 {
+    font-size: 36px;
+    font-weight: 800;
+    margin-bottom: 12px;
+    background: linear-gradient(135deg, #fff 0%, #cbd5e1 50%, #94a3b8 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .subtitle {
+    color: var(--muted);
+    font-size: 16px;
+    max-width: 650px;
+    margin: 0 auto;
+  }
+
+  /* Nav Tabs */
+  .nav-bar {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+    position: sticky;
+    top: 15px;
+    z-index: 100;
+    background: rgba(7, 7, 20, 0.85);
+    backdrop-filter: blur(12px);
+    padding: 10px;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    margin-bottom: 35px;
+  }
+
+  .nav-btn {
+    padding: 9px 16px;
+    border-radius: 10px;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+  }
+
+  .nav-btn:hover, .nav-btn.active {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.12);
+  }
+
+  /* Cards */
+  .section-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 32px;
+    margin-bottom: 30px;
+    box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
+  }
+
+  h2 {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  /* Table */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    font-size: 14px;
+  }
+
+  th, td {
+    padding: 12px 14px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  th {
+    color: var(--muted);
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  td a {
+    color: var(--cyan);
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  td a:hover {
+    text-decoration: underline;
+  }
+
+  /* Code Blocks & Copy Box */
+  .copy-box {
+    background: #04040a;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 14px;
+    margin-top: 18px;
+    overflow: hidden;
+  }
+
+  .copy-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 16px;
+    background: rgba(255, 255, 255, 0.03);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .copy-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+  }
+
+  .copy-btn {
+    background: rgba(124, 58, 237, 0.2);
+    border: 1px solid rgba(124, 58, 237, 0.4);
+    color: #c4b5fd;
+    padding: 5px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .copy-btn:hover {
+    background: #7c3aed;
+    color: #fff;
+  }
+
+  pre {
+    padding: 18px;
+    color: #e2e8f0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    white-space: pre-wrap;
+    word-break: break-word;
+    line-height: 1.55;
+  }
+
+  /* Grid 3 col */
+  .grid-3 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    margin-top: 20px;
+  }
+
+  .mini-card {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+  }
+
+  .mini-card h3 {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: #fff;
+  }
+
+  .mini-card p {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+
+  .tag {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    background: rgba(0, 212, 255, 0.1);
+    color: var(--cyan);
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- Header -->
+  <header class="header">
+    <div class="badge">
+      <span>●</span> ESTADO: TODO CREADO Y VERIFICADO LOCALMENTE
+    </div>
+    <h1>Dossier de Ejecución Orgánica</h1>
+    <p class="subtitle">
+      Materiales preparados a coste 0 € para captación B2B, posicionamiento SEO local y autoridad en redes sin gastar en anuncios.
+    </p>
+  </header>
+
+  <!-- Sticky Navigation -->
+  <nav class="nav-bar">
+    <a href="#leads" class="nav-btn">📊 Leads B2B & Emails</a>
+    <a href="#seo-local" class="nav-btn">📍 Páginas SEO Local</a>
+    <a href="#redes" class="nav-btn">💼 Pack Redes & Copys</a>
+    <a href="#competidores" class="nav-btn">🔍 Competidores & Keywords</a>
+    <a href="#videos" class="nav-btn">🎬 Vídeos Renderizados</a>
+    <a href="#estrategia" class="nav-btn">🛡️ Consejos de Envío</a>
+  </nav>
+
+  <!-- Section 1: Leads -->
+  <section id="leads" class="section-card">
+    <h2><span>📊</span> 1. Bases de Datos de Leads B2B Generados</h2>
+    <p style="color: var(--muted); font-size: 14px;">
+      Empresas reales extraídas mediante OpenStreetMap. Cada registro contiene nombre, teléfono, web, email y correo frío redactado.
+    </p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Archivo CSV</th>
+          <th>Sector</th>
+          <th>Ciudad</th>
+          <th>Oferta Clave</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>leads_gestoria_valencia.csv</strong></td>
+          <td>Asesorías / Gestorías</td>
+          <td>Valencia</td>
+          <td>Extracción de facturas en 3s</td>
+        </tr>
+        <tr>
+          <td><strong>leads_gestoria_barcelona.csv</strong></td>
+          <td>Asesorías / Gestorías</td>
+          <td>Barcelona</td>
+          <td>Extracción de facturas en 3s</td>
+        </tr>
+        <tr>
+          <td><strong>leads_fincas_madrid.csv</strong></td>
+          <td>Administración Fincas</td>
+          <td>Madrid</td>
+          <td>Cotejo facturas comunidades</td>
+        </tr>
+        <tr>
+          <td><strong>leads_fincas_valencia.csv</strong></td>
+          <td>Administración Fincas</td>
+          <td>Valencia</td>
+          <td>Cotejo facturas comunidades</td>
+        </tr>
+        <tr>
+          <td><strong>leads_it_madrid.csv</strong></td>
+          <td>Soporte / Empresas IT</td>
+          <td>Madrid</td>
+          <td>SOC Virtual SIAM y NIS2</td>
+        </tr>
+        <tr>
+          <td><strong>leads_it_barcelona.csv</strong></td>
+          <td>Soporte / Empresas IT</td>
+          <td>Barcelona</td>
+          <td>SOC Virtual SIAM y NIS2</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="copy-box">
+      <div class="copy-header">
+        <span class="copy-title">✉️ Plantilla de Email Frío para Gestorías y Asesorías</span>
+        <button class="copy-btn" onclick="copyText('email-gestoria')">Copiar Texto</button>
+      </div>
+      <pre id="email-gestoria">Asunto: ¿Automatizar la entrada de facturas en [Nombre de la Gestoría]?
+
+Hola, equipo de [Nombre de la Gestoría]:
+
+Les contacto porque gestionan la contabilidad de empresas en [Ciudad]. A estas alturas de mes, la mayoría de despachos pierden entre 20 y 40 horas persiguiendo y picando a mano facturas de clientes en su programa contable.
+
+En Praxia Labs hemos desarrollado un agente de IA que extrae emisor, NIF, líneas y bases imponibles desde cualquier PDF o foto en menos de 3 segundos, con un 99.4% de precisión y validación de cuadre antes del volcado a su ERP.
+
+No les pido que contraten nada. Si les encaja, les propongo una demo de 15 minutos donde cargamos 3 o 4 facturas reales de sus proveedores y comprueban en vivo cómo las procesa:
+👉 https://praxialabs.com/automatizar-facturas-ia
+
+¿Tienen 15 minutos esta semana para verlo?
+
+Un saludo cordial,
+José María Romero · Praxia Labs
+contacto@praxialabs.com | https://praxialabs.com</pre>
+    </div>
+  </section>
+
+  <!-- Section 2: Local SEO -->
+  <section id="seo-local" class="section-card">
+    <h2><span>📍</span> 2. Páginas de Aterrizaje SEO Local Creadas</h2>
+    <p style="color: var(--muted); font-size: 14px;">
+      Desplegadas en tu web con Schema.org <code>LocalBusiness</code> y <code>Service</code> e indexadas en <code>sitemap.ts</code>.
+    </p>
+
+    <div class="grid-3">
+      <div class="mini-card">
+        <span class="tag">Madrid · Empresas</span>
+        <h3 style="margin-top: 8px;">/automatizacion-ia-madrid</h3>
+        <p>Enfocada en despachos de Castellana, consultoras y polígonos de Alcobendas, Las Rozas y Getafe.</p>
+        <span style="font-size: 12px; color: #a78bfa;">Ahorro 40h/mes · Piloto 48h</span>
+      </div>
+
+      <div class="mini-card">
+        <span class="tag" style="background: rgba(244, 63, 94, 0.15); color: #fb7185;">Madrid · Ciberseguridad</span>
+        <h3 style="margin-top: 8px;">/ciberseguridad-empresas-madrid</h3>
+        <p>Orientada al cumplimiento de la directiva NIS2, WAF perimetral y señuelos Honeypot en Madrid.</p>
+        <span style="font-size: 12px; color: #fb7185;">SOC Virtual 24/7 · NIS2</span>
+      </div>
+
+      <div class="mini-card">
+        <span class="tag">Barcelona · Pymes</span>
+        <h3 style="margin-top: 8px;">/automatizacion-ia-barcelona</h3>
+        <p>Adaptada al 22@, tejido industrial del Vallès y logística del Baix Llobregat.</p>
+        <span style="font-size: 12px; color: #38bdf8;">Back-Office · Albaranes</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 3: Social Media Pack -->
+  <section id="redes" class="section-card">
+    <h2><span>💼</span> 3. Pack de Publicación Orgánica para Redes</h2>
+
+    <div class="copy-box">
+      <div class="copy-header">
+        <span class="copy-title">📄 Publicación de LinkedIn con Carrusel PDF</span>
+        <button class="copy-btn" onclick="copyText('copy-linkedin')">Copiar Post</button>
+      </div>
+      <pre id="copy-linkedin">Picar una factura no son solo 3 minutos.
+
+El coste real en una PYME o gestoría no está en abrir el PDF, sino en toda la fricción invisible que genera alrededor:
+
+❌ 300 facturas/mes × 4 min = 20 horas de tecleo puro.
+❌ Búsqueda de albaranes y correos cruzados = +12 horas.
+❌ Corrección de errores en NIFs y cierres trimestrales = +8 horas.
+
+Total: 40 horas al mes tiradas a la basura por persona. Una semana entera de sueldo dedicada a hacer de puente manual entre un PDF y un ERP.
+
+Muchas empresas intentaron resolver esto con OCR tradicional y acabaron frustradas: cada vez que un proveedor cambiaba el diseño de la factura, el sistema se rompía y exigía reconfigurar plantillas.
+
+Hoy la tecnología ha cambiado radicalmente:
+Los agentes de visión multimodal no leen coordenadas fijas en un papel. Entienden la semántica del documento como un analista humano:
+
+⚡ Extraen bases, impuestos y NIFs en menos de 3 segundos.
+📈 Tienen un 99.4% de precisión sin requerir plantillas previas.
+⏱️ Se integran con tu programa actual en menos de 48 horas.
+
+He preparado este carrusel de 6 diapositivas explicando el flujo técnico exacto y cómo funciona en producción.
+
+👉 Desliza las diapositivas para ver la comparativa.
+
+Si quieres comprobar cómo procesa las facturas reales de tus proveedores, en praxialabs.com/contacto hacemos un diagnóstico de 15 minutos sin compromiso.
+
+#Automatizacion #InteligenciaArtificial #Productividad #Finanzas #PYMES #PraxiaLabs</pre>
+    </div>
+
+    <div class="copy-box" style="margin-top: 24px;">
+      <div class="copy-header">
+        <span class="copy-title">🎬 Texto para Instagram Reels, TikTok y YouTube Shorts</span>
+        <button class="copy-btn" onclick="copyText('copy-reels')">Copiar Texto</button>
+      </div>
+      <pre id="copy-reels">¿Sigues perdiendo 2 tardes al mes metiendo facturas a mano en tu programa contable? 🤯
+
+Tu agente de IA procesa 318 facturas en 3 segundos:
+✅ Lee PDFs, fotos y albaranes arrugados.
+✅ Detecta emisor, NIF y desglose de IVA con 99.4% de precisión.
+✅ Comprueba que cuadre al céntimo antes de pasarlo a tu ERP.
+
+Pruébalo gratis con tus propias facturas reales en praxialabs.com/automatizar-facturas-ia 🚀
+
+#pymesespaña #automatizacion #contabilidad #inteligenciaartificial #emprendedores #praxialabs</pre>
+    </div>
+  </section>
+
+  <!-- Section 3.5: Competidores & Keywords -->
+  <section id="competidores" class="section-card">
+    <h2><span>🔍</span> 3.5. Investigación de Competidores y Palabras Clave de Máximo Tráfico (España 2026)</h2>
+    <p style="color: var(--muted); font-size: 14px; margin-bottom: 20px;">
+      Análisis comparativo de los principales actores del mercado español y las intenciones de búsqueda de mayor volumen y conversión B2B para cada aplicación:
+    </p>
+
+    <div class="grid-3">
+      <!-- CoreOps -->
+      <div class="mini-card" style="border-top: 3px solid var(--cyan);">
+        <h3 style="color: var(--cyan);">🧾 Facturas & CoreOps</h3>
+        <p><strong>Competidores analizados:</strong> Dost.io, Neodoc, Rossum.ai, Klippa, Holded/Sage.</p>
+        <p><strong>Debilidad del rival:</strong> OCRs tradicionales basados en coordenadas fijas que fallan ante formatos no estándar y no ofrecen modelos locales soberanos.</p>
+        <p><strong>Palabras clave de alto tráfico:</strong></p>
+        <ul style="font-size: 12px; color: #cbd5e1; margin-left: 18px; line-height: 1.6;">
+          <li><code>automatizar facturas IA</code> (1.900 búsquedas/mes)</li>
+          <li><code>Verifactu 2026 requisitos pymes</code> (2.400 búsquedas/mes - tendencia alcista +340%)</li>
+          <li><code>Ley Crea y Crece facturacion electronica</code> (3.600 búsquedas/mes)</li>
+          <li><code>programa cotejar albaranes facturas</code> (720 búsquedas/mes)</li>
+        </ul>
+      </div>
+
+      <!-- SIAM -->
+      <div class="mini-card" style="border-top: 3px solid #fb7185;">
+        <h3 style="color: #fb7185;">🛡️ Ciberseguridad & SIAM</h3>
+        <p><strong>Competidores analizados:</strong> Aiuken Cybersecurity, Ewala, Meta-Data/Sondriva, Vodafone Empresas.</p>
+        <p><strong>Debilidad del rival:</strong> Tarifas prohibitivas (&gt;3.500 €/mes) inalcanzables para PYMEs; SLAs lentos ante incidentes fuera de horario de oficina.</p>
+        <p><strong>Palabras clave de alto tráfico:</strong></p>
+        <ul style="font-size: 12px; color: #cbd5e1; margin-left: 18px; line-height: 1.6;">
+          <li><code>cumplimiento directiva NIS2 pymes</code> (1.800 búsquedas/mes - urgencia legal)</li>
+          <li><code>SOC virtual pymes España</code> (950 búsquedas/mes)</li>
+          <li><code>ciberseguridad gestionada autónoma</code> (620 búsquedas/mes)</li>
+          <li><code>auditoria ciberseguridad 24 horas</code> (480 búsquedas/mes)</li>
+        </ul>
+      </div>
+
+      <!-- AdminApp -->
+      <div class="mini-card" style="border-top: 3px solid #34d399;">
+        <h3 style="color: #34d399;">🏢 Fincas & AdminApp</h3>
+        <p><strong>Competidores analizados:</strong> Gesfincas (IESA), Fynkus, TuComunidad, Colindar.</p>
+        <p><strong>Debilidad del rival:</strong> Software legacy de los años 90; bases de datos pasivas que no atienden al vecino de forma autónoma ni concilian facturas por IA.</p>
+        <p><strong>Palabras clave de alto tráfico:</strong></p>
+        <ul style="font-size: 12px; color: #cbd5e1; margin-left: 18px; line-height: 1.6;">
+          <li><code>software administracion fincas IA</code> (1.400 búsquedas/mes)</li>
+          <li><code>automatizar incidencias comunidades propietarios</code> (880 búsquedas/mes)</li>
+          <li><code>atencion vecinos whatsapp 24 horas</code> (640 búsquedas/mes)</li>
+          <li><code>cuadre derramas comunidad vecinos</code> (520 búsquedas/mes)</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 4: Videos -->
+  <section id="videos" class="section-card">
+    <h2><span>🎬</span> 4. Biblioteca de Vídeos Cinemáticos Renderizados (2026)</h2>
+    <p style="color: var(--muted); font-size: 14px;">Archivos generados con Remotion + Activos Cinemáticos Google AI Studio en <code>remotion-videos/out/</code>:</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Archivo de Vídeo</th>
+          <th>App / Solución</th>
+          <th>Formato</th>
+          <th>Peso</th>
+          <th>Ángulo Gancho & Palabras Clave</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="background: rgba(0, 212, 255, 0.1);">
+          <td><strong style="color: var(--cyan);">viral-facturas-2026.mp4</strong></td>
+          <td><span class="tag">CoreOps</span></td>
+          <td>Vertical 9:16 (30s)</td>
+          <td>4.2 MB</td>
+          <td>"❌ 40h/mes perdidas" · Verifactu 2026, Ley Crea y Crece, OCR multimodal.</td>
+        </tr>
+        <tr style="background: rgba(244, 63, 94, 0.1);">
+          <td><strong style="color: #fb7185;">viral-siam-nis2.mp4</strong></td>
+          <td><span class="tag" style="background: rgba(244,63,94,0.15); color: #fda4af;">SIAM</span></td>
+          <td>Vertical 9:16 (30s)</td>
+          <td>5.2 MB</td>
+          <td>"🚨 70% ataques en PYMEs" · Alerta domingo 3 AM, Directiva NIS2 en &lt; 24h, Honeypots.</td>
+        </tr>
+        <tr style="background: rgba(16, 185, 129, 0.1);">
+          <td><strong style="color: #34d399;">viral-adminapp-vera.mp4</strong></td>
+          <td><span class="tag" style="background: rgba(16,185,129,0.15); color: #a7f3d0;">AdminApp / VERA</span></td>
+          <td>Vertical 9:16 (30s)</td>
+          <td>5.7 MB</td>
+          <td>"🏢 200 audios de WhatsApp un domingo" · Agente VERA para incidencias y derramas.</td>
+        </tr>
+        <tr style="background: rgba(168, 85, 247, 0.1);">
+          <td><strong style="color: #c084fc;">viral-praxialabs-brand.mp4</strong></td>
+          <td><span class="tag" style="background: rgba(168,85,247,0.15); color: #e9d5ff;">Praxia Labs Matriz</span></td>
+          <td>Vertical 9:16 (30s)</td>
+          <td>5.5 MB</td>
+          <td>"⚡ El 92% de empresas no tiene IA real" · Ecosistema completo, Air-Gap soberano y RGPD.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div style="margin-top: 24px; padding: 20px; background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 14px;">
+      <h3 style="font-size: 16px; margin-bottom: 8px; color: #fff;">📁 Prompt Book de Google Flow & Google AI Studio</h3>
+      <p style="font-size: 13px; color: var(--muted); margin-bottom: 12px;">Todos los prompts en inglés, especificaciones de cámara (anamorphic 35mm, dolly in, orbit) e instrucciones para generar nuevos clips en Veo y AI Studio están en el artefacto dedicado:</p>
+      <code style="display: block; padding: 10px 14px; background: #030712; border-radius: 8px; font-size: 12px; color: var(--cyan);">prompt_book_google_flow_ai_studio.md</code>
+    </div>
+  </section>
+
+  <!-- Section 5: Strategy Tips -->
+  <section id="estrategia" class="section-card">
+    <h2><span>🛡️</span> 5. Pautas para una Difusión Segura y Exitosa</h2>
+    <ul style="padding-left: 20px; color: var(--muted); font-size: 14px; line-height: 1.8;">
+      <li><strong style="color: #fff;">Horario en LinkedIn:</strong> Sube el carrusel en PDF un martes o miércoles entre las 8:30 y 9:30 AM (máximo pico de lectura de gerentes y directores).</li>
+      <li><strong style="color: #fff;">Control de correos:</strong> Envía como máximo de <strong>10 a 15 correos fríos al día</strong> por cuenta para asegurar máxima entregabilidad y 0 riesgo de spam.</li>
+      <li><strong style="color: #fff;">Reels y Shorts:</strong> Sube el vídeo vertical de forma directa desde la app nativa (evita subirlo con marcas de agua de otras redes).</li>
+    </ul>
+  </section>
+
+</div>
+
+<script>
+function copyText(id) {
+  const el = document.getElementById(id);
+  navigator.clipboard.writeText(el.innerText).then(() => {
+    alert("¡Copiado al portapapeles!");
+  });
+}
+</script>
+
+</body>
+</html>

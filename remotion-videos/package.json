@@ -8,7 +8,14 @@
     "render:admin": "npx remotion render AdminApp --output out/admin-app.mp4 --codec h264 --pixel-format yuv420p --jpeg-quality 90 --concurrency 4",
     "render:core": "npx remotion render CoreOps --output out/core-ops.mp4 --codec h264 --pixel-format yuv420p --jpeg-quality 90 --concurrency 4",
     "render:olga": "npx remotion render OlgaAi --output out/olga-ai.mp4 --codec h264 --pixel-format yuv420p --jpeg-quality 90 --concurrency 4",
-    "render:all": "npm run render:admin && npm run render:core && npm run render:olga"
+    "render:viral": "npx remotion render ViralFacebookVideo --output out/viral-facebook.mp4 --codec h264 --pixel-format yuv420p --jpeg-quality 90 --concurrency 4",
+    "render:facturas2026": "npx remotion render ViralFacturas2026 --output out/viral-facturas-2026.mp4 --codec h264 --pixel-format yuv420p --jpeg-quality 90 --concurrency 4",
+    "render:siamnis2": "npx remotion render ViralSiamNis2 --output out/viral-siam-nis2.mp4 --codec h264 --pixel-format yuv420p --jpeg-quality 90 --concurrency 4",
+    "render:adminappvera": "npx remotion render ViralAdminAppVera --output out/viral-adminapp-vera.mp4 --codec h264 --pixel-format yuv420p --jpeg-quality 90 --concurrency 4",
+    "render:praxialabs": "npx remotion render ViralPraxiaLabsBrand --output out/viral-praxialabs-brand.mp4 --codec h264 --pixel-format yuv420p --jpeg-quality 90 --concurrency 4",
+    "render:cinematic:all": "npm run render:facturas2026 && npm run render:siamnis2 && npm run render:adminappvera && npm run render:praxialabs",
+    "render:feed": "npx remotion render ViralFacebookFeed --output out/viral-feed-4x5.mp4 --codec h264 --pixel-format yuv420p --jpeg-quality 90 --concurrency 4",
+    "render:all": "npm run render:admin && npm run render:core && npm run render:olga && npm run render:viral"
   },
   "keywords": [],
   "author": "",

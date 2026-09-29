@@ -4,13 +4,25 @@ import { LabProjectCard } from "@/components/public/lab-project-card";
 
 export const dynamic = "force-dynamic";
 
+const BASE_URL = "https://praxialabs.com";
+
 export const metadata: Metadata = {
-  title: "Lab",
+  title: "AI Projects Lab | Praxia Labs",
   description:
-    "Systems we've built: production, betas, and experiments. Proof that what we promise gets delivered.",
+    "AI systems and infrastructure we've built: production, betas, and operational experiments.",
   alternates: {
-    canonical: "/en/lab",
-    languages: { es: "/laboratorio", "x-default": "/laboratorio" },
+    canonical: `${BASE_URL}/en/lab`,
+    languages: {
+      es: `${BASE_URL}/laboratorio`,
+      en: `${BASE_URL}/en/lab`,
+      "x-default": `${BASE_URL}/laboratorio`,
+    },
+  },
+  openGraph: {
+    title: "AI Projects Lab | Praxia Labs",
+    description: "Real production systems and AI experiments created by Praxia Labs.",
+    url: `${BASE_URL}/en/lab`,
+    type: "website",
   },
 };
 

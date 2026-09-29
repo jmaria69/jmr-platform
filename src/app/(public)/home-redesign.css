@@ -233,10 +233,51 @@ html.ivory .lx .ncard .ntech-pill { background: rgba(0,0,0,.03); }
 .lx .foot .fbot { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 20px 0 30px; border-top: 1px solid var(--line); color: var(--muted); font-size: 13px; }
 @media (max-width: 760px) { .lx .foot .fcols { grid-template-columns: 1fr 1fr; } }
 
-@media (max-width: 900px) {
-  .lx .hero-grid { grid-template-columns: 1fr; }
-  .lx .quotes, .lx .svc, .lx .pillars, .lx .prods { grid-template-columns: 1fr; }
-}
 @media (prefers-reduced-motion: reduce) {
   .lx .rev { opacity: 1; transform: none; transition: none; }
 }
+
+/* geo comparison table (Perplexity & SearchGPT structured extraction) */
+.lx .geo-table-wrap {
+  overflow-x: auto;
+  background: var(--panel);
+  border: 1px solid var(--line2);
+  border-radius: 18px;
+  box-shadow: 0 20px 50px -20px rgba(0,0,0,0.6);
+  margin-top: 24px;
+}
+.lx .geo-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 14.5px;
+}
+.lx .geo-table th, .lx .geo-table td {
+  padding: 18px 22px;
+  border-bottom: 1px solid var(--line);
+}
+.lx .geo-table th {
+  background: var(--panel2);
+  font-family: ui-monospace, monospace;
+  font-size: 12px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.lx .geo-table th.highlight, .lx .geo-table td.highlight {
+  background: rgba(0, 242, 255, 0.04);
+  color: var(--fg);
+  border-left: 1px solid rgba(0, 242, 255, 0.15);
+  border-right: 1px solid rgba(0, 242, 255, 0.15);
+}
+.lx .geo-table th.highlight {
+  color: var(--cyan);
+  font-weight: 700;
+}
+.lx .geo-table tr:last-child td {
+  border-bottom: none;
+}
+.lx .geo-table td strong {
+  color: var(--fg);
+}
+
