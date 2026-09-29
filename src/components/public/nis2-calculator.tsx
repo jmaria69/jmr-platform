@@ -59,10 +59,17 @@ export function Nis2Calculator() {
 
         <label className="block">
           <span className="text-sm font-medium text-muted-foreground">
-            Facturación anual: <span className="font-bold text-red-400">{facturacion} M€</span>
+            Facturación anual:{" "}
+            <span className="font-bold text-red-400">
+              {facturacion < 1 ? `${Math.round(facturacion * 1000)} k€` : `${facturacion} M€`}
+            </span>
           </span>
           <input
-            type="range" min={0} max={100} step={1} value={facturacion}
+            type="range"
+            min={0.5}
+            max={100}
+            step={facturacion <= 5 ? 0.5 : 1}
+            value={facturacion}
             onChange={(e) => { setFacturacion(Number(e.target.value)); setEnviado(false); }}
             className="mt-2 w-full accent-red-500"
           />
@@ -72,25 +79,47 @@ export function Nis2Calculator() {
           role="status"
           aria-live="polite"
           aria-atomic="true"
-          className="rounded-xl p-4 border"
+          className="rounded-xl p-4 border transition-all"
           style={{
-            background: resultado.enAmbito ? "#dc262610" : "rgba(120,120,140,0.08)",
-            borderColor: resultado.enAmbito ? "#dc262640" : "rgba(120,120,140,0.28)",
+            background:
+              resultado.categoria === "esencial" || resultado.categoria === "importante"
+                ? "#dc262610"
+                : resultado.categoria === "cadena_suministro"
+                ? "rgba(245,158,11,0.08)"
+                : "rgba(120,120,140,0.08)",
+            borderColor:
+              resultado.categoria === "esencial" || resultado.categoria === "importante"
+                ? "#dc262640"
+                : resultado.categoria === "cadena_suministro"
+                ? "rgba(245,158,11,0.35)"
+                : "rgba(120,120,140,0.28)",
           }}
         >
           <div className="flex items-center gap-2 mb-2">
             <AlertTriangle
-              className={`h-4 w-4 ${resultado.enAmbito ? "text-red-400" : "text-muted-foreground"}`}
+              className={`h-4 w-4 ${
+                resultado.categoria === "esencial" || resultado.categoria === "importante"
+                  ? "text-red-400"
+                  : resultado.categoria === "cadena_suministro"
+                  ? "text-amber-400"
+                  : "text-muted-foreground"
+              }`}
             />
             <span
               className={`text-xs uppercase tracking-widest font-bold ${
-                resultado.enAmbito ? "text-red-400" : "text-muted-foreground"
+                resultado.categoria === "esencial" || resultado.categoria === "importante"
+                  ? "text-red-400"
+                  : resultado.categoria === "cadena_suministro"
+                  ? "text-amber-400"
+                  : "text-muted-foreground"
               }`}
             >
               {resultado.categoria === "esencial"
                 ? "Entidad esencial"
                 : resultado.categoria === "importante"
                 ? "Entidad importante"
+                : resultado.categoria === "cadena_suministro"
+                ? "PYME en Cadena de Suministro (Art. 21)"
                 : "Fuera del ámbito"}
             </span>
           </div>
@@ -99,13 +128,17 @@ export function Nis2Calculator() {
             {resultado.motivo}
           </p>
 
-          {resultado.enAmbito && (
+          {resultado.exposicionEur > 0 && (
             <>
               <div className="mt-4 flex items-end gap-2">
                 <span className="font-display text-3xl font-black text-foreground">
                   {resultado.exposicionEur.toLocaleString("es-ES")} €
                 </span>
-                <span className="text-sm text-muted-foreground pb-1">exposición estimada</span>
+                <span className="text-sm text-muted-foreground pb-1">
+                  {resultado.categoria === "cadena_suministro"
+                    ? "impacto medio estimado en PYME"
+                    : "exposición estimada"}
+                </span>
               </div>
 
               <ul className="mt-4 space-y-1.5">
@@ -121,11 +154,16 @@ export function Nis2Calculator() {
 
         {resultado.enAmbito && !enviado && (
           <Link
-            href={`/contacto?motivo=${encodeURIComponent("Informe NIS2")}&sector=${encodeURIComponent(sectorId)}`}
+            href={`/contacto?motivo=${encodeURIComponent(
+              resultado.categoria === "cadena_suministro" ? "Auditoría NIS2 PYME" : "Informe NIS2"
+            )}&sector=${encodeURIComponent(sectorId)}`}
             onClick={() => setEnviado(true)}
             className="flex items-center justify-center gap-2 w-full py-3 rounded-lg font-semibold text-sm text-white shimmer-btn transition-transform hover:scale-[1.02]"
           >
-            Quiero el informe completo <ArrowRight className="h-4 w-4" />
+            {resultado.categoria === "cadena_suministro"
+              ? "Quiero auditar mi PYME sin coste"
+              : "Quiero el informe completo"}{" "}
+            <ArrowRight className="h-4 w-4" />
           </Link>
         )}
 

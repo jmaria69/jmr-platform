@@ -2,16 +2,26 @@ import { describe, expect, it } from "vitest";
 import { evaluarNis2, NIS2_SECTORS, FUENTES_NIS2 } from "./nis2";
 
 describe("evaluarNis2", () => {
-  it("deja fuera de ámbito a una empresa pequeña de sector listado", () => {
+  it("clasifica como cadena_suministro y calcula exposición para una PYME pequeña de sector listado", () => {
     const r = evaluarNis2({ sectorId: "energia", empleados: 20, facturacionMEur: 3 });
-    expect(r.categoria).toBe("fuera");
-    expect(r.enAmbito).toBe(false);
+    expect(r.categoria).toBe("cadena_suministro");
+    expect(r.enAmbito).toBe(true);
+    expect(r.exposicionEur).toBeGreaterThan(0);
+  });
+
+  it("calcula exposición e impacto para PYMES de menos de 2 millones en sector regulado", () => {
+    const r = evaluarNis2({ sectorId: "digital", empleados: 8, facturacionMEur: 1.5 });
+    expect(r.enAmbito).toBe(true);
+    expect(r.categoria).toBe("cadena_suministro");
+    expect(r.exposicionEur).toBeGreaterThanOrEqual(35000);
+    expect(r.obligaciones.some((o) => o.includes("Cadena de Suministro"))).toBe(true);
   });
 
   it("deja fuera de ámbito a una empresa grande de sector no listado", () => {
     const r = evaluarNis2({ sectorId: "otro", empleados: 900, facturacionMEur: 200 });
     expect(r.categoria).toBe("fuera");
     expect(r.enAmbito).toBe(false);
+    expect(r.exposicionEur).toBe(0);
   });
 
   it("clasifica como importante a una mediana del Anexo I", () => {
@@ -40,15 +50,16 @@ describe("evaluarNis2", () => {
     expect(r.enAmbito).toBe(true);
   });
 
-  it("devuelve las obligaciones de notificación cuando está en ámbito", () => {
+  it("devuelve las obligaciones de notificación cuando está en ámbito como entidad mediana/grande", () => {
     const r = evaluarNis2({ sectorId: "energia", empleados: 80, facturacionMEur: 15 });
     expect(r.obligaciones.some((o) => o.includes("24 h"))).toBe(true);
     expect(r.obligaciones.some((o) => o.includes("72 h"))).toBe(true);
   });
 
-  it("no devuelve obligaciones cuando está fuera de ámbito", () => {
-    const r = evaluarNis2({ sectorId: "energia", empleados: 10, facturacionMEur: 1 });
+  it("no devuelve obligaciones cuando el sector no está listado (fuera de ámbito)", () => {
+    const r = evaluarNis2({ sectorId: "otro", empleados: 10, facturacionMEur: 1 });
     expect(r.obligaciones).toHaveLength(0);
+    expect(r.exposicionEur).toBe(0);
   });
 
   it("calcula una exposición creciente con el tamaño", () => {

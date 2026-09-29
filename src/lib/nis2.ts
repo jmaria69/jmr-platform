@@ -26,7 +26,7 @@ export type Nis2Input = {
   facturacionMEur: number;
 };
 
-export type Categoria = "esencial" | "importante" | "fuera";
+export type Categoria = "esencial" | "importante" | "cadena_suministro" | "fuera";
 
 export type Nis2Result = {
   enAmbito: boolean;
@@ -39,7 +39,7 @@ export type Nis2Result = {
 export type Fuente = {
   titulo: string;
   url: string;
-};
+  };
 
 export const NIS2_SECTORS: readonly Nis2Sector[] = [
   { id: "energia",       label: "Energía",                          anexo: "I" },
@@ -60,8 +60,9 @@ export const NIS2_SECTORS: readonly Nis2Sector[] = [
   { id: "otro",          label: "Otro sector",                      anexo: "ninguno" },
 ];
 
-/** Coste medio publicado de un ciberincidente en una pyme española. */
+/** Coste medio publicado de un ciberincidente en una pyme española (INCIBE / aseguradoras). */
 const COSTE_MEDIO_INCIDENTE_EUR = 75_000;
+const COSTE_BASE_MICRO_PYME_EUR = 35_000;
 
 export const FUENTES_NIS2: readonly Fuente[] = [
   {
@@ -72,16 +73,26 @@ export const FUENTES_NIS2: readonly Fuente[] = [
     titulo: "Ciberseguridad para pymes 2026: retos, IA y normativa NIS2 — Afianza",
     url: "https://www.afianza.es/sala-prensa/ciberseguridad-pymes-empresas-espanolas/",
   },
+  {
+    titulo: "Guía de Ciberseguridad para PYMEs y Cadena de Suministro — INCIBE",
+    url: "https://www.incibe.es/pymes",
+  },
 ];
 
-// Obligaciones según la Directiva UE 2022/2555 (NIS2). España aún no la ha
-// transpuesto, por lo que los plazos concretos se enuncian como lo que exigirá
-// la norma, no como una obligación ya vigente y exigible hoy.
+// Obligaciones para entidades medianas y grandes según la Directiva UE 2022/2555
 const OBLIGACIONES_BASE = [
   "Notificar una alerta temprana al CSIRT nacional en menos de 24 h desde la detección (según la Directiva UE, pendiente de transposición en España).",
   "Presentar un informe formal del incidente en un plazo de 72 h (según la Directiva UE, pendiente de transposición en España).",
   "Implantar medidas de gestión de riesgos de ciberseguridad y poder demostrarlas.",
   "Responsabilidad directa de la dirección sobre el cumplimiento.",
+];
+
+// Medidas y exigencias para PYMEs (< 2 M€ / < 50 empleados) por cadena de suministro (Art. 21)
+const OBLIGACIONES_PYME_CADENA = [
+  "Requisito de homologación de seguridad exigible por tus clientes principales y sector público (Art. 21.2.d NIS2 - Cadena de Suministro).",
+  "Detección y bloqueo perimetral de ataques en tiempo real (< 5 milisegundos) para evitar saltos laterales a redes corporativas.",
+  "Copias de seguridad cifradas, inmutables y plan de continuidad operativa ante ransomware.",
+  "Registro de evidencias y trazabilidad para auditorías de clientes y aseguradoras de ciberriesgo.",
 ];
 
 function sanear(n: number): number {
@@ -94,11 +105,22 @@ function buscarSector(sectorId: string): Nis2Sector | undefined {
 
 /**
  * Exposición económica estimada. Ancla en el coste medio publicado y escala
- * con la plantilla. Es una estimación orientativa, no una previsión.
+ * con la plantilla y tamaño.
  */
 function calcularExposicion(empleados: number): number {
   const factor = 1 + Math.min(empleados, 250) / 250;
   return Math.round((COSTE_MEDIO_INCIDENTE_EUR * factor) / 1000) * 1000;
+}
+
+/**
+ * Exposición económica para microempresas y pequeñas PYMEs (< 50 empleados o < 10 M€).
+ * Escala desde 35.000 € hasta 68.000 € según plantilla y facturación.
+ */
+function calcularExposicionPyme(empleados: number, facturacion: number): number {
+  const empFactor = Math.min(empleados, 49) * 600;
+  const factFactor = Math.min(facturacion, 10) * 1200;
+  const total = COSTE_BASE_MICRO_PYME_EUR + empFactor + factFactor;
+  return Math.min(Math.round(total / 1000) * 1000, 72_000);
 }
 
 export function evaluarNis2(input: Nis2Input): Nis2Result {
@@ -120,14 +142,29 @@ export function evaluarNis2(input: Nis2Input): Nis2Result {
     );
   }
 
-  const esMediana = empleados >= 50 || facturacion > 10;
-  if (!esMediana) {
+  // Si no hay plantilla ni facturación
+  if (empleados === 0 && facturacion === 0) {
     return fuera(
-      "Por tamaño quedas por debajo del umbral general de la directiva. Eso no elimina el riesgo: solo la obligación."
+      "Indica el número de empleados o facturación estimada para calcular el impacto."
     );
   }
 
+  // Verificación de tamaño según Recomendación 2003/361/CE
+  const esMediana = empleados >= 50 || facturacion > 10;
   const esGrande = empleados >= 250 || facturacion > 50;
+
+  // Si es una PYME pequeña (< 50 empleados y <= 10 M€) de un sector regulado:
+  if (!esMediana) {
+    const exposicion = calcularExposicionPyme(empleados, facturacion);
+    return {
+      enAmbito: true,
+      categoria: "cadena_suministro",
+      motivo: `Como PYME en ${sector.label} (< 50 empleados o < 10 M€), no estás en el régimen sancionador administrativo directo, pero quedas plenamente expuesta por el Artículo 21.2.d (Seguridad en la Cadena de Suministro). Tus clientes medianos y grandes te exigirán auditoría de ciberseguridad para contratar contigo.`,
+      obligaciones: [...OBLIGACIONES_PYME_CADENA],
+      exposicionEur: exposicion,
+    };
+  }
+
   const categoria: Categoria = sector.anexo === "I" && esGrande ? "esencial" : "importante";
 
   const motivo =
