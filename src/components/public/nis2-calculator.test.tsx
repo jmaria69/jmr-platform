@@ -41,4 +41,15 @@ describe("Nis2Calculator", () => {
     const { container } = render(<Nis2Calculator />);
     expect(container.textContent).not.toMatch(/48\s*h|no te (van a )?atacar/i);
   });
+
+  it("muestra impacto económico y afectación de cadena de suministro para PYMEs de menos de 2 millones", async () => {
+    const user = userEvent.setup();
+    render(<Nis2Calculator />);
+    const pymeBtn = screen.getByRole("button", { name: /PYME < 2M€/i });
+    await user.click(pymeBtn);
+
+    expect(screen.getByText(/PYME en Cadena de Suministro/i)).toBeInTheDocument();
+    expect(screen.getByText(/impacto medio estimado en PYME/i)).toBeInTheDocument();
+    expect(screen.getByText(/Quiero auditar mi PYME sin coste/i)).toBeInTheDocument();
+  });
 });

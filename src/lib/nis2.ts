@@ -57,6 +57,7 @@ export const NIS2_SECTORS: readonly Nis2Sector[] = [
   { id: "manufactura",   label: "Fabricación (sanitaria, electrónica, maquinaria, vehículos)", anexo: "II" },
   { id: "proveedores",   label: "Proveedores digitales y plataformas", anexo: "II" },
   { id: "investigacion", label: "Investigación",                    anexo: "II" },
+  { id: "servicios_profesionales", label: "Servicios profesionales y cadena de suministro TIC", anexo: "II" },
   { id: "otro",          label: "Otro sector",                      anexo: "ninguno" },
 ];
 

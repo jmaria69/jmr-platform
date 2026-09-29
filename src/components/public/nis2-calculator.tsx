@@ -46,33 +46,81 @@ export function Nis2Calculator() {
           </select>
         </label>
 
+        <div className="flex flex-wrap gap-2 pt-1">
+          <span className="text-xs text-muted-foreground self-center mr-1">Ejemplos rápidos:</span>
+          <button
+            type="button"
+            onClick={() => { setEmpleados(8); setFacturacion(1.2); setSectorId("digital"); setEnviado(false); }}
+            className="px-2.5 py-1 text-xs rounded-md bg-secondary/70 hover:bg-secondary text-foreground transition-colors border border-border"
+          >
+            PYME &lt; 2M€ (8 emp · 1.2 M€)
+          </button>
+          <button
+            type="button"
+            onClick={() => { setEmpleados(60); setFacturacion(15); setSectorId("energia"); setEnviado(false); }}
+            className="px-2.5 py-1 text-xs rounded-md bg-secondary/70 hover:bg-secondary text-foreground transition-colors border border-border"
+          >
+            Mediana (60 emp · 15 M€)
+          </button>
+          <button
+            type="button"
+            onClick={() => { setEmpleados(280); setFacturacion(60); setSectorId("banca"); setEnviado(false); }}
+            className="px-2.5 py-1 text-xs rounded-md bg-secondary/70 hover:bg-secondary text-foreground transition-colors border border-border"
+          >
+            Gran Empresa (280 emp · 60 M€)
+          </button>
+        </div>
+
         <label className="block">
-          <span className="text-sm font-medium text-muted-foreground">
-            Empleados: <span className="font-bold text-red-400">{empleados}</span>
-          </span>
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-medium text-muted-foreground">
+              Empleados
+            </span>
+            <span className="font-bold text-red-400 font-mono text-sm">
+              {empleados}
+            </span>
+          </div>
           <input
-            type="range" min={1} max={500} step={1} value={empleados}
+            type="range"
+            min={1}
+            max={300}
+            step={1}
+            value={empleados}
             onChange={(e) => { setEmpleados(Number(e.target.value)); setEnviado(false); }}
             className="mt-2 w-full accent-red-500"
           />
+          <div className="flex justify-between text-[11px] text-muted-foreground mt-1">
+            <span>1</span>
+            <span>10 (Micro)</span>
+            <span>50 (Mediana)</span>
+            <span>250+ (Grande)</span>
+          </div>
         </label>
 
         <label className="block">
-          <span className="text-sm font-medium text-muted-foreground">
-            Facturación anual:{" "}
-            <span className="font-bold text-red-400">
-              {facturacion < 1 ? `${Math.round(facturacion * 1000)} k€` : `${facturacion} M€`}
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-medium text-muted-foreground">
+              Facturación anual
             </span>
-          </span>
+            <span className="font-bold text-red-400 font-mono text-sm">
+              {facturacion < 1 ? `${Math.round(facturacion * 1000)} k€` : `${Number(facturacion.toFixed(1))} M€`}
+            </span>
+          </div>
           <input
             type="range"
-            min={0.5}
-            max={100}
-            step={facturacion <= 5 ? 0.5 : 1}
+            min={0.1}
+            max={60}
+            step={0.1}
             value={facturacion}
             onChange={(e) => { setFacturacion(Number(e.target.value)); setEnviado(false); }}
             className="mt-2 w-full accent-red-500"
           />
+          <div className="flex justify-between text-[11px] text-muted-foreground mt-1">
+            <span>100 k€ (Micro)</span>
+            <span>2 M€</span>
+            <span>10 M€ (PYME)</span>
+            <span>50 M€+</span>
+          </div>
         </label>
 
         <div
